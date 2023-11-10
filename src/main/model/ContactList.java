@@ -7,6 +7,7 @@ In order to send a message to a given user, we first have to check if they are c
 public class ContactList{
     public ArrayList<User> contactList;
     public ArrayList<User> connectedList;
+
     // Constructor
     public ContactList() {
         contactList = new ArrayList<>();

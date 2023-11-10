@@ -1,3 +1,4 @@
+package model;
 public class User{
     //ATTRIBUTES
     private int idUser; 
