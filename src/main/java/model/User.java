@@ -1,4 +1,6 @@
 package model;
+
+
 public class User{
     //ATTRIBUTES
     private int idUser; 
@@ -6,7 +8,7 @@ public class User{
     private String firstName;
     private String lastName;
     private String birthday;                        //ATTENTION BIRTHDAY IS A STRING
-    private String password; 
+    private String password;                        //ATTENTION PASSWORD IS A STRING
     private Boolean status;                         //if disconnected = false, connected = true
     
     //CONSTRUCTOR

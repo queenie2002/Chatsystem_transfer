@@ -3,8 +3,6 @@ package controller;
 contact discovery ph2 receives broadcast and responds accordingly
 
 si recoit message broadcast, renvoie un message disant qu’il est connecté du coup et update le fait que la personne qui a envoyé le message est connecté
-
-
  */
 
 import java.io.*;
