@@ -1,5 +1,6 @@
 package model.test;
 
+import model.*;
 import java.util.ArrayList;
 
 public class ChatTest {
@@ -9,8 +10,6 @@ public class ChatTest {
     private int fromUserId; // User who requested the chat session
     private int toUserId; // User who accepted the request
     private boolean isActive; // Status indicating whether the chat is active or not
-
-    private static ArrayList<ChatTest> chatSessions = new ArrayList<>(); // All chat sessions (to allow us to access message history)
 
     // Constructor
     public ChatTest(int chatId, int counter, int fromUserId, int toUserId, boolean isActive) {
@@ -50,20 +49,10 @@ public class ChatTest {
         this.isActive = isActive;
     }
 
-    private static int createChatId() {
-        return chatSessions.size() + 1;
+    public static int createChatId(ArrayList<ChatTest> myChatHistory) {
+        return (ChatHistory.getChatFromIndex(myChatHistory.size() - 1)).getChatId() + 1 ;
     }
 
-    public static ChatTest startNewChatSession(int fromUserId, int toUserId) {//creates new chatSession and sets it to active so we can begin chatting right away
-        int newChatId = createChatId();
-        ChatTest newChat = new ChatTest(newChatId, 0, fromUserId, toUserId, true); // Set initial status to active to allow chatting
-        chatSessions.add(newChat);
-        return newChat;
-    }
 
-    public static void endConversation(ChatTest chat) {//ends current conversation but keeps the chat to allow history access
-        chat.setStatus(false); // Set the status to inactive
-    }
 
-    //need method to allow conversation between 2 users who already chatted in the past
 }

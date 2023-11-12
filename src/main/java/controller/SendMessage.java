@@ -21,7 +21,6 @@ on envoie toujours au port 2000 (c'est le port serveur)
 
 import controller.*;
 import model.*;
-import java.nio.ByteBuffer; /*pour convert int into byte*/
 import java.io.*;
 import java.net.*;
 
