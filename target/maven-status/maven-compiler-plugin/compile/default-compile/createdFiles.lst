@@ -1,4 +1,9 @@
+model/MainClass.class
+controller/ReceiveMessage.class
+model/test/ChatTest.class
+model/test/ChatHistory.class
 model/User.class
 model/Chat.class
-model/MainClass.class
+controller/SendMessage.class
+model/Message.class
 model/ContactList.class
