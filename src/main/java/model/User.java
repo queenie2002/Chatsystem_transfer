@@ -1,5 +1,10 @@
 package model;
 
+import model.test.ChatHistory;
+import model.test.ChatTest;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class User{
     //ATTRIBUTES
@@ -7,12 +12,12 @@ public class User{
     private String nickname;
     private String firstName;
     private String lastName;
-    private String birthday;                        //ATTENTION BIRTHDAY IS A STRING
+    private LocalDate birthday;
     private String password;                        //ATTENTION PASSWORD IS A STRING
     private Boolean status;                         //if disconnected = false, connected = true
     
     //CONSTRUCTOR
-    public User (int idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status){
+    public User (int idUser, String nickname, String firstName, String lastName, LocalDate birthday, String password, Boolean status){
         this.idUser = idUser;
         this.nickname = nickname;
         this.firstName = firstName;
@@ -27,11 +32,13 @@ public class User{
     public String getNickname (){ return this.nickname;}
     public String getFirstName (){ return this.firstName;}
     public String getLastName(){ return this.lastName;}
-    public String getBirthday (){ return this.birthday;}
+    public LocalDate getBirthday (){ return this.birthday;}
     public String getPassword (){ return this.password;}
     public Boolean getStatus (){ return this.status;}
 
 
-
+    /*public int createIdUser(ArrayList<User> ContactList) {
+        return (ContactList.getChatFromIndex(ContactList.size() - 1)).getChatId() + 1 ;
+    }*/
 
 } 

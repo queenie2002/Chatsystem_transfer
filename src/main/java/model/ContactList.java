@@ -12,15 +12,15 @@ import java.util.ArrayList;
 
 public class ContactList {
     // Class attribute
-    private ArrayList<User> myContactList;
+    private static ArrayList<User> myContactList;
 
     // Constructor
     public ContactList() { //i'm adding a constructor qui est empty
-        this.myContactList = new ArrayList<User>();
+        myContactList = new ArrayList<User>();
     }
 
     public ContactList(ArrayList<User> currentContactList) { //C'EST BIZARRE CA, when we first create it we make it empty
-        this.myContactList = currentContactList;
+        myContactList = currentContactList;
     }
 
 
