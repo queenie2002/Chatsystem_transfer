@@ -38,6 +38,17 @@ public class User{
 
     public InetAddress getIpAddress() { return this.ipAddress; }
 
+    public void setId(int idUser) { this.idUser = idUser; }
+    public void setNickname (String nickname) { this.nickname=nickname;}
+    public void setFirstName (String firstName) { this.firstName=firstName;}
+    public void setLastName(String lastName) { this.lastName=lastName;}
+    public void setBirthday (String birthday) { this.birthday=birthday;}
+    public void setPassword (String password) { this.password=password;}
+    public void setStatus (Boolean status) { this.status=status;}
+
+    public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
+
+
     /*public InetAddress getIpAddress() {
         InetAddress localHost = null;
         try {

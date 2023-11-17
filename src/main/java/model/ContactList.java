@@ -44,15 +44,53 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
     }
 
-    public void changeContact(int idUser, User user) {
+    public void changeContact(User user) {
+        int index=-1;
         for (User aUser : myContactList) {
-            if (aUser.getId() == idUser) {
-                return aUser;
+            if (aUser.getId() == user.getId()) {
+                index = myContactList.indexOf(aUser);
             }
         }
-        int index = myContactList.indexOf(elementToReplace);
+
+        if (index != -1) {
+            // Replace the element at the found index
+            myContactList.set(index, user);
+        } else {
+            System.out.println("error: user not found in the contactlist (dans ContactList)");
+        }
+    }
+
+    public Boolean existsContact(int idUser) {
+        for (User aUser : myContactList) {
+            if (aUser.getId() == idUser) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean existsContactWithNickname(String nickname) {
+        for (User aUser : myContactList) {
+            if (aUser.getNickname() == nickname) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
+    public void printContact(User user) {
+        Boolean found = false;
+        for (User aUser : myContactList) {
+            if (aUser.getId() == user.getId()) {
+                System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+" password: "+user.getPassword()+" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
+                found = true;
+            }
+
+        }
+        if (!found) {
+            System.out.println("couldn't find the user with id: " + user.getId());
+        }
 
     }
     public ArrayList<User> getContactList() {

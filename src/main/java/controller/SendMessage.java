@@ -42,7 +42,7 @@ public class SendMessage{
 
 
             //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
-            String message = "BROADCAST: id: " + user.getId() + " username: " + user.getNickname() + " ip address: " + user.getIpAddress();
+            String message = "BROADCAST: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress();
             byte[] buf = message.getBytes();
 
 
@@ -57,6 +57,56 @@ public class SendMessage{
         }
     }
 
+
+
+    public void sendDisconnect(User user) throws IOException {
+
+        //we set the address
+        InetAddress senderAddress = InetAddress.getByName("255.255.255.255");
+        int senderPort = 2000; /*le port sur lequel il devra recevoir*/
+
+        //create datagram socket
+        //avec le try, le socket est relâché automatiquement à la fin, donc pas besoin du close
+        try (DatagramSocket sendingSocket = new DatagramSocket(1200)) {  /*who I am, port duquel j'envoie*/
+
+            //we enable broadcasting
+            sendingSocket.setBroadcast(true);
+
+            //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
+            String message = "DISCONNECT: id: " + user.getId();
+            byte[] buf = message.getBytes();
+
+
+
+            /*the message I send, says who I am and carries info of where I am so they can send it back  */
+            DatagramPacket outPacket = new DatagramPacket(buf, buf.length, senderAddress, senderPort);
+            sendingSocket.send(outPacket);
+
+            System.out.println("Disconnect message sent.");
+        }
+    }
+
+    public void sendNicknameExists(User user) throws IOException {
+
+        //we set the address
+        InetAddress senderAddress = InetAddress.getByName(user.getIpAddress().getHostAddress());
+        int senderPort = 2000; /*le port sur lequel il devra recevoir*/
+
+        //create datagram socket
+        //avec le try, le socket est relâché automatiquement à la fin, donc pas besoin du close
+        try (DatagramSocket sendingSocket = new DatagramSocket(1200)) {  /*who I am, port duquel j'envoie*/
+
+            //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
+            String message = "NICKNAME EXISTS";
+            byte[] buf = message.getBytes();
+
+            /*the message I send, says who I am and carries info of where I am so they can send it back  */
+            DatagramPacket outPacket = new DatagramPacket(buf, buf.length, senderAddress, senderPort);
+            sendingSocket.send(outPacket);
+
+            System.out.println("Nickname Exists message sent.");
+        }
+    }
 
 
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import controller.*;
+import model.ContactList;
 import model.User;
 
 public class SendMessageTest {
@@ -21,5 +22,10 @@ public class SendMessageTest {
         s.sendBroadcast(user1);
         s.sendBroadcast(user2);
         s.sendBroadcast(user3);
+
+
+        s.sendDisconnect(user1);
+
+
     }
 }
