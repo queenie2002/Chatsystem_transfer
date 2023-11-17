@@ -44,7 +44,7 @@ public class SendMessage{
 
 
             //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
-            String message = "BROADCAST: id: " + user.getId() + " username: " + user.getNickname();
+            String message = "BROADCAST: id: " + user.getId() + " username: " + user.getNickname() + " ip address: " + user.getAddress();
             byte[] buf = message.getBytes();
 
 

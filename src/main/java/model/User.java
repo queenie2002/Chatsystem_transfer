@@ -1,6 +1,5 @@
 package model;
 
-import java.time.LocalDate;
 import java.io.*;
 import java.net.*;
 
@@ -10,12 +9,12 @@ public class User{
     private String nickname;
     private String firstName;
     private String lastName;
-    private LocalDate birthday;
+    private String birthday;
     private String password;                        //ATTENTION PASSWORD IS A STRING
     private Boolean status;                         //if disconnected = false, connected = true
     
     //CONSTRUCTOR
-    public User (int idUser, String nickname, String firstName, String lastName, LocalDate birthday, String password, Boolean status){
+    public User (int idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status){
         this.idUser = idUser;
         this.nickname = nickname;
         this.firstName = firstName;
@@ -30,7 +29,7 @@ public class User{
     public String getNickname (){ return this.nickname;}
     public String getFirstName (){ return this.firstName;}
     public String getLastName(){ return this.lastName;}
-    public LocalDate getBirthday (){ return this.birthday;}
+    public String getBirthday (){ return this.birthday;}
     public String getPassword (){ return this.password;}
     public Boolean getStatus (){ return this.status;}
 
@@ -41,7 +40,6 @@ public class User{
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        System.out.println("Address of local host : "+localHost);
         return localHost;
     }
 

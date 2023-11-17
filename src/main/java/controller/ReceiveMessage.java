@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
 public class ReceiveMessage extends Thread {
 
 
-    public void ExtractNumbersFromPattern(String inputString) {
+    public String[] ExtractNumbersFromPattern(String pattern, String inputString) {
 
         // Use a regular expression to match numbers after "username" and "id"
-        Pattern pattern = Pattern.compile("BROADCAST: id: (\\d+) username: (\\S+)");
+        Pattern pattern = Pattern.compile("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)");
 
         Matcher matcher = pattern.matcher(inputString);
 
@@ -28,22 +28,19 @@ public class ReceiveMessage extends Thread {
             // Extract the matched numbers
             String id = matcher.group(1);
             String username = matcher.group(2);
+            String ipAddress = matcher.group(3);
 
-            // Convert the string numbers to actual numbers (int or long)
-            try {
+            String[] res = new String[3];
+            res[0] = id;
+            res[1] = username;
+            res[2] = ipAddress;
 
-                int extractedId = Integer.parseInt(id);
+            return res;
 
-                System.out.println("Username Number: " + username);
-                System.out.println("ID Number: " + extractedId );
-
-            } catch (NumberFormatException e) {
-                System.out.println("Unable to convert the matched string to a number.");
-            }
         } else {
             System.out.println("No match found for the pattern.");
-
         }
+        return null;
     }
 
 
@@ -61,50 +58,17 @@ public class ReceiveMessage extends Thread {
                 receivingSocket.receive(inPacket);
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
 
-                System.out.println(/*Thread.currentThread().getName() +*/ received);
+                System.out.println(Thread.currentThread().getName() + received);
 
 
                 if ((received.substring(0,Math.min(received.length(), 11))).equals("BROADCAST: ")) {   //IF ITS A BROADCAST
 
                     //update le fait que la personne qui a envoyé ca est connectée
-                    System.out.println("on est rentré ici");
+                    String[] res = ExtractNumbersFromPattern(received);
 
-
-
-                    // Use a regular expression to match numbers after "username" and "id"
-                    Pattern pattern = Pattern.compile("BROADCAST: id: (\\d+) username: (\\S+)");
-
-                    Matcher matcher = pattern.matcher(received);
-
-                    // Check if a match is found
-                    if (matcher.find()) {
-                        // Extract the matched numbers
-                        String id = matcher.group(1);
-                        String username = matcher.group(2);
-
-                        // Convert the string numbers to actual numbers (int or long)
-                        try {
-
-                            int extractedId = Integer.parseInt(id);
-
-                            System.out.println("Username Number: " + username);
-                            System.out.println("ID Number: " + extractedId );
-
-                        } catch (NumberFormatException e) {
-                            System.out.println("Unable to convert the matched string to a number.");
-                        }
-                    } else {
-                        System.out.println("No match found for the pattern.");
-
+                    for (String s: res) {
+                        System.out.println(s);
                     }
-
-
-
-
-
-
-
-
 
 
                 }
