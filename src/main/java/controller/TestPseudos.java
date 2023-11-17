@@ -10,7 +10,7 @@ public class TestPseudos {
         User me = new User(1,"myPseudo","myFirstName","myLastName","myBday","myPword",true);
         User newUser = new User(2,"newPseudo","newFirstName","newLastName","myBday","myPword",true);
         ContactList instance = ContactList.getInstance();
-        instance.addContact(//Add contacts here);
+        //instance.addContact(//Add contacts here);
     }
 
 }
