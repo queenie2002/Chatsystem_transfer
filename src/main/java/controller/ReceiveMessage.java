@@ -10,35 +10,52 @@ import model.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
+
 
 public class ReceiveMessage extends Thread {
 
 
-    public String[] ExtractNumbersFromPattern(String pattern, String inputString) {
+    public String[] ExtractNumbersFromPattern(String inputString) {
 
-        // Use a regular expression to match numbers after "username" and "id"
-        Pattern pattern = Pattern.compile("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)");
+        // List of patterns
+        List<String> patternList = new ArrayList<>();
+        patternList.add("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)");
+        patternList.add("(\\S+)");  // Matches one or more letters
 
-        Matcher matcher = pattern.matcher(inputString);
+        boolean matchesAnyPattern = false;
+        for (String patternString : patternList) {
+            Pattern pattern = Pattern.compile(patternString);
+            Matcher matcher1 = pattern.matcher(inputString);
+            Matcher matcher2 = pattern.matcher(inputString);
 
-        // Check if a match is found
-        if (matcher.find()) {
-            // Extract the matched numbers
-            String id = matcher.group(1);
-            String username = matcher.group(2);
-            String ipAddress = matcher.group(3);
+            if (matcher1.matches()) {
+                matchesAnyPattern = true;
+                System.out.println("String matches pattern: " + patternString);
+                String[] res = new String[0];
+                
+                // Check if a match is found
+                if (matcher2.find()) {
+                    if (patternString.equals("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)")) {
+                        // Extract the matched numbers
+                        String id = matcher2.group(1);
+                        String username = matcher2.group(2);
+                        String ipAddress = matcher2.group(3);
 
-            String[] res = new String[3];
-            res[0] = id;
-            res[1] = username;
-            res[2] = ipAddress;
+                        res = new String[4];
+                        res[0] = patternString;
+                        res[1] = id;
+                        res[2] = username;
+                        res[3] = ipAddress;
+                    }
+                    return res;
+                }
+                break;  // Exit the loop if a match is found
+            }
+        }
 
-            return res;
-
-        } else {
-            System.out.println("No match found for the pattern.");
+        if (!matchesAnyPattern) {
+            System.out.println("String does not match any pattern in the list.");
         }
         return null;
     }
@@ -60,15 +77,16 @@ public class ReceiveMessage extends Thread {
 
                 System.out.println(Thread.currentThread().getName() + received);
 
+                String[] res = ExtractNumbersFromPattern(received);
 
-                if ((received.substring(0,Math.min(received.length(), 11))).equals("BROADCAST: ")) {   //IF ITS A BROADCAST
+                if (res[0].equals("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)")) {  //si c'est le broadcast de début
 
                     //update le fait que la personne qui a envoyé ca est connectée
-                    String[] res = ExtractNumbersFromPattern(received);
+                    int id = Integer.parseInt(res[1]);
+                    String username = res[2];
+                    String ipAddress = res[3];
 
-                    for (String s: res) {
-                        System.out.println(s);
-                    }
+
 
 
                 }
