@@ -24,6 +24,8 @@ public class ReceiveMessage extends Thread {
         patternList.add("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)");
         patternList.add("(\\S+)");  // Matches one or more letters
 
+
+
         boolean matchesAnyPattern = false;
         for (String patternString : patternList) {
             Pattern pattern = Pattern.compile(patternString);
@@ -88,12 +90,12 @@ public class ReceiveMessage extends Thread {
                     String ipAddress = res[3];
 
 
-                    User me = new User(1,"myPseudo","myFirstName","myLastName","myBday","myPword",true);
+                    User me = new User(id,username,"","","","",true,InetAddress.getByName(ipAddress.substring(11)));
                     ContactList list = getInstance();
                     list.addContact(me);
-                    User me2 = list.getContact(1);
+                    User me2 = list.getContact(id);
 
-                    System.out.println(Thread.currentThread().getName() + received);
+                    System.out.println(me2.getId() + " username" + me2.getNickname() + " ipaddress " + me2.getIpAddress());
 
 
 

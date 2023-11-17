@@ -12,9 +12,11 @@ public class User{
     private String birthday;
     private String password;                        //ATTENTION PASSWORD IS A STRING
     private Boolean status;                         //if disconnected = false, connected = true
+
+    private InetAddress ipAddress;
     
     //CONSTRUCTOR
-    public User (int idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status){
+    public User (int idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress){
         this.idUser = idUser;
         this.nickname = nickname;
         this.firstName = firstName;
@@ -22,6 +24,7 @@ public class User{
         this.birthday=birthday;
         this.password=password;
         this.status=status;
+        this.ipAddress=ipAddress;
     } 
 
     //METHODS
@@ -33,7 +36,9 @@ public class User{
     public String getPassword (){ return this.password;}
     public Boolean getStatus (){ return this.status;}
 
-    public InetAddress getAddress() {
+    public InetAddress getIpAddress() { return this.ipAddress; }
+
+    /*public InetAddress getIpAddress() {
         InetAddress localHost = null;
         try {
             localHost = InetAddress.getLocalHost();
@@ -41,7 +46,7 @@ public class User{
             e.printStackTrace();
         }
         return localHost;
-    }
+    }*/
 
     /*public int createIdUser(ArrayList<User> ContactList) {
         return (ContactList.getChatFromIndex(ContactList.size() - 1)).getChatId() + 1 ;
