@@ -16,7 +16,7 @@ public class App {
         ReceiveMessage r1 = new ReceiveMessage ();
         SendMessage s = new SendMessage ();
         r1.start();
-        s.sendBroadcast(user1);
+        //s.sendBroadcast(user1);
 
 
     }

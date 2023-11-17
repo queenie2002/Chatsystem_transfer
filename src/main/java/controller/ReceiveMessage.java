@@ -15,8 +15,8 @@ public class ReceiveMessage extends Thread {
 
         // List of patterns
         List<String> patternList = new ArrayList<>();
-        patternList.add("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)");
-        patternList.add("(\\S+)");  // Matches one or more letters
+        patternList.add("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)");  //broadcast at beginning, unique pseudo
+        patternList.add("DISCONNECT: id: (\\d+)");  //disconnecting
 
 
 
@@ -43,6 +43,13 @@ public class ReceiveMessage extends Thread {
                         res[1] = id;
                         res[2] = username;
                         res[3] = ipAddress;
+                    } else if (patternString.equals("DISCONNECT: id: (\\d+)")){
+                        // Extract the matched numbers
+                        String id = matcher2.group(1);
+
+                        res = new String[2];
+                        res[0] = patternString;
+                        res[1] = id;
                     }
                     return res;
                 }
@@ -74,22 +81,38 @@ public class ReceiveMessage extends Thread {
 
                 System.out.println(Thread.currentThread().getName() + received);
 
+                //extracts info from packet
                 String[] res = ExtractInfoFromPattern(received);
 
-                if (res[0].equals("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)")) {  //si c'est le broadcast de début
+                //si c'est le broadcast du début, adds un contact with ip and username and updates his status to connected
+                //have to deal with unique pseudo here
+                if (res[0].equals("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)")) {
 
-                    //update le fait que la personne qui a envoyé ca est connectée
                     int id = Integer.parseInt(res[1]);
                     String username = res[2];
                     String ipAddress = res[3];
-
 
                     User userSender = new User(id,username,"","","","",true,InetAddress.getByName(ipAddress.substring(11)));
                     ContactList list = getInstance();
                     list.addContact(userSender);
                 }
 
+                //si c'est message disconnect, updates user to disconnected
 
+                if (res[0].equals("DISCONNECT: id: (\\d+)")) {
+
+                    int id = Integer.parseInt(res[1]);
+
+                    ContactList list = getInstance();
+                    User userSender = list.getContact(id);
+
+
+                }
+
+
+
+
+                //PAS LA MAIS CEST ICI QUON POURRA DISCONNECT I GUESS
                 if (received.equals("end")) {
                     System.out.println("DONE");
                     running = false;
@@ -101,5 +124,4 @@ public class ReceiveMessage extends Thread {
             e.printStackTrace();
         }
     }
-
 }

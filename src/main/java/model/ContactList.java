@@ -8,17 +8,13 @@ so we only make one in the main?
 import java.util.ArrayList;
 
 public class ContactList {
-    private final static ContactList instance = new ContactList();
-
     // Class attribute
+    private final static ContactList instance = new ContactList();
     private final ArrayList<User> myContactList;
 
     // Constructor
     ContactList() { //i'm adding a constructor qui est empty
         myContactList = new ArrayList<User>();
-    }
-    ContactList(ArrayList<User> currentContactList) { //C'EST BIZARRE CA, when we first create it we make it empty
-        myContactList = currentContactList;
     }
 
     public static ContactList getInstance() {
@@ -48,6 +44,17 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
     }
 
+    public void changeContact(int idUser, User user) {
+        for (User aUser : myContactList) {
+            if (aUser.getId() == idUser) {
+                return aUser;
+            }
+        }
+        int index = myContactList.indexOf(elementToReplace);
+
+
+
+    }
     public ArrayList<User> getContactList() {
         return myContactList;
     }
