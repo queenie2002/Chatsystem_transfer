@@ -1,15 +1,9 @@
 package controller;
-/*
-contact discovery ph2 receives broadcast and responds accordingly
-
-si recoit message broadcast, renvoie un message disant qu’il est connecté du coup et update le fait que la personne qui a envoyé le message est connecté
- */
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
-
 import model.*;
 import static model.ContactList.getInstance;
 
@@ -17,7 +11,7 @@ import static model.ContactList.getInstance;
 public class ReceiveMessage extends Thread {
 
 
-    public String[] ExtractNumbersFromPattern(String inputString) {
+    public String[] ExtractInfoFromPattern(String inputString) {
 
         // List of patterns
         List<String> patternList = new ArrayList<>();
@@ -34,7 +28,6 @@ public class ReceiveMessage extends Thread {
 
             if (matcher1.matches()) {
                 matchesAnyPattern = true;
-                System.out.println("String matches pattern: " + patternString);
                 String[] res = new String[0];
                 
                 // Check if a match is found
@@ -58,7 +51,7 @@ public class ReceiveMessage extends Thread {
         }
 
         if (!matchesAnyPattern) {
-            System.out.println("String does not match any pattern in the list.");
+            System.out.println("error: string does not match any pattern in the list.");
         }
         return null;
     }
@@ -66,8 +59,9 @@ public class ReceiveMessage extends Thread {
 
 
 
-    /* are we making a function to receive all messages and then making a if case it's a broadcast*/
     public void run() {
+
+
         //this receives messages
         try {DatagramSocket receivingSocket = new DatagramSocket(2000);
             boolean running = true;
@@ -80,7 +74,7 @@ public class ReceiveMessage extends Thread {
 
                 System.out.println(Thread.currentThread().getName() + received);
 
-                String[] res = ExtractNumbersFromPattern(received);
+                String[] res = ExtractInfoFromPattern(received);
 
                 if (res[0].equals("BROADCAST: id: (\\d+) username: (\\S+) ip address: (\\S+)")) {  //si c'est le broadcast de début
 
@@ -90,15 +84,9 @@ public class ReceiveMessage extends Thread {
                     String ipAddress = res[3];
 
 
-                    User me = new User(id,username,"","","","",true,InetAddress.getByName(ipAddress.substring(11)));
+                    User userSender = new User(id,username,"","","","",true,InetAddress.getByName(ipAddress.substring(11)));
                     ContactList list = getInstance();
-                    list.addContact(me);
-                    User me2 = list.getContact(id);
-
-                    System.out.println(me2.getId() + " username" + me2.getNickname() + " ipaddress " + me2.getIpAddress());
-
-
-
+                    list.addContact(userSender);
                 }
 
 

@@ -2,8 +2,6 @@ package controller;
 
 /*
 
-contact discovery ph1 sends broadcast to see who is currently connected
-
 contact discovery extends a thread,
 on met tout le monde à déconnectés d'abord
 j'envoie broadcast asking if people are there en udp
