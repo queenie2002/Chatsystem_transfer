@@ -41,13 +41,11 @@ public class SendMessage{
             sendingSocket.setBroadcast(true);
 
             //create message broadcast, on met broadcast au début comme ça on sait que c'est un msg broadcast
-            byte[] buf = new byte[256];
 
 
-            String message = "broadcast: " + user.getId() + " username: " + user.getNickname();
-            for (int i=0; i<message.length(); i++) { /*on écrit un message à envoyer*/
-                buf[i] = (byte) message.charAt(i);
-            }
+            //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
+            String message = "BROADCAST: id: " + user.getId() + " username: " + user.getNickname();
+            byte[] buf = message.getBytes();
 
 
 

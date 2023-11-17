@@ -17,6 +17,7 @@ public class SendMessageTest {
 
         User user1 = new User(1, "Queen", "Y-Quynh", "Nguyen", birthday , "pwd", true);
 
+
         ReceiveMessage r1 = new ReceiveMessage ();
         SendMessage s = new SendMessage ();
         r1.start();
