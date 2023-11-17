@@ -5,12 +5,13 @@ contact discovery ph2 receives broadcast and responds accordingly
 si recoit message broadcast, renvoie un message disant qu’il est connecté du coup et update le fait que la personne qui a envoyé le message est connecté
  */
 
-import model.*;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+
+import model.*;
+import static model.ContactList.getInstance;
 
 
 public class ReceiveMessage extends Thread {
@@ -86,6 +87,13 @@ public class ReceiveMessage extends Thread {
                     String username = res[2];
                     String ipAddress = res[3];
 
+
+                    User me = new User(1,"myPseudo","myFirstName","myLastName","myBday","myPword",true);
+                    ContactList list = getInstance();
+                    list.addContact(me);
+                    User me2 = list.getContact(1);
+
+                    System.out.println(Thread.currentThread().getName() + received);
 
 
 
