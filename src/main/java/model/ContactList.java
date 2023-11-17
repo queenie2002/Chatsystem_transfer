@@ -26,11 +26,11 @@ public class ContactList {
 
 
     // Methods
-    public void addContact(User user) {
+    public static void addContact(User user) {
         myContactList.add(user);
     }
 
-    public void removeContact(int idUser) { //on utilise idUser
+    public static void removeContact(int idUser) { //on utilise idUser
         for (User aUser : myContactList) {
             if (aUser.getId() == idUser) {
                 myContactList.remove(aUser);
@@ -38,7 +38,7 @@ public class ContactList {
         }
     }
 
-    public User getContact(int idUser) { //on utilise idUser
+    public static User getContact(int idUser) { //on utilise idUser
         for (User aUser : myContactList) {
             if (aUser.getId() == idUser) {
                 return aUser;
@@ -48,11 +48,11 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
     }
 
-    public ArrayList<User> getContactList() {
+    public static ArrayList<User> getContactList() {
         return myContactList;
     }
 
-    public ArrayList<User> getConnectedContactsList() {
+    public static ArrayList<User> getConnectedContactsList() {
         ArrayList<User> connectedList = new ArrayList<>();
         for (User u : myContactList) {
             if (u.getStatus()) {

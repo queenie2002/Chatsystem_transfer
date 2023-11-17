@@ -5,9 +5,10 @@ contact discovery ph2 receives broadcast and responds accordingly
 si recoit message broadcast, renvoie un message disant qu’il est connecté du coup et update le fait que la personne qui a envoyé le message est connecté
  */
 
+import model.*;
+
 import java.io.*;
 import java.net.*;
-
 
 
 public class ReceiveMessage extends Thread {
@@ -23,7 +24,22 @@ public class ReceiveMessage extends Thread {
                 DatagramPacket inPacket  = new DatagramPacket(buf, buf.length);
                 receivingSocket.receive(inPacket);
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
+
                 System.out.println(Thread.currentThread().getName() + " received: " + received + "<");
+
+
+
+                if ((received.substring(0, Math.min(received.length(), 10))).equals("broadcast ")) {   //IF ITS A BROADCAST
+
+                    //update le fait que la personne qui a envoyé ca est connectée
+                    int id;
+                    User user = ContactList.getContact(id));
+
+
+
+
+                }
+
 
                 if (received.equals("end")) {
                     System.out.println("DONE");
