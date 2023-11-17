@@ -1,6 +1,8 @@
 package model;
 
 import java.time.LocalDate;
+import java.io.*;
+import java.net.*;
 
 public class User{
     //ATTRIBUTES
@@ -32,6 +34,16 @@ public class User{
     public String getPassword (){ return this.password;}
     public Boolean getStatus (){ return this.status;}
 
+    public InetAddress getAddress() {
+        InetAddress localHost = null;
+        try {
+            localHost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Address of local host : "+localHost);
+        return localHost;
+    }
 
     /*public int createIdUser(ArrayList<User> ContactList) {
         return (ContactList.getChatFromIndex(ContactList.size() - 1)).getChatId() + 1 ;

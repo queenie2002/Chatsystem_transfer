@@ -3,12 +3,9 @@ package model;
 /*
 we only have the contact list of our user
 so we only make one in the main?
-
  */
 
-
 import java.util.ArrayList;
-
 
 public class ContactList {
     // Class attribute
