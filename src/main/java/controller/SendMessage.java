@@ -27,7 +27,7 @@ import java.net.*;
 
 
 public class SendMessage{
-    public void sendBroadcast(User user) throws IOException {  /*****pour tester mais sinon User me***/
+    public void sendBroadcast(User user) throws IOException {
 
         //we set the address
         InetAddress senderAddress = InetAddress.getByName("255.255.255.255");
@@ -44,7 +44,7 @@ public class SendMessage{
             byte[] buf = new byte[256];
 
 
-            String message = "broadcast" + user.getId(); //me.getId() ;
+            String message = "broadcast: " + user.getId() + " username: " + user.getNickname();
             for (int i=0; i<message.length(); i++) { /*on écrit un message à envoyer*/
                 buf[i] = (byte) message.charAt(i);
             }
@@ -62,13 +62,7 @@ public class SendMessage{
     }
 
 
-    /*
-    public static void main(String[] args) throws IOException {
-        ReceiveMessage r1 = new ReceiveMessage ();
-        SendMessage s = new SendMessage ();
-        r1.start();
-        s.sendBroadcast(123);
-    }
-    */
+
+
 
 }

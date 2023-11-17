@@ -1,10 +1,6 @@
 package model;
 
-import model.test.ChatHistory;
-import model.test.ChatTest;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class User{
     //ATTRIBUTES
