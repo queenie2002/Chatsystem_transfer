@@ -21,6 +21,7 @@ public class App {
 
 
         ReceiveMessage r = new ReceiveMessage ();
+        r.start();
         SendMessage s = new SendMessage ();
         Beginning beginning = new Beginning(user1, r, s);
 

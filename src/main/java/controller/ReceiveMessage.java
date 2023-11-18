@@ -15,8 +15,8 @@ public class ReceiveMessage extends Thread {
 
         // List of patterns
         List<String> patternList = new ArrayList<>();
-        patternList.add("BROADCAST: id: (\\d+) nickname: (\\S+) ip address: (\\S+)");  //broadcast at beginning, unique pseudo
-        patternList.add("DISCONNECT: id: (\\d+)");  //disconnecting
+        patternList.add("BROADCAST: id: (\\S+) nickname: (\\S+) ip address: (\\S+)");  //broadcast at beginning, unique pseudo
+        patternList.add("DISCONNECT: id: (\\S+)");  //disconnecting
         patternList.add("NICKNAME EXISTS");  //nickname exists
 
 
@@ -33,7 +33,7 @@ public class ReceiveMessage extends Thread {
                 
                 // Check if a match is found
                 if (matcher2.find()) {
-                    if (patternString.equals("BROADCAST: id: (\\d+) nickname: (\\S+) ip address: (\\S+)")) {
+                    if (patternString.equals("BROADCAST: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
                         // Extract the matched numbers
                         String id = matcher2.group(1);
                         String nickname = matcher2.group(2);
@@ -44,7 +44,7 @@ public class ReceiveMessage extends Thread {
                         res[1] = id;
                         res[2] = nickname;
                         res[3] = ipAddress;
-                    } else if (patternString.equals("DISCONNECT: id: (\\d+)")){
+                    } else if (patternString.equals("DISCONNECT: id: (\\S+)")){
                         // Extract the matched numbers
                         String id = matcher2.group(1);
 
@@ -93,7 +93,7 @@ public class ReceiveMessage extends Thread {
 
                 //si c'est le broadcast du début, adds un contact with ip and nickname and updates his status to connected
                 //have to deal with unique pseudo here
-                if (res[0].equals("BROADCAST: id: (\\d+) nickname: (\\S+) ip address: (\\S+)")) {
+                if (res[0].equals("BROADCAST: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
                     ContactList instance = getInstance();
 
                     String id = res[1];
@@ -116,13 +116,15 @@ public class ReceiveMessage extends Thread {
                         else {//we add them to our list
                             User userSender = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
                             instance.addContact(userSender);
+                            User userTest = instance.getContact(userSender.getId());
+                            instance.printContact(userTest);
                         }
                     }
                 }
 
                 //si c'est message disconnect, updates user to disconnected
 
-                if (res[0].equals("DISCONNECT: id: (\\d+)")) {
+                if (res[0].equals("DISCONNECT: id: (\\S+)")) {
 
                     String id = res[1];
 

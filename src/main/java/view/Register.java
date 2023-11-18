@@ -95,6 +95,7 @@ public class Register extends JFrame{
         me.setId("id"+username);
 
         s.sendBroadcastBeginning(me);
+
     }
     /*
         // Tests : prints the information to the console
