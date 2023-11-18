@@ -25,9 +25,8 @@ public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
     public Beginning(User me, ReceiveMessage r, SendMessage s) {
-        super("Welcome To The ChatSystem");
 
-        JFrame frame = new JFrame("Frame");
+        JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
