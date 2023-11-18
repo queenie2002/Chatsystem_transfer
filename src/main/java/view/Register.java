@@ -1,10 +1,13 @@
 package view;
+import controller.ReceiveMessage;
+import controller.SendMessage;
 import model.User;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 /*Reminders on swing
 * JLabel -> display area for text/images
@@ -28,7 +31,7 @@ public class Register extends JFrame{
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(User me) {
+    public Register(User me, SendMessage s, ReceiveMessage r) {
         super("User Registration");
 
         // Create components
@@ -80,10 +83,14 @@ public class Register extends JFrame{
         char[] password = this.password.getPassword();
 
         me.setFirstName(firstName);
-        //create user id
+        me.setLastName(lastName);
+        me.setNickname(username);
+        me.setBirthday(birthday);
+        me.setPassword(Arrays.toString(password));
 
 
-        /*
+    }
+    /*
         // Tests : prints the information to the console
         System.out.println("User Registered:");
         System.out.println("First Name: " + firstName);
@@ -92,17 +99,4 @@ public class Register extends JFrame{
         System.out.println("Birthday: " + birthday);
         System.out.println("Password: " + new String(password));
         */
-    }
-
-    /*
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Register();
-            }
-        });
-
-    }
-    */
 }
