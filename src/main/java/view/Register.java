@@ -109,7 +109,7 @@ public class Register extends JFrame{
 
         try {
             // Sleep for 3 seconds (3000 milliseconds)
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             // Handle the exception (if needed)
             e.printStackTrace();
