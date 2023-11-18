@@ -134,7 +134,7 @@ public class ReceiveMessage extends Thread {
 
                 if (res[0].equals("NICKNAME EXISTS")) {
                     System.out.println("nickname exists --------------");
-
+                    User.uniqueNickname = 1;
                     //HAVE TO CHANGE NICKNAME
                 }
 
