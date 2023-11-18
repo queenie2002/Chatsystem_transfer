@@ -11,9 +11,9 @@ public class SendMessageTest {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        User user1 = new User(1, "test1", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
-        User user2 = new User(2, "test2", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
-        User user3 = new User(3, "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user1 = new User("idtest1", "test1", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user2 = new User("idtest1", "test2", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user3 = new User("idtest3", "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
 
 
         ReceiveMessage r1 = new ReceiveMessage ();
