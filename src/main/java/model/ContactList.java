@@ -45,6 +45,17 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
     }
 
+    public User getContactWithNickname(String nickname) { //on utilise idUser
+        for (User aUser : myContactList) {
+            if (Objects.equals(aUser.getNickname(), nickname)) {
+                return aUser;
+            }
+        }
+        System.out.println("couldn't find the user with id: " + nickname);
+        return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
+    }
+
+
     public void changeContact(User user) {
         int index=-1;
         for (User aUser : myContactList) {

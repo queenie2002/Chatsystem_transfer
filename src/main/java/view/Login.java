@@ -2,6 +2,7 @@ package view;
 
 import controller.ReceiveMessage;
 import controller.SendMessage;
+import model.ContactList;
 import model.User;
 
 import java.awt.*;
@@ -12,8 +13,8 @@ import java.util.Objects;
 
 public class Login {
 
-    private JTextField jtField;
-    private JPasswordField jpasswordField;
+    private JTextField jtField = new JTextField();
+    private JPasswordField jpasswordField = new JPasswordField();
 
     public  Login(User me, ReceiveMessage r, SendMessage s) {
 
@@ -30,19 +31,30 @@ public class Login {
                 String nicknameInput = getNickname();
                 String passwordInput = getPassword();
 
-                if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
-                    //lead to other tab
+
+                //have to check something else
+                ContactList instance = ContactList.getInstance();
+                if (instance.existsContactWithNickname(nicknameInput)) {
+                    User me = instance.getContactWithNickname(nicknameInput);
+
+                    System.out.println("nickname: " + me.getNickname());
+                    System.out.println("nickname: " + me.getPassword());
+
+                    if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
+                        HomeTab hometab = new HomeTab(me, r, s);
+                        frame.dispose();
+                    }
+                    else {
+                        //HANDLE THIS
+                        System.out.println("wrong password and login");
+                    }
 
 
-                    frame.dispose();
+
                 }
                 else {
-
-                    //HANDLE THIS
-                    System.out.println("wrong password and login");
-
+                    System.out.println("error: there doesn't exist someone with that nickname");
                 }
-
             }
         });
 
@@ -53,7 +65,7 @@ public class Login {
         frame.getContentPane().add(emptyLabel, BorderLayout.PAGE_START);
 
         JPanel p = new JPanel(new GridLayout(1, 2));
-        p.add(new JLabel("ID user"));
+        p.add(new JLabel("Nickname"));
         p.add(jtField);
         p.add(new JLabel("Password"));
         p.add(jpasswordField);
