@@ -31,7 +31,7 @@ public class Register extends JFrame{
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(User me, SendMessage s, ReceiveMessage r) {
+    public Register(User me, ReceiveMessage r, SendMessage s) {
         super("User Registration");
 
         // Create components
@@ -45,7 +45,7 @@ public class Register extends JFrame{
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registerUser(me); //when the button is clicked it calls the registerUser method
+                registerUser(me,r,s); //when the button is clicked it calls the registerUser method
             }
         });
 
@@ -75,7 +75,7 @@ public class Register extends JFrame{
         setVisible(true);
     }
 
-    private void registerUser(User me) {
+    private void registerUser(User me,ReceiveMessage r, SendMessage s) {
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
         String username = this.username.getText();
