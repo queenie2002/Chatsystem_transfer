@@ -12,14 +12,10 @@ import java.util.Objects;
 
 public class Login {
 
-    private JTextField[] jtFields = new JTextField[2];
-
+    private JTextField jtField;
+    private JPasswordField jpasswordField;
 
     public  Login(User me, ReceiveMessage r, SendMessage s) {
-
-        jtFields[0] = new JTextField();
-        jtFields[1] = new JTextField();
-
 
         // Create and set up the window
         JFrame frame = new JFrame("Login");
@@ -58,9 +54,9 @@ public class Login {
 
         JPanel p = new JPanel(new GridLayout(1, 2));
         p.add(new JLabel("ID user"));
-        p.add(jtFields[0]);
+        p.add(jtField);
         p.add(new JLabel("Password"));
-        p.add(jtFields[1]);
+        p.add(jpasswordField);
 
         p.add(button_login);
         frame.add(p);
@@ -71,9 +67,9 @@ public class Login {
         frame.setVisible(true);
     }
 
-    public String getNickname() { return this.jtFields[0].getText();}
+    public String getNickname() { return this.jtField.getText();}
 
     public String getPassword() {
-        return this.jtFields[1].getText();
+        return this.jpasswordField.getText();
     }
 }
