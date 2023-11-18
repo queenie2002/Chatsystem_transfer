@@ -13,8 +13,8 @@ public class AppQueen {
 
     public static void main(String[] args) throws IOException {
 
-        User me = new User("", "", "", "", "" , "", false, InetAddress.getByName("0.0.0.0"));
-        User me2 = new User("", "", "", "", "" , "", false, InetAddress.getByName("0.0.0.0"));
+        User me = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
+        User me2 = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
 
         ReceiveMessage r = new ReceiveMessage ();
         r.start();

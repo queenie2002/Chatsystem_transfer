@@ -33,7 +33,10 @@ public class Register extends JFrame{
 
     //constructor: sets up the basic properties of the window like the title
     public Register(User me, ReceiveMessage r, SendMessage s) {
-        super("User Registration");
+
+        // Create and set up the window
+        JFrame frame = new JFrame("User Registration");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create components
         firstName = new JTextField(20);
@@ -48,6 +51,13 @@ public class Register extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 try {
                     registerUser(me,r,s); //when the button is clicked it calls the registerUser method
+
+                    if (User.uniqueNickname==2){
+                        HomeTab hometab = new HomeTab(me, r, s);
+                        frame.dispose();
+
+                    }
+
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -70,60 +80,60 @@ public class Register extends JFrame{
         panel.add(registerButton);
 
         // Set up the frame
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exits application when the JFrame is closed
-        setSize(400, 300);
-        setLocationRelativeTo(null); //center the JFrame on the screen
-        setLayout(new BorderLayout());
-        add(panel, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exits application when the JFrame is closed
+        frame.setSize(400, 300);
+        frame.setLocationRelativeTo(null); //center the JFrame on the screen
+        frame.setLayout(new BorderLayout());
+        frame.add(panel, BorderLayout.CENTER);
 
         // Display the frame
-        setVisible(true);
+        frame.setVisible(true);
     }
 
     private void registerUser(User me,ReceiveMessage r, SendMessage s) throws IOException {
 
-        while (!(User.uniqueNickname==2)){
+        String firstName = this.firstName.getText();
+        String lastName = this.lastName.getText();
+        String username = this.username.getText();
+        String birthday = this.birthday.getText();
+        char[] password = this.password.getPassword();
 
-            String firstName = this.firstName.getText();
-            String lastName = this.lastName.getText();
-            String username = this.username.getText();
-            String birthday = this.birthday.getText();
-            char[] password = this.password.getPassword();
+        me.setFirstName(firstName);
+        me.setLastName(lastName);
+        me.setNickname(username);
+        me.setBirthday(birthday);
+        me.setPassword(Arrays.toString(password));
+        me.setId("id"+username);
 
-            me.setFirstName(firstName);
-            me.setLastName(lastName);
-            me.setNickname(username);
-            me.setBirthday(birthday);
-            me.setPassword(Arrays.toString(password));
-            me.setId("id"+username);
+        s.sendBroadcastBeginning(me);
 
-            s.sendBroadcastBeginning(me);
-
-            try {
-                // Sleep for 3 seconds (3000 milliseconds)
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                // Handle the exception (if needed)
-                e.printStackTrace();
-            }
-
-            if(User.uniqueNickname==1){//nickname is not unique
-                // Nickname is not unique, open a new frame with a message
-                JFrame errorMessageFrame = new JFrame("Error");
-                errorMessageFrame.setSize(300, 100);
-                errorMessageFrame.setLocationRelativeTo(null);
-                errorMessageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-                JLabel errorMessageLabel = new JLabel("This nickname is already taken. Please select a different one.");
-                errorMessageLabel.setHorizontalAlignment(JLabel.CENTER);
-
-                errorMessageFrame.add(errorMessageLabel);
-                errorMessageFrame.setVisible(true);
-            }
-            else if(User.uniqueNickname==0){
-                User.uniqueNickname=1;
-            }
+        try {
+            // Sleep for 3 seconds (3000 milliseconds)
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            // Handle the exception (if needed)
+            e.printStackTrace();
         }
+
+        if(User.uniqueNickname==1){//nickname is not unique
+            // Nickname is not unique, open a new frame with a message
+            JFrame errorMessageFrame = new JFrame("Error");
+            errorMessageFrame.setSize(300, 100);
+            errorMessageFrame.setLocationRelativeTo(null);
+            errorMessageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JLabel errorMessageLabel = new JLabel("This nickname is already taken. Please select a different one.");
+            errorMessageLabel.setHorizontalAlignment(JLabel.CENTER);
+
+            errorMessageFrame.add(errorMessageLabel);
+            errorMessageFrame.setVisible(true);
+        }
+        else if(User.uniqueNickname==0){
+            User.uniqueNickname=2;
+        }
+
+
+
     }
     /*
         // Tests : prints the information to the console
