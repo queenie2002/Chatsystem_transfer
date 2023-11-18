@@ -81,21 +81,49 @@ public class Register extends JFrame{
     }
 
     private void registerUser(User me,ReceiveMessage r, SendMessage s) throws IOException {
-        String firstName = this.firstName.getText();
-        String lastName = this.lastName.getText();
-        String username = this.username.getText();
-        String birthday = this.birthday.getText();
-        char[] password = this.password.getPassword();
 
-        me.setFirstName(firstName);
-        me.setLastName(lastName);
-        me.setNickname(username);
-        me.setBirthday(birthday);
-        me.setPassword(Arrays.toString(password));
-        me.setId("id"+username);
+        while (!(User.uniqueNickname==2)){
 
-        s.sendBroadcastBeginning(me);
+            String firstName = this.firstName.getText();
+            String lastName = this.lastName.getText();
+            String username = this.username.getText();
+            String birthday = this.birthday.getText();
+            char[] password = this.password.getPassword();
 
+            me.setFirstName(firstName);
+            me.setLastName(lastName);
+            me.setNickname(username);
+            me.setBirthday(birthday);
+            me.setPassword(Arrays.toString(password));
+            me.setId("id"+username);
+
+            s.sendBroadcastBeginning(me);
+
+            try {
+                // Sleep for 3 seconds (3000 milliseconds)
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                // Handle the exception (if needed)
+                e.printStackTrace();
+            }
+
+            if(User.uniqueNickname==1){//nickname is not unique
+                // Nickname is not unique, open a new frame with a message
+                JFrame errorMessageFrame = new JFrame("Error");
+                errorMessageFrame.setSize(300, 100);
+                errorMessageFrame.setLocationRelativeTo(null);
+                errorMessageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                JLabel errorMessageLabel = new JLabel("This nickname is already taken. Please select a different one.");
+                errorMessageLabel.setHorizontalAlignment(JLabel.CENTER);
+
+                errorMessageFrame.add(errorMessageLabel);
+                errorMessageFrame.setVisible(true);
+            }
+            else if(User.uniqueNickname==0){
+                User.uniqueNickname=1;
+            }
+        }
     }
     /*
         // Tests : prints the information to the console
