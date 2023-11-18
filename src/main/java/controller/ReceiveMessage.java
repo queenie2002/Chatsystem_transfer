@@ -96,7 +96,7 @@ public class ReceiveMessage extends Thread {
                 if (res[0].equals("BROADCAST: id: (\\d+) nickname: (\\S+) ip address: (\\S+)")) {
                     ContactList instance = getInstance();
 
-                    int id = Integer.parseInt(res[1]);
+                    String id = res[1];
                     String nickname = res[2];
                     String ipAddress = res[3];
 
@@ -124,7 +124,7 @@ public class ReceiveMessage extends Thread {
 
                 if (res[0].equals("DISCONNECT: id: (\\d+)")) {
 
-                    int id = Integer.parseInt(res[1]);
+                    String id = res[1];
 
                     ContactList instance = getInstance();
                     User userSender = instance.getContact(id);

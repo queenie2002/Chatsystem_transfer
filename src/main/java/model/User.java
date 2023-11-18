@@ -5,7 +5,7 @@ import java.net.*;
 
 public class User{
     //ATTRIBUTES
-    private int idUser; 
+    private String idUser;
     private String nickname;
     private String firstName;
     private String lastName;
@@ -16,7 +16,7 @@ public class User{
     private InetAddress ipAddress;
     
     //CONSTRUCTOR
-    public User (int idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress){
+    public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress){
         this.idUser = idUser;
         this.nickname = nickname;
         this.firstName = firstName;
@@ -28,7 +28,7 @@ public class User{
     } 
 
     //METHODS
-    public int getId() { return this.idUser; }
+    public String getId() { return this.idUser; }
     public String getNickname (){ return this.nickname;}
     public String getFirstName (){ return this.firstName;}
     public String getLastName(){ return this.lastName;}
@@ -38,7 +38,7 @@ public class User{
 
     public InetAddress getIpAddress() { return this.ipAddress; }
 
-    public void setId(int idUser) { this.idUser = idUser; }
+    public void setId(String idUser) { this.idUser = idUser; }
     public void setNickname (String nickname) { this.nickname=nickname;}
     public void setFirstName (String firstName) { this.firstName=firstName;}
     public void setLastName(String lastName) { this.lastName=lastName;}
@@ -47,9 +47,5 @@ public class User{
     public void setStatus (Boolean status) { this.status=status;}
 
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
-
-    /*public int createIdUser(ArrayList<User> ContactList) {
-        return (ContactList.getChatFromIndex(ContactList.size() - 1)).getChatId() + 1 ;
-    }*/
 
 } 

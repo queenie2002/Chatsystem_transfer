@@ -14,7 +14,7 @@ public class App {
     public static void main(String[] args) throws IOException {
 
 
-        User me;
+        User me = null;
         Register register = new Register(me);
 
 

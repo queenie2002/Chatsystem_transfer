@@ -6,6 +6,7 @@ so we only make one in the main?
  */
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ContactList {
     // Class attribute
@@ -26,17 +27,17 @@ public class ContactList {
         myContactList.add(user);
     }
 
-    public void removeContact(int idUser) { //on utilise idUser
+    public void removeContact(String idUser) { //on utilise idUser
         for (User aUser : myContactList) {
-            if (aUser.getId() == idUser) {
+            if (Objects.equals(aUser.getId(), idUser)) {
                 myContactList.remove(aUser);
             }
         }
     }
 
-    public User getContact(int idUser) { //on utilise idUser
+    public User getContact(String idUser) { //on utilise idUser
         for (User aUser : myContactList) {
-            if (aUser.getId() == idUser) {
+            if (Objects.equals(aUser.getId(), idUser)) {
                 return aUser;
             }
         }
@@ -47,7 +48,7 @@ public class ContactList {
     public void changeContact(User user) {
         int index=-1;
         for (User aUser : myContactList) {
-            if (aUser.getId() == user.getId()) {
+            if (Objects.equals(aUser.getId(), user.getId())) {
                 index = myContactList.indexOf(aUser);
             }
         }
@@ -60,9 +61,9 @@ public class ContactList {
         }
     }
 
-    public Boolean existsContact(int idUser) {
+    public Boolean existsContact(String idUser) {
         for (User aUser : myContactList) {
-            if (aUser.getId() == idUser) {
+            if (Objects.equals(aUser.getId(), idUser)) {
                 return true;
             }
         }
@@ -71,7 +72,7 @@ public class ContactList {
 
     public Boolean existsContactWithNickname(String nickname) {
         for (User aUser : myContactList) {
-            if (aUser.getNickname() == nickname) {
+            if (Objects.equals(aUser.getNickname(), nickname)) {
                 return true;
             }
         }
@@ -82,7 +83,7 @@ public class ContactList {
     public void printContact(User user) {
         Boolean found = false;
         for (User aUser : myContactList) {
-            if (aUser.getId() == user.getId()) {
+            if (Objects.equals(aUser.getId(), user.getId())) {
                 System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+" password: "+user.getPassword()+" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
                 found = true;
             }
