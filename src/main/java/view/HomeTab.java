@@ -10,19 +10,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
 
-public class Login {
+public class HomeTab {
 
     private JTextField[] jtFields = new JTextField[2];
 
 
-    public  Login(User me, ReceiveMessage r, SendMessage s) {
-
+    public  HomeTab(User me, ReceiveMessage r, SendMessage s) {
         jtFields[0] = new JTextField();
         jtFields[1] = new JTextField();
 
 
         // Create and set up the window
-        JFrame frame = new JFrame("Login");
+        JFrame frame = new JFrame("Home");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
