@@ -108,6 +108,25 @@ public class SendMessage{
         }
     }
 
+    public void sendNicknameUnique(User user) throws IOException {
+
+        // Set the address to the user's IP address
+        InetAddress senderAddress = InetAddress.getByName(user.getIpAddress().getHostAddress());
+        int senderPort = 2000;
+
+        try (DatagramSocket sendingSocket = new DatagramSocket(1200)) {
+
+            // Create the unique nickname message
+            String message = "NICKNAME UNIQUE";
+            byte[] buf = message.getBytes();
+
+            // Create and send the DatagramPacket
+            DatagramPacket outPacket = new DatagramPacket(buf, buf.length, senderAddress, senderPort);
+            sendingSocket.send(outPacket);
+
+            System.out.println("Nickname Unique message sent.");
+        }
+    }
 
 
 

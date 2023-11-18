@@ -118,7 +118,7 @@ public class Register extends JFrame{
         if(User.uniqueNickname==1){//nickname is not unique
             // Nickname is not unique, open a new frame with a message
             JFrame errorMessageFrame = new JFrame("Error");
-            errorMessageFrame.setSize(300, 100);
+            errorMessageFrame.setSize(800, 200);
             errorMessageFrame.setLocationRelativeTo(null);
             errorMessageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
