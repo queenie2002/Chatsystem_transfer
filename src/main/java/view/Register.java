@@ -23,7 +23,7 @@ import java.util.Arrays;
 when register button is clicked, open new window
 * */
 
-public class Register extends JFrame{
+public class Register {
 
     //JTextField used for text input
     private JTextField firstName, lastName, username, birthday;
@@ -80,8 +80,7 @@ public class Register extends JFrame{
         panel.add(registerButton);
 
         // Set up the frame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exits application when the JFrame is closed
-        frame.setSize(400, 300);
+        frame.setSize(600, 250);
         frame.setLocationRelativeTo(null); //center the JFrame on the screen
         frame.setLayout(new BorderLayout());
         frame.add(panel, BorderLayout.CENTER);

@@ -8,12 +8,10 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 
 public class HomeTab {
-
-    private JTextField[] jtFields = new JTextField[2];
-
 
     public HomeTab(User me, ReceiveMessage r, SendMessage s) {
 
@@ -27,7 +25,7 @@ public class HomeTab {
         button_startChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //SEND SOMEWHERE ELSE
+                //------------------------------------------------------SEND SOMEWHERE ELSE
                 frame.dispose();
             }
         });
@@ -36,7 +34,7 @@ public class HomeTab {
         button_seeHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //SEND SOMEWHERE ELSE
+                //-------------------------------------------------------SEND SOMEWHERE ELSE
                 frame.dispose();
             }
         });
@@ -46,9 +44,9 @@ public class HomeTab {
         p.add(button_startChat);
         p.add(button_seeHistory);
         frame.add(p);
+        frame.setLocationRelativeTo(null); //center the JFrame on the screen
+        frame.setSize(600, 100);
 
-        // Make the window's dimension fit its content
-        frame.pack();
         // Display the window.
         frame.setVisible(true);
     }

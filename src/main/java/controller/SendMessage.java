@@ -3,12 +3,12 @@ package controller;
 /*
 
 contact discovery extends a thread,
-on met tout le monde à déconnectés d'abord
+on met tout le monde à déconnectés d'abord  ---------------------A FAIRE
 j'envoie broadcast asking if people are there en udp
 je reçois messages:
 if doesn't exist: crée un user for each one
 if exists: update to connected
-au bout de 5s, on arrete l'autre thread
+au bout de 5s, on arrete l'autre thread----------------FAIT?
 
 donc faut lancer l'autre thread à partir de send broadcast
 
@@ -25,6 +25,8 @@ import java.net.*;
 
 
 public class SendMessage{
+
+    //we're sending a message to everyone asking if i can use a certain nickname
     public void sendBroadcastBeginning(User user) throws IOException {
 
         //we set the address
@@ -42,10 +44,8 @@ public class SendMessage{
 
 
             //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
-            String message = "BROADCAST: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress();
+            String message = "POTENTIAL NICKNAME: nickname: " + user.getNickname() + " ip address: " + user.getIpAddress();
             byte[] buf = message.getBytes();
-
-
 
            /*the message I send, says who I am and carries info of where I am so they can send it back  */
            //le message est en byte du coup, à convertir
@@ -75,7 +75,6 @@ public class SendMessage{
             //HAVE TO BE CAREFUL QUE PAS PLUS LONG QUE 256 BYTES
             String message = "DISCONNECT: id: " + user.getId();
             byte[] buf = message.getBytes();
-
 
 
             /*the message I send, says who I am and carries info of where I am so they can send it back  */
@@ -127,7 +126,6 @@ public class SendMessage{
             System.out.println("Nickname Unique message sent.");
         }
     }
-
 
 
 }

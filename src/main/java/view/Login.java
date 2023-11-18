@@ -36,22 +36,17 @@ public class Login {
                 if (instance.existsContactWithNickname(nicknameInput)) {
                     User me = instance.getContactWithNickname(nicknameInput);
 
-                    System.out.println("nickname: " + me.getNickname());
-                    System.out.println("password: " + me.getPassword());
-
                     if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
                         HomeTab hometab = new HomeTab(me, r, s);
                         frame.dispose();
                     }
                     else {
-                        //HANDLE THIS
+                        //----------------------------POP UP FRAME THAT SAYS WRONG PASSWORD AND LOGIN
                         System.out.println("error: wrong password and login");
                     }
-
-
-
                 }
                 else {
+                    //----------------------------POP UP FRAME THAT SAYS NICKNAME DOESNT EXIST
                     System.out.println("error: there doesn't exist someone with that nickname");
                 }
             }
@@ -72,8 +67,10 @@ public class Login {
         p.add(button_login);
         frame.add(p);
 
-        // Make the window's dimension fit its content
+        //to make the size of the frame the size of its content
         frame.pack();
+        frame.setLocationRelativeTo(null); //center the JFrame on the screen
+
         // Display the window.
         frame.setVisible(true);
     }

@@ -10,12 +10,14 @@ import static model.ContactList.getInstance;
 
 public class ReceiveMessage extends Thread {
 
+    public static boolean running = true; //boolean to keep receive turning
+
 
     public String[] ExtractInfoFromPattern(String inputString) {
 
         // List of patterns
         List<String> patternList = new ArrayList<>();
-        patternList.add("BROADCAST: id: (\\S+) nickname: (\\S+) ip address: (\\S+)");  //broadcast at beginning, unique pseudo
+        patternList.add("POTENTIAL NICKNAME: nickname: (\\S+) ip address: (\\S+)");  //broadcast at beginning, unique pseudo
         patternList.add("DISCONNECT: id: (\\S+)");  //disconnecting
         patternList.add("NICKNAME EXISTS");  //nickname exists
 
@@ -33,17 +35,14 @@ public class ReceiveMessage extends Thread {
                 
                 // Check if a match is found
                 if (matcher2.find()) {
-                    if (patternString.equals("BROADCAST: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
-                        // Extract the matched numbers
-                        String id = matcher2.group(1);
-                        String nickname = matcher2.group(2);
-                        String ipAddress = matcher2.group(3);
+                    if (patternString.equals("POTENTIAL NICKNAME: nickname: (\\S+) ip address: (\\S+)")) {
+                        String nickname = matcher2.group(1);
+                        String ipAddress = matcher2.group(2);
 
-                        res = new String[4];
+                        res = new String[3];
                         res[0] = patternString;
-                        res[1] = id;
-                        res[2] = nickname;
-                        res[3] = ipAddress;
+                        res[1] =  nickname;
+                        res[2] = ipAddress;
                     } else if (patternString.equals("DISCONNECT: id: (\\S+)")){
                         // Extract the matched numbers
                         String id = matcher2.group(1);
@@ -72,13 +71,10 @@ public class ReceiveMessage extends Thread {
     }
 
 
-
-
     public void run() {
 
         //this receives messages
         try {DatagramSocket receivingSocket = new DatagramSocket(2000);
-            boolean running = true;
             byte[] buf = new byte[256];
 
             while (running) {
@@ -86,44 +82,36 @@ public class ReceiveMessage extends Thread {
                 receivingSocket.receive(inPacket);
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
 
-                System.out.println(Thread.currentThread().getName() + received);
-
                 //extracts info from packet
                 String[] res = ExtractInfoFromPattern(received);
 
                 //si c'est le broadcast du début, adds un contact with ip and nickname and updates his status to connected
                 //have to deal with unique pseudo here
-                if (res[0].equals("BROADCAST: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
+                if (res[0].equals("POTENTIAL NICKNAME: nickname: (\\S+) ip address: (\\S+)")) {
                     ContactList instance = getInstance();
 
-                    String id = res[1];
-                    String nickname = res[2];
-                    String ipAddress = res[3];
+                    String nickname = res[1];
+                    String ipAddress = res[2];
 
-                    if (instance.existsContact(id)) { //if we already know that person, we put their status to true
-                        User userSender = instance.getContact(id);
+                    if (instance.existsContactWithNickname(nickname)) { //if we already know that person, we update their status to connected
+                        User userSender = instance.getContactWithNickname(nickname);
                         userSender.setStatus(true);
                         instance.changeContact(userSender);
                     }
-                    else {//have to check if their nickname is unique, if yes we create a new user else we have to send msg
-                        if (instance.existsContactWithNickname(nickname)) {
-                            //have to send a message saying there already exists someone --------------------------------------------HERE HOW DO I DO
-                            SendMessage s = new SendMessage();
-                            User userSender = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
-                            s.sendNicknameExists(userSender);
-
+                    else {//have to check if their nickname is unique
+                        if (instance.existsContactWithNickname(nickname)) {//have to send a message saying there already exists someone
+                            SendMessage s1 = new SendMessage();
+                            User userSender = new User("id"+nickname, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
+                            s1.sendNicknameExists(userSender);
                         }
-                        else {//we add them to our list
-                            User userSender = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
+                        else {//we add them to our list (mais en vrai non) ---------------------------------------------A MODIFIER
+                            User userSender = new User("id"+nickname, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
                             instance.addContact(userSender);
-                            User userTest = instance.getContact(userSender.getId());
-                            instance.printContact(userTest);
                         }
                     }
                 }
 
                 //si c'est message disconnect, updates user to disconnected
-
                 if (res[0].equals("DISCONNECT: id: (\\S+)")) {
 
                     String id = res[1];
@@ -135,17 +123,13 @@ public class ReceiveMessage extends Thread {
                 }
 
                 if (res[0].equals("NICKNAME EXISTS")) {
-                    System.out.println("nickname exists --------------");
-                    User.uniqueNickname = 1; //a handle dans register
+                    System.out.println("nickname exists already");
+                    User.uniqueNickname = 1; //handled dans register
                 }
 
-
-                //PAS LA MAIS CEST ICI QUON POURRA DISCONNECT I GUESS
-                if (received.equals("end")) {
-                    System.out.println("DONE");
-                    running = false;
-                }
-
+            }
+            if (!running) {  //-------------------------------why is it always true ? dans beginning on le change
+                System.out.println("closing the app");
             }
             receivingSocket.close();
         } catch (IOException e) {

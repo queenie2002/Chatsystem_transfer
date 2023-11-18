@@ -52,11 +52,34 @@ public class Beginning extends JFrame {
         panel.add(registerButton);
         panel.add(loginButton);
 
+
+
+
+
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ReceiveMessage.running = false;
+                frame.dispose();
+                System.out.println("am supposed to close app after--------------");
+            }
+        });
+
+        // Create layout
+        JPanel panel1 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+        panel1.add(new JLabel());
+        panel1.add(new JLabel());
+        panel1.add(closeButton);
+
+
         // Set up the frame
-        frame.setSize(400, 300);
+        frame.setSize(600, 100);
         frame.setLocationRelativeTo(null); //center the JFrame on the screen
         frame.setLayout(new BorderLayout());
         frame.add(panel, BorderLayout.CENTER);
+        frame.add(panel1, BorderLayout.PAGE_END);
 
         // Display the frame
         frame.setVisible(true);

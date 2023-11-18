@@ -9,9 +9,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ContactList {
+
+
+
     // Class attribute
     private final static ContactList instance = new ContactList();
     private final ArrayList<User> myContactList;
+
+
+
 
     // Constructor
     ContactList() { //i'm adding a constructor qui est empty
@@ -21,6 +27,9 @@ public class ContactList {
     public static ContactList getInstance() {
         return instance;
     }
+
+
+
 
     // Methods
     public void addContact(User user) {
@@ -54,7 +63,6 @@ public class ContactList {
         System.out.println("couldn't find the user with id: " + nickname);
         return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
     }
-
 
     public void changeContact(User user) {
         int index=-1;
