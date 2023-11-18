@@ -19,8 +19,8 @@ public class ReceiveMessage extends Thread {
         List<String> patternList = new ArrayList<>();
         patternList.add("POTENTIAL NICKNAME: nickname: (\\S+) ip address: (\\S+)");  //broadcast at beginning, unique pseudo
         patternList.add("DISCONNECT: id: (\\S+)");  //disconnecting
+        patternList.add("CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)");  //connecting
         patternList.add("NICKNAME EXISTS");  //nickname exists
-
 
 
         boolean matchesAnyPattern = false;
@@ -50,8 +50,20 @@ public class ReceiveMessage extends Thread {
                         res = new String[2];
                         res[0] = patternString;
                         res[1] = id;
-                    }
-                    else if (patternString.equals("NICKNAME EXISTS")){
+                    } else if (patternString.equals("CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")){
+                        // Extract the matched numbers
+                        String id = matcher2.group(1);
+                        String nickname = matcher2.group(2);
+                        String ipAddress = matcher2.group(3);
+
+
+
+                        res = new String[4];
+                        res[0] = patternString;
+                        res[1] = id;
+                        res[2] = nickname;
+                        res[3] = ipAddress;
+                    } else if (patternString.equals("NICKNAME EXISTS")){
                         // Extract the matched numbers
                         String id = matcher2.group(1);
 
@@ -93,13 +105,13 @@ public class ReceiveMessage extends Thread {
                     String nickname = res[1];
                     String ipAddress = res[2];
 
-                    if (instance.existsContactWithNickname(nickname)) { //if we already know that person, we update their status to connected
+                    if (instance.existsContactWithNickname(nickname)) { //if we already know that person, we update their status to connected and send message saying there already exists someone
                         User userSender = instance.getContactWithNickname(nickname);
                         userSender.setStatus(true);
                         instance.changeContact(userSender);
                     }
                     else {//have to check if their nickname is unique
-                        if (instance.existsContactWithNickname(nickname)) {//have to send a message saying there already exists someone
+                        if (instance.existsContactWithNickname(nickname)) {//have to send a message saying there already exists someone  A MODIFIER ON RENTRE PAS LA CA CEST EN HAUT
                             SendMessage s1 = new SendMessage();
                             User userSender = new User("id"+nickname, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
                             s1.sendNicknameExists(userSender);
@@ -121,6 +133,30 @@ public class ReceiveMessage extends Thread {
                     userSender.setStatus(false);
                     instance.changeContact(userSender);
                 }
+
+                //si c'est message connect, updates user to connected if we already know them and else we create a new user
+                if (res[0].equals("CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
+
+                    String id = res[1];
+                    String nickname = res[2];
+                    String ipAddress = res[3];
+                    ContactList instance = getInstance();
+
+
+                    if (instance.existsContact(id)) { //we already know them so we update status ------------A TESTER  CETTE WHOLE FONCTION
+                        User userSender = instance.getContact(id);
+                        userSender.setStatus(true);
+                        instance.changeContact(userSender);
+
+                    } else { //we add them to our list
+                        User userSender = new User("id"+nickname, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
+                        instance.addContact(userSender);
+
+                    }
+
+                }
+
+
 
                 if (res[0].equals("NICKNAME EXISTS")) {
                     System.out.println("nickname exists already");

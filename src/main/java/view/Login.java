@@ -9,6 +9,8 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Login {
@@ -31,13 +33,34 @@ public class Login {
                 String nicknameInput = getNickname();
                 String passwordInput = getPassword();
 
+
                 //we check if someone with that nickname exists
                 ContactList instance = ContactList.getInstance();
                 if (instance.existsContactWithNickname(nicknameInput)) {
-                    User me = instance.getContactWithNickname(nicknameInput);
 
-                    if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
+                    User databaseUser = instance.getContactWithNickname(nicknameInput);
+
+                    if ((Objects.equals(databaseUser.getNickname(), nicknameInput)) && Objects.equals(databaseUser.getPassword(), passwordInput)) {
+
+
+
+                        me.setFirstName(databaseUser.getFirstName());
+                        me.setLastName(databaseUser.getLastName());
+                        me.setNickname(databaseUser.getNickname());
+                        me.setBirthday(databaseUser.getBirthday());
+                        me.setPassword(databaseUser.getPassword());
+                        me.setId("id"+databaseUser.getNickname());
+                        me.setStatus(true);
+                        me.setIpAddress(databaseUser.getIpAddress());
+
+                        instance.printContact(me);
+
                         HomeTab hometab = new HomeTab(me, r, s);
+                        try {
+                            s.sendConnect(me);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         frame.dispose();
                     }
                     else {

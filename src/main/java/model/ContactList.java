@@ -98,6 +98,17 @@ public class ContactList {
         return false;
     }
 
+    public void deleteContact(String id) {
+        if (existsContact(id)) {
+            User aUser = getContact(id);
+            myContactList.remove(aUser);
+        }
+        else {
+            System.out.println("this contact doesn't exist so couldn't delete it");
+        }
+
+    }
+
 
     public void printContact(User user) {
         Boolean found = false;

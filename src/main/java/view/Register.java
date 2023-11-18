@@ -55,7 +55,6 @@ public class Register {
                     if (User.uniqueNickname==2){
                         HomeTab hometab = new HomeTab(me, r, s);
                         frame.dispose();
-
                     }
 
                 } catch (IOException ex) {
