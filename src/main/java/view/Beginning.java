@@ -43,7 +43,8 @@ public class Beginning extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                Login login = new Login(me, r, s);
+                frame.dispose();
             }
         });
 
