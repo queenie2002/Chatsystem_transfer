@@ -31,14 +31,13 @@ public class Login {
                 String nicknameInput = getNickname();
                 String passwordInput = getPassword();
 
-
-                //have to check something else
+                //we check if someone with that nickname exists
                 ContactList instance = ContactList.getInstance();
                 if (instance.existsContactWithNickname(nicknameInput)) {
                     User me = instance.getContactWithNickname(nicknameInput);
 
                     System.out.println("nickname: " + me.getNickname());
-                    System.out.println("nickname: " + me.getPassword());
+                    System.out.println("password: " + me.getPassword());
 
                     if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
                         HomeTab hometab = new HomeTab(me, r, s);
@@ -46,7 +45,7 @@ public class Login {
                     }
                     else {
                         //HANDLE THIS
-                        System.out.println("wrong password and login");
+                        System.out.println("error: wrong password and login");
                     }
 
 
