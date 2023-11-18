@@ -25,7 +25,7 @@ import java.net.*;
 
 
 public class SendMessage{
-    public void sendBroadcast(User user) throws IOException {
+    public void sendBroadcastBeginning(User user) throws IOException {
 
         //we set the address
         InetAddress senderAddress = InetAddress.getByName("255.255.255.255");

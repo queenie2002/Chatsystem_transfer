@@ -76,7 +76,6 @@ public class ReceiveMessage extends Thread {
 
     public void run() {
 
-
         //this receives messages
         try {DatagramSocket receivingSocket = new DatagramSocket(2000);
             boolean running = true;
@@ -106,7 +105,7 @@ public class ReceiveMessage extends Thread {
                         userSender.setStatus(true);
                         instance.changeContact(userSender);
                     }
-                    else {//we create a new user and have to check if their nickname is unique
+                    else {//have to check if their nickname is unique, if yes we create a new user else we have to send msg
                         if (instance.existsContactWithNickname(nickname)) {
                             //have to send a message saying there already exists someone --------------------------------------------HERE HOW DO I DO
                         }

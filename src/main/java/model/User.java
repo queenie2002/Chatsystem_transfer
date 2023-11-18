@@ -48,17 +48,6 @@ public class User{
 
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
 
-
-    /*public InetAddress getIpAddress() {
-        InetAddress localHost = null;
-        try {
-            localHost = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return localHost;
-    }*/
-
     /*public int createIdUser(ArrayList<User> ContactList) {
         return (ContactList.getChatFromIndex(ContactList.size() - 1)).getChatId() + 1 ;
     }*/

@@ -52,7 +52,7 @@ public class Register extends JFrame{
         panel.add(lastName);
         panel.add(new JLabel("Username:"));
         panel.add(username);
-        panel.add(new JLabel("Birthday:"));
+        panel.add(new JLabel("Birthday: (YYYY-MM-DD)"));
         panel.add(birthday);
         panel.add(new JLabel("Password:"));
         panel.add(password);
@@ -86,6 +86,7 @@ public class Register extends JFrame{
         System.out.println("Password: " + new String(password));
     }
 
+    /*
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -95,4 +96,5 @@ public class Register extends JFrame{
         });
 
     }
+    */
 }

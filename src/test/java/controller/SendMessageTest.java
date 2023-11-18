@@ -19,9 +19,9 @@ public class SendMessageTest {
         ReceiveMessage r1 = new ReceiveMessage ();
         SendMessage s = new SendMessage ();
         r1.start();
-        s.sendBroadcast(user1);
-        s.sendBroadcast(user2);
-        s.sendBroadcast(user3);
+        s.sendBroadcastBeginning(user1);
+        s.sendBroadcastBeginning(user2);
+        s.sendBroadcastBeginning(user3);
 
 
         s.sendDisconnect(user1);
