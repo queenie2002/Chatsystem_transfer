@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Arrays;
 
 /*Reminders on swing
@@ -45,7 +46,11 @@ public class Register extends JFrame{
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registerUser(me,r,s); //when the button is clicked it calls the registerUser method
+                try {
+                    registerUser(me,r,s); //when the button is clicked it calls the registerUser method
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -75,7 +80,7 @@ public class Register extends JFrame{
         setVisible(true);
     }
 
-    private void registerUser(User me,ReceiveMessage r, SendMessage s) {
+    private void registerUser(User me,ReceiveMessage r, SendMessage s) throws IOException {
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
         String username = this.username.getText();
@@ -87,8 +92,9 @@ public class Register extends JFrame{
         me.setNickname(username);
         me.setBirthday(birthday);
         me.setPassword(Arrays.toString(password));
+        me.setId("id"+username);
 
-
+        s.sendBroadcastBeginning(me);
     }
     /*
         // Tests : prints the information to the console
