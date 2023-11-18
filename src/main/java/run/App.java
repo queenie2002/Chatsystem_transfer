@@ -19,10 +19,10 @@ public class App {
 
         User user1 = new User("idsamenickname", "samenickname", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
 
-        Beginning beginning = new Beginning(user1);
+
         ReceiveMessage r = new ReceiveMessage ();
         SendMessage s = new SendMessage ();
-        //Register register = new Register(user1);
+        Beginning beginning = new Beginning(user1, r, s);
 
 
         //User user1 = new User("idsamenickname", "samenickname", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());

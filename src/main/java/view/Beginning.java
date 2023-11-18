@@ -1,5 +1,7 @@
 package view;
 
+import controller.ReceiveMessage;
+import controller.SendMessage;
 import model.User;
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +24,7 @@ when register button is clicked, open new window
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(User me) {
+    public Beginning(User me, ReceiveMessage r, SendMessage s) {
         super("Welcome To The ChatSystem");
 
         JFrame frame = new JFrame("Frame");
@@ -34,7 +36,7 @@ public class Beginning extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Register register = new Register(me);
+                Register register = new Register(me, r, s);
                 frame.dispose();
             }
         });
