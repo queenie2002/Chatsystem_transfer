@@ -1,4 +1,6 @@
 package view;
+import model.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,7 +28,7 @@ public class Register extends JFrame{
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register() {
+    public Register(User me) {
         super("User Registration");
 
         // Create components
@@ -40,7 +42,7 @@ public class Register extends JFrame{
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registerUser(); //when the button is clicked it calls the registerUser method
+                registerUser(me); //when the button is clicked it calls the registerUser method
             }
         });
 
@@ -70,13 +72,18 @@ public class Register extends JFrame{
         setVisible(true);
     }
 
-    private void registerUser() {
+    private void registerUser(User me) {
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
         String username = this.username.getText();
         String birthday = this.birthday.getText();
         char[] password = this.password.getPassword();
 
+        me.setFirstName(firstName);
+        //create user id
+
+
+        /*
         // Tests : prints the information to the console
         System.out.println("User Registered:");
         System.out.println("First Name: " + firstName);
@@ -84,6 +91,7 @@ public class Register extends JFrame{
         System.out.println("Username: " + username);
         System.out.println("Birthday: " + birthday);
         System.out.println("Password: " + new String(password));
+        */
     }
 
     /*

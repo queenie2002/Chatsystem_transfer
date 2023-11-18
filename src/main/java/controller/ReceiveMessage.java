@@ -108,6 +108,10 @@ public class ReceiveMessage extends Thread {
                     else {//have to check if their nickname is unique, if yes we create a new user else we have to send msg
                         if (instance.existsContactWithNickname(nickname)) {
                             //have to send a message saying there already exists someone --------------------------------------------HERE HOW DO I DO
+                            SendMessage s = new SendMessage();
+                            User userSender = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
+                            s.sendNicknameExists(userSender);
+
                         }
                         else {//we add them to our list
                             User userSender = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress.substring(11)));
@@ -129,6 +133,8 @@ public class ReceiveMessage extends Thread {
                 }
 
                 if (res[0].equals("NICKNAME EXISTS")) {
+                    System.out.println("nickname exists --------------");
+
                     //HAVE TO CHANGE NICKNAME
                 }
 

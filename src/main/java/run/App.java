@@ -13,11 +13,13 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        Register register = new Register();
+
+        User me;
+        Register register = new Register(me);
 
 
-        User user1 = new User(1, "test1", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
-        User user2 = new User(2, "test2", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user1 = new User(1, "samenickname", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user2 = new User(2, "samenickname", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
         User user3 = new User(3, "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
 
 
