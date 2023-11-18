@@ -25,12 +25,11 @@ public class App {
         Beginning beginning = new Beginning(user1, r, s);
 
 
-        //User user1 = new User("idsamenickname", "samenickname", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
         User user2 = new User("idsamenickname", "samenickname", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
         User user3 = new User("idtest3", "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
 
 
-
+        /*
         r.start();
         s.sendBroadcastBeginning(user1);
         s.sendBroadcastBeginning(user2);
@@ -38,6 +37,7 @@ public class App {
 
 
         s.sendDisconnect(user1);
+        */
 
 
 

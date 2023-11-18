@@ -15,10 +15,7 @@ public class HomeTab {
     private JTextField[] jtFields = new JTextField[2];
 
 
-    public  HomeTab(User me, ReceiveMessage r, SendMessage s) {
-        jtFields[0] = new JTextField();
-        jtFields[1] = new JTextField();
-
+    public HomeTab(User me, ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");
@@ -26,42 +23,28 @@ public class HomeTab {
 
 
         //Create buttons
-        JButton button_login = new JButton("login");
-        button_login.addActionListener(new ActionListener() {
+        JButton button_startChat = new JButton("Start A New Chat");
+        button_startChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nicknameInput = getNickname();
-                String passwordInput = getPassword();
+                //SEND SOMEWHERE ELSE
+                frame.dispose();
+            }
+        });
 
-                if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
-                    //lead to other tab
-
-
-                    frame.dispose();
-                }
-                else {
-
-                    //HANDLE THIS
-                    System.out.println("wrong password and login");
-
-                }
-
+        JButton button_seeHistory = new JButton("See History");
+        button_seeHistory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //SEND SOMEWHERE ELSE
+                frame.dispose();
             }
         });
 
 
-
-        JLabel emptyLabel = new JLabel("Login", JLabel.CENTER);
-        emptyLabel.setPreferredSize(new Dimension(175, 100));
-        frame.getContentPane().add(emptyLabel, BorderLayout.PAGE_START);
-
         JPanel p = new JPanel(new GridLayout(1, 2));
-        p.add(new JLabel("ID user"));
-        p.add(jtFields[0]);
-        p.add(new JLabel("Password"));
-        p.add(jtFields[1]);
-
-        p.add(button_login);
+        p.add(button_startChat);
+        p.add(button_seeHistory);
         frame.add(p);
 
         // Make the window's dimension fit its content
@@ -70,9 +53,4 @@ public class HomeTab {
         frame.setVisible(true);
     }
 
-    public String getNickname() { return this.jtFields[0].getText();}
-
-    public String getPassword() {
-        return this.jtFields[1].getText();
-    }
 }
