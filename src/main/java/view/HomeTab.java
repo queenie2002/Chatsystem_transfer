@@ -7,12 +7,10 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Toolkit;
-import java.awt.Dimension;
 
 public class HomeTab {
 
-    public HomeTab(User me, ReceiveMessageRaph r, SendMessageRaph s) {
+    public HomeTab(User me, ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");

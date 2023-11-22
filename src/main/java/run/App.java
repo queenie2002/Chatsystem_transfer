@@ -3,7 +3,6 @@ package run;
 import controller.*;
 import model.User;
 import view.Beginning;
-import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,9 +18,9 @@ public class App {
         User user3 = new User("idtest3", "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
 
 
-        ReceiveMessageRaph r = new ReceiveMessageRaph ();
+        ReceiveMessage r = new ReceiveMessage();
         r.start();
-        SendMessageRaph s = new SendMessageRaph ();
+        SendMessage s = new SendMessage();
         Beginning beginning = new Beginning(user1, r, s);
         //Login login = new Login(user1, r, s);
 

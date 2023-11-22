@@ -3,8 +3,8 @@ package controller;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import controller.*;
-import model.ContactList;
+import autre.ReceiveMessage;
+import autre.SendMessage;
 import model.User;
 
 public class SendMessageTest {

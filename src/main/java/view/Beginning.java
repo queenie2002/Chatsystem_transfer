@@ -23,7 +23,7 @@ when register button is clicked, open new window
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(User me, ReceiveMessageRaph r, SendMessageRaph s) {
+    public Beginning(User me, ReceiveMessage r, SendMessage s) {
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,7 +60,7 @@ public class Beginning extends JFrame {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ReceiveMessageRaph.running = false;
+                ReceiveMessage.running = false;
                 frame.dispose();
                 System.out.println("am supposed to close app after--------------");
             }

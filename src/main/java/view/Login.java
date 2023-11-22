@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Login {
@@ -17,7 +16,7 @@ public class Login {
     private JTextField jtField = new JTextField();
     private JPasswordField jpasswordField = new JPasswordField();
 
-    public  Login(User me, ReceiveMessageRaph r, SendMessageRaph s) {
+    public  Login(User me, ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Login");

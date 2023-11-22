@@ -31,7 +31,7 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(User me, ReceiveMessageRaph r, SendMessageRaph s) {
+    public Register(User me, ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
@@ -87,7 +87,7 @@ public class Register {
         frame.setVisible(true);
     }
 
-    private void registerUser(User me,ReceiveMessageRaph r, SendMessageRaph s) throws IOException {
+    private void registerUser(User me, ReceiveMessage r, SendMessage s) throws IOException {
 
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();

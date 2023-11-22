@@ -1,15 +1,11 @@
 package run;
 
-import controller.ReceiveMessage;
-import controller.SendMessage;
-import model.ContactList;
+import autre.ReceiveMessage;
+import autre.SendMessage;
 import model.User;
-import view.Beginning;
 
 import java.io.IOException;
 import java.net.InetAddress;
-
-import static model.ContactList.getInstance;
 
 public class AppQueen {
 
