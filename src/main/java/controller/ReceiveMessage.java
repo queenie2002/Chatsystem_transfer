@@ -119,9 +119,8 @@ public class ReceiveMessage extends Thread {
     }
 
     private void handleNetworkScanRequest(String ipAddress, InetAddress requesterAddress) throws IOException {
-        SendMessage sender = new SendMessage();
         User currentUser = new User("id" + "someUniqueID", "someUniqueNickname", "", "", "", "", true, InetAddress.getByName(ipAddress));
-        sender.sendConnect(currentUser, requesterAddress);
+        SendMessage.sendConnect(currentUser);
     }
 
     private void handleNetworkScanResponse(String id, String nickname, String ipAddress) throws UnknownHostException {

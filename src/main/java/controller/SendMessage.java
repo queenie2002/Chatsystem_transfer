@@ -48,14 +48,6 @@ public class SendMessage {
         System.out.println("Network scan request broadcasted.");
     }
 
-    //response message to the user who scanned the network
-    public static void sendNetworkScanResponse(User user, InetAddress requesterAddress) throws IOException {
-        String message = "NETWORK_SCAN_RESPONSE: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
-        send(message, requesterAddress);
-
-        System.out.println("Network scan response sent.");
-    }
-
     public static void sendConnect(User user) throws IOException {
         String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
@@ -77,7 +69,7 @@ public class SendMessage {
             sendingSocket.send(outPacket);
         }
         catch (Exception e) {
-            System.out.println(e);
+            System.out.println("error: couldn't assign a socket to send a message");
         }
     }
 }
