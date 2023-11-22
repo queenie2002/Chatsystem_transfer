@@ -20,7 +20,7 @@ public class App {
 
 
 
-        ReceiveMessage r = new ReceiveMessage();
+        ReceiveMessage r = new ReceiveMessage(user1);
         r.start();
         SendMessage s = new SendMessage();
         Beginning beginning = new Beginning(user1, r, s);
