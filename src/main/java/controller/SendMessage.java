@@ -69,6 +69,12 @@ public class SendMessage {
         System.out.println("Disconnect message sent.");
     }
 
+    public void sendConnect(User user) throws IOException {
+        String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("Connect message broadcasted.");
+    }
+
     //generic send method, useful in other methods
     private void send(String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
