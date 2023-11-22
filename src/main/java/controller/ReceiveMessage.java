@@ -21,18 +21,18 @@ public class ReceiveMessage extends Thread {
 
     public static boolean running = true;
 
+    private ContactList instance = getInstance();
+
     private User me;
 
     public ReceiveMessage(User me) {this.me = me;}
-
-    private List<User> connectedUsers = new ArrayList<>();
 
     public String[] extractInfoFromPattern(String inputString) {
         List<String> patternList = List.of(
                 "NETWORK_SCAN_REQUEST: ip: (\\S+)",
                 "NETWORK_SCAN_RESPONSE: id: (\\S+) nickname: (\\S+) ip address: (\\S+)",
-                "NICKNAME_AND_IP: nickname: (\\S+) ip address: (\\S+)",
-                "DISCONNECT: id: (\\S+)"
+                "CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)",
+                "DISCONNECT: id: (\\S+) ip address: (\\S+)"
         );
 
         boolean matchesAnyPattern = false;
@@ -54,13 +54,15 @@ public class ReceiveMessage extends Thread {
                         String nickname = matcher2.group(2);
                         String ipAddress = matcher2.group(3);
                         res = new String[]{patternString, id, nickname, ipAddress};
-                    } else if (patternString.equals("NICKNAME_AND_IP: nickname: (\\S+) ip address: (\\S+)")) {
-                        String nickname = matcher2.group(1);
-                        String ipAddress = matcher2.group(2);
-                        res = new String[]{patternString, nickname, ipAddress};
-                    } else if (patternString.equals("DISCONNECT: id: (\\S+)")) {
+                    } else if (patternString.equals("CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
                         String id = matcher2.group(1);
-                        res = new String[]{patternString, id};
+                        String nickname = matcher2.group(2);
+                        String ipAddress = matcher2.group(3);
+                        res = new String[]{patternString, id, nickname, ipAddress};
+                    } else if (patternString.equals("DISCONNECT: id: (\\S+) ip address: (\\S+)")) {
+                        String id = matcher2.group(1);
+                        String ipAddress = matcher2.group(2);
+                        res = new String[]{patternString, id, ipAddress};
                     } else {
                         res = new String[0];
                     }
@@ -95,11 +97,11 @@ public class ReceiveMessage extends Thread {
                         case "NETWORK_SCAN_RESPONSE: id: (\\S+) nickname: (\\S+) ip address: (\\S+)":
                             handleNetworkScanResponse(res[1], res[2], res[3]);
                             break;
-                        case "NICKNAME_AND_IP: nickname: (\\S+) ip address: (\\S+)":
-                            handleNicknameAndIP(res[1], res[2]);
+                        case "CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)":
+                            handleConnect(res[1], res[2], res[3]);
                             break;
-                        case "DISCONNECT: id: (\\S+)":
-                            handleDisconnect(res[1]);
+                        case "DISCONNECT: id: (\\S+) ip address: (\\S+)":
+                            handleDisconnect(res[1], res[2]);
                             break;
                         default:
                             System.out.println("Unhandled message type");
@@ -119,30 +121,39 @@ public class ReceiveMessage extends Thread {
     private void handleNetworkScanRequest(String ipAddress, InetAddress requesterAddress) throws IOException {
         SendMessage sender = new SendMessage();
         User currentUser = new User("id" + "someUniqueID", "someUniqueNickname", "", "", "", "", true, InetAddress.getByName(ipAddress));
-        sender.sendNetworkScanResponse(currentUser, requesterAddress);
+        sender.sendConnect(currentUser, requesterAddress);
     }
 
     private void handleNetworkScanResponse(String id, String nickname, String ipAddress) throws UnknownHostException {
         User user = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress));
-        connectedUsers.add(user);
+        instance.addContact(user);
         System.out.println("User connected: " + nickname + " (" + ipAddress + ")");
     }
 
-    private void handleNicknameAndIP(String nickname, String ipAddress) throws UnknownHostException {
-        User user = new User("id" + nickname, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress));
-        connectedUsers.add(user);
-        System.out.println("User connected: " + nickname + " (" + ipAddress + ")");
+    private void handleConnect(String id, String nickname, String ipAddress) throws UnknownHostException {
+        if (instance.existsContact(id)) { //if we know him, we put him to connected
+            User connectedUser = instance.getContact(id);
+            connectedUser.setStatus(true);
+            instance.changeContact(connectedUser);
+            System.out.println("User connected: " + connectedUser.getNickname() + " (" + connectedUser.getIpAddress().getHostAddress() + ")");
+        }
+        else { //else we add him
+            instance.addContact(new User(id, id.substring(2), "", "", "", "", true, InetAddress.getByName(ipAddress)));
+        }
     }
 
-    private void handleDisconnect(String id) {
-        ContactList instance = getInstance();
-        User disconnectedUser = instance.getContact(id);
 
-        if (disconnectedUser != null) {
+
+
+    private void handleDisconnect(String id, String ipAddress) throws UnknownHostException {
+        if (instance.existsContact(id)) { //if we know him, we put him to disconnected
+            User disconnectedUser = instance.getContact(id);
             disconnectedUser.setStatus(false);
             instance.changeContact(disconnectedUser);
-            connectedUsers.remove(disconnectedUser);
             System.out.println("User disconnected: " + disconnectedUser.getNickname() + " (" + disconnectedUser.getIpAddress().getHostAddress() + ")");
+        }
+        else { //else we add him
+            instance.addContact(new User(id, id.substring(2), "", "", "", "", true, InetAddress.getByName(ipAddress)));
         }
     }
 

@@ -56,23 +56,16 @@ public class SendMessage {
         System.out.println("Network scan response sent.");
     }
 
-    // send nickname and IP address
-    public static void sendNicknameAndIP(User user, InetAddress recipientAddress) throws IOException {
-        String message = "NICKNAME_AND_IP: nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("Nickname and IP sent to: " + recipientAddress.getHostAddress());
-    }
-
-    public static void sendDisconnect(User user) throws IOException {
-        String message = "DISCONNECT: id: " + user.getId();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("Disconnect message sent.");
-    }
-
     public static void sendConnect(User user) throws IOException {
         String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("Connect message broadcasted.");
+    }
+
+    public static void sendDisconnect(User user) throws IOException {
+        String message = "DISCONNECT: id: " + user.getId() + " ipAddress: " + user.getIpAddress().getHostAddress();
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("Disconnect message sent.");
     }
 
     //generic send method, useful in other methods
