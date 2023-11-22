@@ -142,9 +142,6 @@ public class ReceiveMessage extends Thread {
         }
     }
 
-
-
-
     private void handleDisconnect(String id, String ipAddress) throws UnknownHostException {
         if (instance.existsContact(id)) { //if we know him, we put him to disconnected
             User disconnectedUser = instance.getContact(id);
