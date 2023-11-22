@@ -1,6 +1,6 @@
 package view;
 import controller.*;
-import model.User;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;

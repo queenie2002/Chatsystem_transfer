@@ -1,8 +1,7 @@
 package view;
 
 import controller.*;
-import model.ContactList;
-import model.User;
+import model.*;
 
 import java.awt.*;
 import javax.swing.*;

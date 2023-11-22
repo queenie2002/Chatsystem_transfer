@@ -1,26 +1,24 @@
 package run;
 
-import autre.ReceiveMessage;
-import autre.SendMessage;
-import model.User;
+import controller.*;
+import model.*;
+import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
 public class AppQueen {
 
+    //we create an empty user to keep my information
+    public static User me = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
 
     public static void main(String[] args) throws IOException {
 
-
-
-
-        User me = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
         ReceiveMessage r = new ReceiveMessage ();
         r.start();
         SendMessage s = new SendMessage ();
 
-        //Beginning beginning1 = new Beginning(me, r, s);
+        Beginning beginning = new Beginning(me, r, s);
 
 
         //User me2 = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
