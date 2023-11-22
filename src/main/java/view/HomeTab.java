@@ -1,8 +1,7 @@
 package view;
 
-import controller.ReceiveMessage;
-import controller.SendMessage;
-import model.User;
+import controller.*;
+import model.*;
 
 import java.awt.*;
 import javax.swing.*;
@@ -13,7 +12,7 @@ import java.awt.Dimension;
 
 public class HomeTab {
 
-    public HomeTab(User me, ReceiveMessage r, SendMessage s) {
+    public HomeTab(User me, ReceiveMessageRaph r, SendMessageRaph s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");

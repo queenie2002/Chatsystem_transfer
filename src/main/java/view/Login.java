@@ -1,7 +1,6 @@
 package view;
 
-import controller.ReceiveMessage;
-import controller.SendMessage;
+import controller.*;
 import model.ContactList;
 import model.User;
 
@@ -18,7 +17,7 @@ public class Login {
     private JTextField jtField = new JTextField();
     private JPasswordField jpasswordField = new JPasswordField();
 
-    public  Login(User me, ReceiveMessage r, SendMessage s) {
+    public  Login(User me, ReceiveMessageRaph r, SendMessageRaph s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Login");

@@ -1,7 +1,6 @@
 package view;
 
-import controller.ReceiveMessage;
-import controller.SendMessage;
+import controller.*;
 import model.User;
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +23,7 @@ when register button is clicked, open new window
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(User me, ReceiveMessage r, SendMessage s) {
+    public Beginning(User me, ReceiveMessageRaph r, SendMessageRaph s) {
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,7 +60,7 @@ public class Beginning extends JFrame {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ReceiveMessage.running = false;
+                ReceiveMessageRaph.running = false;
                 frame.dispose();
                 System.out.println("am supposed to close app after--------------");
             }

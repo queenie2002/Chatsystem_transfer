@@ -168,8 +168,10 @@ public class ReceiveMessage extends Thread {
                 System.out.println("closing the app");
             }
             receivingSocket.close();
-        } catch (IOException e) {
+        } catch (IOException e) {  //pour fermer faudrait fermet le socket quelque part
+
             e.printStackTrace();
+            return;
         }
     }
 }

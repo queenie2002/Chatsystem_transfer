@@ -16,18 +16,23 @@ public class AppQueen {
 
     public static void main(String[] args) throws IOException {
 
+
+
+
         User me = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
         ReceiveMessage r = new ReceiveMessage ();
         r.start();
         SendMessage s = new SendMessage ();
 
+        //Beginning beginning1 = new Beginning(me, r, s);
+
 
         //User me2 = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
-        User user1 = new User("idyq", "yq", "yq", "yq", "yq" , "yq", true, InetAddress.getLocalHost());
-        ContactList instance = getInstance();
-        instance.addContact(user1);
+        //User user1 = new User("idyq", "yq", "yq", "yq", "yq" , "yq", true, InetAddress.getLocalHost());
+        //ContactList instance = getInstance();
+        //instance.addContact(user1);
 
-        Beginning beginning1 = new Beginning(me, r, s);
+
 
 
 

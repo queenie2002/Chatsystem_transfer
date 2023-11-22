@@ -1,6 +1,5 @@
 package view;
-import controller.ReceiveMessage;
-import controller.SendMessage;
+import controller.*;
 import model.User;
 
 import javax.swing.*;
@@ -32,7 +31,7 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(User me, ReceiveMessage r, SendMessage s) {
+    public Register(User me, ReceiveMessageRaph r, SendMessageRaph s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
@@ -88,7 +87,7 @@ public class Register {
         frame.setVisible(true);
     }
 
-    private void registerUser(User me,ReceiveMessage r, SendMessage s) throws IOException {
+    private void registerUser(User me,ReceiveMessageRaph r, SendMessageRaph s) throws IOException {
 
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
@@ -133,13 +132,4 @@ public class Register {
 
 
     }
-    /*
-        // Tests : prints the information to the console
-        System.out.println("User Registered:");
-        System.out.println("First Name: " + firstName);
-        System.out.println("Last Name: " + lastName);
-        System.out.println("Username: " + username);
-        System.out.println("Birthday: " + birthday);
-        System.out.println("Password: " + new String(password));
-        */
 }
