@@ -5,13 +5,20 @@ import model.User;
 import java.io.IOException;
 import java.net.*;
 
-/*differences implemented
+/*implemented :
 *
-* using constants for the sender port, receiver port, and broadcast address.
-DatagramSocket is created in the constructor and reused for each method to eliminate redundancy.
-closeSocket method to properly close the socket when it's no longer needed.
-private send method to centralise common code.
+* using constants for the sender port, receiver port, and broadcast address for better readability and future modifications
+DatagramSocket is created in the constructor and reused for each method to avoid redundancy
+closeSocket method to properly close the socket
+private send method to centralise common code
 *
+* */
+
+/*
+Currently no absolute checking of pseudo unicity because no database
+-> during the broadcast, we scan the network : send ip to all connected users
+upon receiving this the latter will in turn send their ip and pseudo back allowing us to construct the list of connected users
+we can then choose a pseudo different to all other currently connected users
 * */
 
 public class SendMessageRaph {
@@ -20,10 +27,10 @@ public class SendMessageRaph {
     private static final int RECEIVER_PORT = 2000;
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
 
-    private DatagramSocket sendingSocket;
+    private final DatagramSocket sendingSocket;
 
     public SendMessageRaph() throws SocketException {
-        // Initialise the DatagramSocket for sending
+        // Initialize the DatagramSocket for sending
         this.sendingSocket = new DatagramSocket(SENDER_PORT);
         this.sendingSocket.setBroadcast(true);
     }
@@ -34,51 +41,25 @@ public class SendMessageRaph {
         }
     }
 
-    public void sendBroadcastBeginning(User user) throws IOException {
+    public void sendNetworkScanRequest(User user) throws IOException {
         InetAddress senderAddress = InetAddress.getByName(BROADCAST_ADDRESS);
+        String message = "NETWORK_SCAN_REQUEST: id: " + user.getId();
+        send(message, senderAddress);
 
-        // Create message broadcast
-        String message = "POTENTIAL NICKNAME: nickname: " + user.getNickname() + " ip address: " + user.getIpAddress();
-        send(message, senderAddress, RECEIVER_PORT);
-
-        System.out.println("Broadcast message sent.");
+        System.out.println("Network scan request sent.");
     }
 
-    public void sendDisconnect(User user) throws IOException {
-        InetAddress senderAddress = InetAddress.getByName(BROADCAST_ADDRESS);
-        String message = "DISCONNECT: id: " + user.getId();
-        send(message, senderAddress, RECEIVER_PORT);
+    public void sendNetworkScanResponse(User user) throws IOException {
+        InetAddress senderAddress = user.getIpAddress();
+        String message = "NETWORK_SCAN_RESPONSE: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+        send(message, senderAddress);
 
-        System.out.println("Disconnect message sent.");
+        System.out.println("Network scan response sent.");
     }
 
-    public void sendConnect(User user) throws IOException {
-        InetAddress senderAddress = InetAddress.getByName(BROADCAST_ADDRESS);
-        String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress();
-        send(message, senderAddress, RECEIVER_PORT);
-
-        System.out.println("Connect message sent.");
-    }
-
-    public void sendNicknameExists(User user) throws IOException {
-        InetAddress senderAddress = InetAddress.getByName(user.getIpAddress().getHostAddress());
-        String message = "NICKNAME EXISTS";
-        send(message, senderAddress, RECEIVER_PORT);
-
-        System.out.println("Nickname Exists message sent.");
-    }
-
-    public void sendNicknameUnique(User user) throws IOException {
-        InetAddress senderAddress = InetAddress.getByName(user.getIpAddress().getHostAddress());
-        String message = "NICKNAME UNIQUE";
-        send(message, senderAddress, RECEIVER_PORT);
-
-        System.out.println("Nickname Unique message sent.");
-    }
-
-    private void send(String message, InetAddress receiverAddress, int receiverPort) throws IOException {
+    private void send(String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
-        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, receiverPort);
+        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, RECEIVER_PORT);
         sendingSocket.send(outPacket);
     }
 }

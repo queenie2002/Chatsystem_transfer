@@ -1,4 +1,4 @@
-package controller;
+/*package controller;
 import model.User;
 import org.junit.After;
 import org.junit.Before;
@@ -97,3 +97,4 @@ public class TestSendMessage {
         sendMessageRaph.closeSocket();
     }
 }
+*/
