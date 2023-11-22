@@ -41,22 +41,35 @@ public class SendMessage {
         }
     }
 
+    //send the network scan request to all connected users (broadcast)
     public void sendNetworkScanRequest(User user) throws IOException {
-        InetAddress senderAddress = InetAddress.getByName(BROADCAST_ADDRESS);
         String message = "NETWORK_SCAN_REQUEST: ip: " + user.getIpAddress();
-        send(message, senderAddress);
-
-        System.out.println("Network scan request sent.");
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("Network scan request broadcasted.");
     }
 
-    public void sendNetworkScanResponse(User user) throws IOException {
-        InetAddress senderAddress = user.getIpAddress();
+    //response message to the user who scanned the network
+    public void sendNetworkScanResponse(User user, InetAddress requesterAddress) throws IOException {
         String message = "NETWORK_SCAN_RESPONSE: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
-        send(message, senderAddress);
+        send(message, requesterAddress);
 
         System.out.println("Network scan response sent.");
     }
 
+    // send nickname and IP address
+    public void sendNicknameAndIP(User user, InetAddress recipientAddress) throws IOException {
+        String message = "NICKNAME_AND_IP: nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("Nickname and IP sent to: " + recipientAddress.getHostAddress());
+    }
+
+    public void sendDisconnect(User user) throws IOException {
+        String message = "DISCONNECT: id: " + user.getId();
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("Disconnect message sent.");
+    }
+
+    //generic send method, useful in other methods
     private void send(String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
         DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, RECEIVER_PORT);
