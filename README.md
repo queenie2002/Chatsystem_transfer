@@ -11,7 +11,7 @@ This is the file that we will use to identify the teacher responsible for the re
 ## Take ownership
 
 As long as you make sure to keep the `metadata.yml` file at the root of this repository, you are free to do anything. Our suggestion would be to have it organized into something like the following:
-
+    
     .gitignore
     metadata.yml
     pom.xml

@@ -1,6 +1,8 @@
 package view;
+
 import controller.*;
 import model.*;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
+
+import static model.ContactList.getInstance;
 
 /*Reminders on swing
 * JLabel -> display area for text/images
@@ -49,12 +53,12 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+
                     registerUser(me,r,s); //when the button is clicked it calls the registerUser method
 
-                    if (User.uniqueNickname==2){
-                        HomeTab hometab = new HomeTab(me, r, s);
-                        frame.dispose();
-                    }
+                    HomeTab hometab = new HomeTab(me, r, s);
+                    frame.dispose();
+
 
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -102,34 +106,15 @@ public class Register {
         me.setPassword(Arrays.toString(password));
         me.setId("id"+username);
 
-        s.sendBroadcastBeginning(me);
-
-        try {
-            // Sleep for 3 seconds (3000 milliseconds)
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            // Handle the exception (if needed)
-            e.printStackTrace();
+        ContactList instance = getInstance();
+        if (instance.existsContactWithNickname(username)) { //if someone already has nickname
+            PopUpTab popup = new PopUpTab("choose another nickname");
+            return;
         }
+        else {
 
-        if(User.uniqueNickname==1){//nickname is not unique
-            // Nickname is not unique, open a new frame with a message
-            JFrame errorMessageFrame = new JFrame("Error");
-            errorMessageFrame.setSize(800, 200);
-            errorMessageFrame.setLocationRelativeTo(null);
-            errorMessageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            JLabel errorMessageLabel = new JLabel("This nickname is already taken. Please select a different one.");
-            errorMessageLabel.setHorizontalAlignment(JLabel.CENTER);
-
-            errorMessageFrame.add(errorMessageLabel);
-            errorMessageFrame.setVisible(true);
         }
-        else if(User.uniqueNickname==0){
-            User.uniqueNickname=2;
-        }
-
-
 
     }
 }

@@ -6,18 +6,40 @@ import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class AppQueen {
 
     //we create an empty user to keep my information
-    public static User me = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
+    public static User me;
+
+    static {
+        try {
+            me = new User("", "", "", "", "" , "", false, InetAddress.getLocalHost());
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ReceiveMessage r = new ReceiveMessage ();
+
+    public static SendMessage s;
+
+    static {
+        try {
+            s = new SendMessage ();
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public AppQueen() throws SocketException {
+    }
 
     public static void main(String[] args) throws IOException {
 
-        ReceiveMessage r = new ReceiveMessage ();
         r.start();
-        SendMessage s = new SendMessage ();
-
         Beginning beginning = new Beginning(me, r, s);
 
 

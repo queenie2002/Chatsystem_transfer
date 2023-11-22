@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /*Reminders on swing
  * JLabel -> display area for text/images
@@ -23,7 +24,10 @@ when register button is clicked, open new window
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(User me, ReceiveMessage r, SendMessage s) {
+    public Beginning(User me, ReceiveMessage r, SendMessage s) throws IOException {
+
+        s.sendNetworkScanRequest(me);
+
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
