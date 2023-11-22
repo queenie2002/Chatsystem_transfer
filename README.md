@@ -24,3 +24,10 @@ As long as you make sure to keep the `metadata.yml` file at the root of this rep
       report.pdf
 
 In particular, you will soon have to replace this README with something that describes your own project.
+
+
+le truc mkdir bordel
+mvn compile
+mvn package
+
+java -cp target/chatSystem-1.0-SNAPSHOT.jar run.MainClass

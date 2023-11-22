@@ -1,5 +1,6 @@
 package run;
 
+import com.sun.tools.javac.Main;
 import controller.*;
 import model.*;
 import view.*;
@@ -7,6 +8,9 @@ import view.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Scanner;
+
+import static model.ContactList.getInstance;
 
 public class MainClass {
 
@@ -15,56 +19,66 @@ public class MainClass {
 
     static {
         try {
-            me = new User("idqueenie", "queenie", "queen", "name", "2002-03-02" , "pwd", false, InetAddress.getLocalHost());
+            me = new User("[]", "[]", "[]", "[]", "[]" , "[]", null, InetAddress.getLocalHost());
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        /*User user1 = new User("idtest1", "test1", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user2 = new User("idtest1", "test2", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User user3 = new User("idtest3", "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
+        User me = new User("idqueenie", "queenie", "queen", "name", "2002-03-02" , "pwd", false, InetAddress.getLocalHost());
+         */
 
 
-        try {
-            ReceiveMessage receiveMessage = new ReceiveMessage(me);
-            SendMessage sendMessage = new SendMessage();
+        ReceiveMessage receiveMessage = new ReceiveMessage();
+        SendMessage sendMessage = new SendMessage();
+        receiveMessage.start();
+        ContactList instance = getInstance();
 
-            receiveMessage.start();
-            SendMessage.sendToChooseNickname(me); //does change nickname and i am connected
+        SendMessage.sendIAmConnected(me);
 
-            System.out.println();
-            System.out.println();
-            System.out.println("Thread is going to sleep for 5 seconds...");
-            try {
-                Thread.sleep(5000);
-                System.out.println("Thread woke up after 5 seconds.");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+        //startContactDiscovery
+        //SendMessage.sendToChooseNickname(me);
+        // Create a Scanner object to read input
+        Scanner scanner = new Scanner(System.in);
+
+        boolean isUnique = false;
+        while(!isUnique) {
+
+            System.out.print("Enter Nickname: ");
+            String nicknameInput = scanner.nextLine();
+
+            if (instance.existsContactWithNickname(nicknameInput)) { //if someone already has nickname
+                PopUpTab popup1 = new PopUpTab("choose another nickname");
+                return;
+            } else {
+                isUnique = true;
+                scanner.close();
+                try {
+                    me.setNickname(nicknameInput);
+                    me.setId("id"+nicknameInput);
+                    SendMessage.sendIAmConnected(MainClass.me);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
-
-            SendMessage.sendIAmConnectedAreYou(me);
-
-
-
-            System.out.println();
-            System.out.println();
-            System.out.println("Thread is going to sleep for 5 seconds...");
-            try {
-                Thread.sleep(5000);
-                System.out.println("Thread woke up after 5 seconds.");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-            SendMessage.sendDisconnect(me);
-
-
-            // Create an instance of the Beginning class
-            //Beginning beginning = new Beginning(me, receiveMessage, sendMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        System.out.println();
+        System.out.print("Printing Contact List ");
+        instance.printContactList();
+
+        // Create an instance of the Beginning class
+        //Beginning beginning = new Beginning(receiveMessage, sendMessage);
+
     }
+
+
 }

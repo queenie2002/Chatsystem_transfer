@@ -36,7 +36,9 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(ReceiveMessage r, SendMessage s) {
+    public Register(ReceiveMessage r, SendMessage s) throws IOException {
+
+        SendMessage.sendToChooseNickname(MainClass.me);
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
@@ -54,13 +56,7 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-
-                    registerUser(r,s); //when the button is clicked it calls the registerUser method
-
-                    HomeTab hometab = new HomeTab(r, s);
-                    frame.dispose();
-
-
+                    registerUser(r,s, frame); //when the button is clicked it calls the registerUser method
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -92,7 +88,7 @@ public class Register {
         frame.setVisible(true);
     }
 
-    private void registerUser(ReceiveMessage r, SendMessage s) throws IOException {
+    private void registerUser(ReceiveMessage r, SendMessage s, Frame frame) throws IOException {
 
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
@@ -107,14 +103,29 @@ public class Register {
         MainClass.me.setPassword(Arrays.toString(password));
         MainClass.me.setId("id"+username);
 
+        PopUpTab popup = new PopUpTab("we're checking for unicity of your nickname");
+
+        //wait a little for the answers to come in, 8 sec
+        try {
+            Thread.sleep(8000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         ContactList instance = getInstance();
         if (instance.existsContactWithNickname(username)) { //if someone already has nickname
-            PopUpTab popup = new PopUpTab("choose another nickname");
+            PopUpTab popup1 = new PopUpTab("choose another nickname");
             return;
         }
-        else {
-
-
+        else { //if unique i go to next tab and tell people i am connected
+            HomeTab hometab = new HomeTab(r, s);
+            try {
+                SendMessage.sendIAmConnected(MainClass.me);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            frame.dispose();
         }
 
     }

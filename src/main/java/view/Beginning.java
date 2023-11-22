@@ -28,10 +28,18 @@ public class Beginning extends JFrame {
 
         JButton registerButton = new JButton("Register");
         JButton loginButton = new JButton("Login");
+
+
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Register register = new Register(r, s);
+
+                try {
+                    Register register = new Register(r, s);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
                 frame.dispose();
             }
         });
@@ -47,8 +55,6 @@ public class Beginning extends JFrame {
         JPanel panel = new JPanel(new GridLayout(1, 2)); //arranges the components in a grid
         panel.add(registerButton);
         panel.add(loginButton);
-
-
 
 
 

@@ -61,13 +61,13 @@ public class Login {
                         }
                         frame.dispose();
                     }
-                    else {
-                        //----------------------------POP UP FRAME THAT SAYS WRONG PASSWORD AND LOGIN
+                    else { //-----------------------------------------COMMENT FAIRE POUR TOURNER EN BOUCLE
+                        PopUpTab popup = new PopUpTab("wrong login information try again");
                         System.out.println("error: wrong password and login");
                     }
                 }
                 else {
-                    //----------------------------POP UP FRAME THAT SAYS NICKNAME DOESNT EXIST
+                    PopUpTab popup = new PopUpTab("wrong nickname");
                     System.out.println("error: there doesn't exist someone with that nickname");
                 }
             }

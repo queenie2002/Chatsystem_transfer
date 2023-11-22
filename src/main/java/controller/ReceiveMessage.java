@@ -2,7 +2,6 @@ package controller;
 
 import model.ContactList;
 import model.User;
-import run.AppQueen;
 import run.MainClass;
 
 import java.io.IOException;
@@ -99,6 +98,7 @@ public class ReceiveMessage extends Thread {
                                 handleDisconnect(res[1], res[2], res[3]);
                         default -> System.out.println("error: unhandled message type");
                     }
+                    System.out.println();
                 }
             }
         } catch (IOException e) {
@@ -110,34 +110,36 @@ public class ReceiveMessage extends Thread {
     private void handleToChooseNickname(String ipAddress, InetAddress requesterAddress) throws IOException {
         //when we receive the request, we respond by saying who we are
         SendMessage.sendIAmConnected(MainClass.me);
-        System.out.println("Received to choose nickname request");
+        System.out.println("RECEIVED to choose nickname request");
     }
 
     private void handleIAmConnected(String id, String nickname, String ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, true);
-        System.out.println("User connected: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
     private void handleIAmConnectedAreYou(String id, String nickname, String ipAddress) throws IOException {
         changeStatus(id, nickname, ipAddress, true);
         SendMessage.sendIAmConnected(MainClass.me);
-        System.out.println("User connected: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
-
 
     private void handleDisconnect(String id, String nickname, String ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, false);
-        System.out.println("User disconnected: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
     private void changeStatus(String id, String nickname, String ipAddress, Boolean status) throws UnknownHostException {
+        System.out.println("in status");
         if (instance.existsContact(id)) { //if we know him, we change his status
             User user = instance.getContact(id);
             user.setStatus(status);
             instance.changeContact(user);
+            System.out.println("contact already exists");
         }
         else { //else we add him
             instance.addContact(new User(id, nickname, "", "", "", "", status, InetAddress.getByName(ipAddress)));
+            System.out.println("contact added");
         }
     }
 

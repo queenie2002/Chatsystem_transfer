@@ -32,8 +32,16 @@ public class ContactList {
 
 
     // Methods
+    public int lengthContactList(){ return myContactList.size(); }
+
+    public void printContactList() {
+        for (int i = 0; i < myContactList.size(); i++) {
+            printContact(myContactList.get(i));
+        }
+    }
+
     public void addContact(User user) {
-        myContactList.add(user);
+        myContactList.add(user); printContactList();
     }
 
     public void removeContact(String idUser) { //on utilise idUser

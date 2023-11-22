@@ -20,11 +20,15 @@ public class PopUpTab {
         JLabel messageLabel = new JLabel(message, JLabel.CENTER);
         messageLabel.setPreferredSize(new Dimension(175, 100));
 
-        //we add it to the frame
-        frame.getContentPane().add(messageLabel, BorderLayout.PAGE_START);
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.add(messageLabel);
 
+        //we add it to the frame
+        //frame.getContentPane().add(messageLabel, BorderLayout.PAGE_START);
+        frame.add(panel);
         // Size of frame
-        frame.setSize(200, 100);
+        frame.pack();
+        //frame.setSize(200, 100);
         // Center the frame on the screen
         frame.setLocationRelativeTo(null);
         // Display the window.
