@@ -43,7 +43,7 @@ public class SendMessage {
 
     public void sendNetworkScanRequest(User user) throws IOException {
         InetAddress senderAddress = InetAddress.getByName(BROADCAST_ADDRESS);
-        String message = "NETWORK_SCAN_REQUEST: id: " + user.getId();
+        String message = "NETWORK_SCAN_REQUEST: ip: " + user.getIpAddress();
         send(message, senderAddress);
 
         System.out.println("Network scan request sent.");
