@@ -79,8 +79,12 @@ public class SendMessage {
     private static void send(String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
         DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, RECEIVER_PORT);
-        try (DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT)) {
+        try {
+            DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT);
             sendingSocket.send(outPacket);
+        }
+        catch (Exception e) {
+            System.out.println(e);
         }
     }
 }
