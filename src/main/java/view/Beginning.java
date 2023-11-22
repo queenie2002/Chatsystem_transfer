@@ -17,10 +17,6 @@ import java.io.IOException;
  * GridLayout -> places components in a grid of same size cells. Each component takes all available space in the cell
  * */
 
-/*TO DO
-when register button is clicked, open new window
-* */
-
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
