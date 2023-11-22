@@ -23,53 +23,52 @@ we can then choose a pseudo different to all other currently connected users
 
 public class SendMessage {
 
-    private static final int SENDER_PORT = 1200;
-    private static final int RECEIVER_PORT = 2000;
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
 
-    private final DatagramSocket sendingSocket;
-
-    public SendMessage() throws SocketException {
-        // Initialize the DatagramSocket for sending
-        this.sendingSocket = new DatagramSocket(SENDER_PORT);
-        this.sendingSocket.setBroadcast(true);
-    }
-
-    public void closeSocket() {
+    public void closeSocket(DatagramSocket sendingSocket) {
         if (sendingSocket != null && !sendingSocket.isClosed()) {
             sendingSocket.close();
         }
     }
 
-    //send the network scan request to all connected users (broadcast)
-    public static void sendNetworkScanRequest(User user) throws IOException {
-        String message = "NETWORK_SCAN_REQUEST: ip: " + user.getIpAddress();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("Network scan request broadcasted.");
-    }
 
-    public static void sendConnect(User user) throws IOException {
-        String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("Connect message broadcasted.");
-    }
-
-    public static void sendDisconnect(User user) throws IOException {
-        String message = "DISCONNECT: id: " + user.getId() + " ipAddress: " + user.getIpAddress().getHostAddress();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("Disconnect message sent.");
-    }
-
-    //generic send method, useful in other methods
-    private static void send(String message, InetAddress receiverAddress) throws IOException {
-        byte[] buf = message.getBytes();
-        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, RECEIVER_PORT);
-        try {
-            DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT);
-            sendingSocket.send(outPacket);
+        //we ask all connected users for their information to be able to choose a nickname(broadcast)
+        public static void sendToChooseNickname (User user) throws IOException {
+            //user sends his ip
+            String message = "TO_CHOOSE_NICKNAME: ip: " + user.getIpAddress();
+            send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+            System.out.println("To choose nickname request broadcasted.");
         }
-        catch (Exception e) {
-            System.out.println("error: couldn't assign a socket to send a message");
+
+        public static void sendConnect (User user) throws IOException {
+            String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+            send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+            System.out.println(message);
+            System.out.println("Connect message broadcasted.");
+        }
+
+        public static void sendDisconnect (User user) throws IOException {
+            String message = "DISCONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+            send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+            System.out.println(message);
+            System.out.println("Disconnect message sent.");
+        }
+
+        //generic send method, useful in other methods
+        private static void send (String message, InetAddress receiverAddress) throws IOException {
+            byte[] buf = message.getBytes();
+            DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, 2000); //receiver port
+
+            try {
+                DatagramSocket sendingSocket = new DatagramSocket(1200); //sending port
+                sendingSocket.setBroadcast(true);
+                sendingSocket.send(outPacket);
+
+                sendingSocket.close();
+            } catch (Exception e) {
+                System.out.println("error: couldn't assign a socket to send a message");
+                e.printStackTrace();
+            }
         }
     }
-}
+
