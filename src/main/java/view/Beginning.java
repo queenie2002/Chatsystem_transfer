@@ -20,10 +20,7 @@ import java.io.IOException;
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(User me, ReceiveMessage r, SendMessage s) throws IOException {
-
-        s.sendNetworkScanRequest(me);
-
+    public Beginning(ReceiveMessage r, SendMessage s) throws IOException {
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,14 +31,14 @@ public class Beginning extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Register register = new Register(me, r, s);
+                Register register = new Register(r, s);
                 frame.dispose();
             }
         });
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Login login = new Login(me, r, s);
+                Login login = new Login(r, s);
                 frame.dispose();
             }
         });

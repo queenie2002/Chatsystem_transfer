@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class HomeTab {
 
-    public HomeTab(User me, ReceiveMessage r, SendMessage s) {
+    public HomeTab(ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");

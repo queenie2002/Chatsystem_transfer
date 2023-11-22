@@ -2,6 +2,7 @@ package view;
 
 import controller.*;
 import model.*;
+import run.MainClass;
 
 import java.awt.*;
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class Login {
     private JTextField jtField = new JTextField();
     private JPasswordField jpasswordField = new JPasswordField();
 
-    public  Login(User me, ReceiveMessage r, SendMessage s) {
+    public  Login(ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Login");
@@ -41,20 +42,20 @@ public class Login {
 
 
 
-                        me.setFirstName(databaseUser.getFirstName());
-                        me.setLastName(databaseUser.getLastName());
-                        me.setNickname(databaseUser.getNickname());
-                        me.setBirthday(databaseUser.getBirthday());
-                        me.setPassword(databaseUser.getPassword());
-                        me.setId("id"+databaseUser.getNickname());
-                        me.setStatus(true);
-                        me.setIpAddress(databaseUser.getIpAddress());
+                        MainClass.me.setFirstName(databaseUser.getFirstName());
+                        MainClass.me.setLastName(databaseUser.getLastName());
+                        MainClass.me.setNickname(databaseUser.getNickname());
+                        MainClass.me.setBirthday(databaseUser.getBirthday());
+                        MainClass.me.setPassword(databaseUser.getPassword());
+                        MainClass.me.setId("id"+databaseUser.getNickname());
+                        MainClass.me.setStatus(true);
+                        MainClass.me.setIpAddress(databaseUser.getIpAddress());
 
-                        instance.printContact(me);
+                        instance.printContact(MainClass.me);
 
-                        HomeTab hometab = new HomeTab(me, r, s);
+                        HomeTab hometab = new HomeTab(r, s);
                         try {
-                            s.sendConnect(me);
+                            SendMessage.sendIAmConnected(MainClass.me);
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }

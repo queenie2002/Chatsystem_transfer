@@ -40,17 +40,25 @@ public class SendMessage {
             System.out.println("To choose nickname request broadcasted.");
         }
 
-        public static void sendConnect (User user) throws IOException {
-            String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+        //we send a message saying we're connected, the receiver won't send anything back
+        public static void sendIAmConnected (User user) throws IOException {
+            String message = "IAMCONNECTED: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
             send(message, InetAddress.getByName(BROADCAST_ADDRESS));
             System.out.println(message);
-            System.out.println("Connect message broadcasted.");
+            System.out.println("I am connected message broadcasted.");
         }
+
+        //we send a message saying we're connected and asks if the other people are too, the receiver will send a iamconnected message back
+        public static void sendIAmConnectedAreYou (User user) throws IOException {
+            String message = "IAMCONNECTEDAREYOU: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
+            send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+            System.out.println("I am connected, are you? message broadcasted.");
+        }
+
 
         public static void sendDisconnect (User user) throws IOException {
             String message = "DISCONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
             send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-            System.out.println(message);
             System.out.println("Disconnect message sent.");
         }
 

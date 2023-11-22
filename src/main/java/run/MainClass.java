@@ -23,14 +23,32 @@ public class MainClass {
 
 
     public static void main(String[] args) {
+
+
         try {
             ReceiveMessage receiveMessage = new ReceiveMessage(me);
             SendMessage sendMessage = new SendMessage();
 
             receiveMessage.start();
-            SendMessage.sendToChooseNickname(me);
+            SendMessage.sendToChooseNickname(me); //does change nickname and i am connected
+
+            System.out.println();
+            System.out.println();
+            System.out.println("Thread is going to sleep for 5 seconds...");
+            try {
+                Thread.sleep(5000);
+                System.out.println("Thread woke up after 5 seconds.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
 
+            SendMessage.sendIAmConnectedAreYou(me);
+
+
+
+            System.out.println();
+            System.out.println();
             System.out.println("Thread is going to sleep for 5 seconds...");
             try {
                 Thread.sleep(5000);

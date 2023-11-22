@@ -24,14 +24,11 @@ public class ReceiveMessage extends Thread {
 
     private ContactList instance = getInstance();
 
-    private User me;
-
-    public ReceiveMessage(User me) {this.me = me;}
-
     public String[] extractInfoFromPattern(String inputString) {
         List<String> patternList = List.of(
                 "TO_CHOOSE_NICKNAME: ip: (\\S+)",
-                "CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)",
+                "IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)",
+                "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+) ip address: (\\S+)",
                 "DISCONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)"
         );
 
@@ -49,7 +46,12 @@ public class ReceiveMessage extends Thread {
                     if (patternString.equals("TO_CHOOSE_NICKNAME: ip: (\\S+)")) {
                         String ipAddress = matcher2.group(1);
                         res = new String[]{patternString, ipAddress};
-                    } else if (patternString.equals("CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
+                    } else if (patternString.equals("IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
+                        String id = matcher2.group(1);
+                        String nickname = matcher2.group(2);
+                        String ipAddress = matcher2.group(3);
+                        res = new String[]{patternString, id, nickname, ipAddress};
+                    } else if (patternString.equals("IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+) ip address: (\\S+)")) {
                         String id = matcher2.group(1);
                         String nickname = matcher2.group(2);
                         String ipAddress = matcher2.group(3);
@@ -89,8 +91,10 @@ public class ReceiveMessage extends Thread {
                     switch (res[0]) {
                         case "TO_CHOOSE_NICKNAME: ip: (\\S+)" ->
                                 handleToChooseNickname(res[1], inPacket.getAddress());
-                        case "CONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
-                                handleConnect(res[1], res[2], res[3]);
+                        case "IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
+                                handleIAmConnected(res[1], res[2], res[3]);
+                        case "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
+                                handleIAmConnectedAreYou(res[1], res[2], res[3]);
                         case "DISCONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
                                 handleDisconnect(res[1], res[2], res[3]);
                         default -> System.out.println("error: unhandled message type");
@@ -105,36 +109,37 @@ public class ReceiveMessage extends Thread {
 
     private void handleToChooseNickname(String ipAddress, InetAddress requesterAddress) throws IOException {
         //when we receive the request, we respond by saying who we are
-        //User currentUser = new User("id" + "someUniqueID", "someUniqueNickname", "", "", "", "", true, InetAddress.getByName(ipAddress));
-        SendMessage.sendConnect(MainClass.me);
+        SendMessage.sendIAmConnected(MainClass.me);
         System.out.println("Received to choose nickname request");
     }
 
-    private void handleConnect(String id, String nickname, String ipAddress) throws UnknownHostException {
-        if (instance.existsContact(id)) { //if we know him, we put him to connected
-            User connectedUser = instance.getContact(id);
-            connectedUser.setStatus(true);
-            instance.changeContact(connectedUser);
-            System.out.println("User connected: " + connectedUser.getNickname() + " (" + connectedUser.getIpAddress().getHostAddress() + ")");
-        }
-        else { //else we add him
-            User connectedUser = new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress));
-            instance.addContact(connectedUser);
-            System.out.println("User connected: " + connectedUser.getNickname() + " (" + connectedUser.getIpAddress().getHostAddress() + ")");
-
-        }
+    private void handleIAmConnected(String id, String nickname, String ipAddress) throws UnknownHostException {
+        changeStatus(id, nickname, ipAddress, true);
+        System.out.println("User connected: " + nickname + " (" + ipAddress + ")");
     }
+
+    private void handleIAmConnectedAreYou(String id, String nickname, String ipAddress) throws IOException {
+        changeStatus(id, nickname, ipAddress, true);
+        SendMessage.sendIAmConnected(MainClass.me);
+        System.out.println("User connected: " + nickname + " (" + ipAddress + ")");
+    }
+
 
     private void handleDisconnect(String id, String nickname, String ipAddress) throws UnknownHostException {
-        if (instance.existsContact(id)) { //if we know him, we put him to disconnected
-            User disconnectedUser = instance.getContact(id);
-            disconnectedUser.setStatus(false);
-            instance.changeContact(disconnectedUser);
-            System.out.println("User disconnected: " + disconnectedUser.getNickname() + " (" + disconnectedUser.getIpAddress().getHostAddress() + ")");
+        changeStatus(id, nickname, ipAddress, false);
+        System.out.println("User disconnected: " + nickname + " (" + ipAddress + ")");
+    }
+
+    private void changeStatus(String id, String nickname, String ipAddress, Boolean status) throws UnknownHostException {
+        if (instance.existsContact(id)) { //if we know him, we change his status
+            User user = instance.getContact(id);
+            user.setStatus(status);
+            instance.changeContact(user);
         }
         else { //else we add him
-            instance.addContact(new User(id, nickname, "", "", "", "", true, InetAddress.getByName(ipAddress)));
+            instance.addContact(new User(id, nickname, "", "", "", "", status, InetAddress.getByName(ipAddress)));
         }
     }
+
 
 }

@@ -2,6 +2,7 @@ package view;
 
 import controller.*;
 import model.*;
+import run.MainClass;
 import view.*;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(User me, ReceiveMessage r, SendMessage s) {
+    public Register(ReceiveMessage r, SendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
@@ -54,9 +55,9 @@ public class Register {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                    registerUser(me,r,s); //when the button is clicked it calls the registerUser method
+                    registerUser(r,s); //when the button is clicked it calls the registerUser method
 
-                    HomeTab hometab = new HomeTab(me, r, s);
+                    HomeTab hometab = new HomeTab(r, s);
                     frame.dispose();
 
 
@@ -91,7 +92,7 @@ public class Register {
         frame.setVisible(true);
     }
 
-    private void registerUser(User me, ReceiveMessage r, SendMessage s) throws IOException {
+    private void registerUser(ReceiveMessage r, SendMessage s) throws IOException {
 
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
@@ -99,12 +100,12 @@ public class Register {
         String birthday = this.birthday.getText();
         char[] password = this.password.getPassword();
 
-        me.setFirstName(firstName);
-        me.setLastName(lastName);
-        me.setNickname(username);
-        me.setBirthday(birthday);
-        me.setPassword(Arrays.toString(password));
-        me.setId("id"+username);
+        MainClass.me.setFirstName(firstName);
+        MainClass.me.setLastName(lastName);
+        MainClass.me.setNickname(username);
+        MainClass.me.setBirthday(birthday);
+        MainClass.me.setPassword(Arrays.toString(password));
+        MainClass.me.setId("id"+username);
 
         ContactList instance = getInstance();
         if (instance.existsContactWithNickname(username)) { //if someone already has nickname
