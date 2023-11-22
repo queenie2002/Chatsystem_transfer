@@ -27,7 +27,13 @@ public class User{
         this.password=password;
         this.status=status;
         this.ipAddress=ipAddress;
-    } 
+    }
+
+    public User(String testUser, InetAddress localHost) {
+    }
+
+    public User(String testUser, String s) {
+    }
 
     //METHODS
     public String getId() { return this.idUser; }
