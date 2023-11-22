@@ -15,11 +15,15 @@ import java.util.regex.Pattern;
 
 import static model.ContactList.getInstance;
 
-public class ReceiveMessage {
+public class ReceiveMessage extends Thread {
 
     private static final int RECEIVER_PORT = 2000;
 
     public static boolean running = true;
+
+    private User me;
+
+    public ReceiveMessage(User me) {this.me = me;}
 
     private List<User> connectedUsers = new ArrayList<>();
 
@@ -141,4 +145,5 @@ public class ReceiveMessage {
             System.out.println("User disconnected: " + disconnectedUser.getNickname() + " (" + disconnectedUser.getIpAddress().getHostAddress() + ")");
         }
     }
+
 }

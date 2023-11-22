@@ -22,22 +22,11 @@ public class AppQueen {
         }
     }
 
-    public static ReceiveMessage r = new ReceiveMessage ();
-
-    public static SendMessage s;
-
-    static {
-        try {
-            s = new SendMessage ();
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public AppQueen() throws SocketException {
-    }
-
     public static void main(String[] args) throws IOException {
+
+        ReceiveMessage r = new ReceiveMessage (me);
+
+        SendMessage s = new SendMessage ();
 
         r.start();
         Beginning beginning = new Beginning(me, r, s);

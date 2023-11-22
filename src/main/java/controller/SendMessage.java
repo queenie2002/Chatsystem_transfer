@@ -42,14 +42,14 @@ public class SendMessage {
     }
 
     //send the network scan request to all connected users (broadcast)
-    public void sendNetworkScanRequest(User user) throws IOException {
+    public static void sendNetworkScanRequest(User user) throws IOException {
         String message = "NETWORK_SCAN_REQUEST: ip: " + user.getIpAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("Network scan request broadcasted.");
     }
 
     //response message to the user who scanned the network
-    public void sendNetworkScanResponse(User user, InetAddress requesterAddress) throws IOException {
+    public static void sendNetworkScanResponse(User user, InetAddress requesterAddress) throws IOException {
         String message = "NETWORK_SCAN_RESPONSE: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, requesterAddress);
 
@@ -57,28 +57,30 @@ public class SendMessage {
     }
 
     // send nickname and IP address
-    public void sendNicknameAndIP(User user, InetAddress recipientAddress) throws IOException {
+    public static void sendNicknameAndIP(User user, InetAddress recipientAddress) throws IOException {
         String message = "NICKNAME_AND_IP: nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("Nickname and IP sent to: " + recipientAddress.getHostAddress());
     }
 
-    public void sendDisconnect(User user) throws IOException {
+    public static void sendDisconnect(User user) throws IOException {
         String message = "DISCONNECT: id: " + user.getId();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("Disconnect message sent.");
     }
 
-    public void sendConnect(User user) throws IOException {
+    public static void sendConnect(User user) throws IOException {
         String message = "CONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("Connect message broadcasted.");
     }
 
     //generic send method, useful in other methods
-    private void send(String message, InetAddress receiverAddress) throws IOException {
+    private static void send(String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
         DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, RECEIVER_PORT);
-        sendingSocket.send(outPacket);
+        try (DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT)) {
+            sendingSocket.send(outPacket);
+        }
     }
 }
