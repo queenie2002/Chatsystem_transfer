@@ -1,22 +1,29 @@
-#ChatSystem Project
 
-#Overview
-Creation of a decentralised chat system where
-    - within the company each employee is assigned its own machine, with a fixed IP address
-    - all machines of the company are on the same local network
+ChatSystem Project
+Overview
+The ChatSystem project aims to create a decentralized chat system for a company, where each employee is assigned their own machine with a fixed IP address. All machines in the company are on the same local network.
 
-#Current Progress
-Finished phase 1 : contact discovery with the following features
-   - scanning the network and retrieving the ID and nickname of online users
-   - communication of chosen pseudo to peers
-   - maintenance of a list of connected users
+Current Progress
+Phase 1: Contact Discovery
+In this phase, we have successfully implemented the following features:
 
-#Used for the project
-    - Java 17
-    - Maven 3.9.5
-    - IntelliJ IDEA
+Scanning the network and retrieving the ID and nickname of online users.
+Communicating chosen pseudonyms to peers.
+Maintenance of a list of connected users.
 
-#Instructions on how to compile and run
-    - mvn compile (compiles all classes in the project)
-    - mvn package (compiles all classes of the project and produces a single jar file in the target directory)
-    - java -cp target/chatSystem-1.0-SNAPSHOT.jar run.MainClass
+Technologies Used
+Java 17
+Maven 3.9.5
+IntelliJ IDEA
+
+Instructions on How to Compile and Run
+Compile:
+mvn compile
+This command compiles all classes in the project.
+
+Package:
+mvn package
+This command compiles all classes of the project and produces a single JAR file in the target directory.
+
+Run:
+java -cp target/chatSystem-1.0-SNAPSHOT.jar run.MainClass
