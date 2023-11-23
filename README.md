@@ -2,7 +2,7 @@
 
 #Overview
 Creation of a decentralised chat system where
-    - vwithin the company each employee is assigned its own machine, with a fixed IP address
+    - within the company each employee is assigned its own machine, with a fixed IP address
     - all machines of the company are on the same local network
 
 #Current Progress
