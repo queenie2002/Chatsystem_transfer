@@ -28,13 +28,6 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException {
 
-        /*User user1 = new User("idtest1", "test1", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
-        User user2 = new User("idtest1", "test2", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
-        User user3 = new User("idtest3", "test3", "Y-Quynh", "Nguyen", "2002-03-25" , "pwd", true, InetAddress.getLocalHost());
-        User me = new User("idqueenie", "queenie", "queen", "name", "2002-03-02" , "pwd", false, InetAddress.getLocalHost());
-         */
-
-
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();
         receiveMessage.start();

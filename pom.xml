@@ -55,7 +55,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>model.MainClass</mainClass>
+              <mainClass>run.MainClass</mainClass>
             </manifest>
           </archive>
         </configuration>
