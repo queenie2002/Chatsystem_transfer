@@ -84,21 +84,25 @@ public class ReceiveMessage extends Thread {
                 receivingSocket.receive(inPacket);
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
 
-                String[] res = extractInfoFromPattern(received);
+                String senderIpAddress = inPacket.getAddress().getHostAddress();
 
-                if (res != null) {
-                    switch (res[0]) {
-                        case "TO_CHOOSE_NICKNAME: ip: (\\S+)" ->
-                                handleToChooseNickname(res[1], inPacket.getAddress());
-                        case "IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
-                                handleIAmConnected(res[1], res[2], res[3]);
-                        case "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
-                                handleIAmConnectedAreYou(res[1], res[2], res[3]);
-                        case "DISCONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
-                                handleDisconnect(res[1], res[2], res[3]);
-                        default -> System.out.println("error: unhandled message type");
+                if (senderIpAddress.equals(String.valueOf(MainClass.me.getIpAddress()))) {
+                    return;
+                } else {
+
+                    String[] res = extractInfoFromPattern(received);
+
+                    if (res != null) {
+                        switch (res[0]) {
+                            case "TO_CHOOSE_NICKNAME: ip: (\\S+)" -> handleToChooseNickname(res[1], inPacket.getAddress());
+                            case "IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" -> handleIAmConnected(res[1], res[2], res[3]);
+                            case "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" ->
+                                    handleIAmConnectedAreYou(res[1], res[2], res[3]);
+                            case "DISCONNECT: id: (\\S+) nickname: (\\S+) ip address: (\\S+)" -> handleDisconnect(res[1], res[2], res[3]);
+                            default -> System.out.println("error: unhandled message type");
+                        }
+                        System.out.println();
                     }
-                    System.out.println();
                 }
             }
         } catch (IOException e) {
@@ -130,7 +134,6 @@ public class ReceiveMessage extends Thread {
     }
 
     private void changeStatus(String id, String nickname, String ipAddress, Boolean status) throws UnknownHostException {
-        System.out.println("in status");
         if (instance.existsContact(id)) { //if we know him, we change his status
             User user = instance.getContact(id);
             user.setStatus(status);

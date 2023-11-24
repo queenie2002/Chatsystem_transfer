@@ -14,8 +14,6 @@ public class User{
     private Boolean status;                         //if disconnected = false, connected = true
 
     private InetAddress ipAddress;
-
-    public static int uniqueNickname = 0;  //0 si on sait pas s'il est unique, 1 si PAS unique et 2 si unique
     
     //CONSTRUCTOR
     public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress){
