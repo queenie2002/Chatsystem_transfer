@@ -28,6 +28,9 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException {
 
+
+        System.out.print(InetAddress.getLocalHost());
+
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();
         receiveMessage.start();
@@ -67,6 +70,10 @@ public class MainClass {
         System.out.println();
         System.out.print("Printing Contact List ");
         instance.printContactList();
+
+        System.out.print(InetAddress.getLocalHost());
+
+
 
         // Create an instance of the Beginning class
         //Beginning beginning = new Beginning(receiveMessage, sendMessage);
