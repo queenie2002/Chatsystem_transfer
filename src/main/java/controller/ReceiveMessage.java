@@ -114,23 +114,23 @@ public class ReceiveMessage extends Thread {
     public void handleToChooseNickname(String ipAddress, InetAddress requesterAddress) throws IOException {
         //when we receive the request, we respond by saying who we are
         SendMessage.sendIAmConnected(MainClass.me);
-        System.out.println("RECEIVED to choose nickname request");
+        //System.out.println("RECEIVED to choose nickname request");
     }
 
     public void handleIAmConnected(String id, String nickname, String ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, true);
-        System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
+       // System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
     public void handleIAmConnectedAreYou(String id, String nickname, String ipAddress) throws IOException {
         changeStatus(id, nickname, ipAddress, true);
         SendMessage.sendIAmConnected(MainClass.me);
-        System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
+        //System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
     public void handleDisconnect(String id, String nickname, String ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, false);
-        System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
+        //System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
     public void changeStatus(String id, String nickname, String ipAddress, Boolean status) throws UnknownHostException {
@@ -138,11 +138,13 @@ public class ReceiveMessage extends Thread {
             User user = instance.getContact(id);
             user.setStatus(status);
             instance.changeContact(user);
-            System.out.println("contact already exists");
+            //System.out.println("contact already exists");
         }
         else { //else we add him
-            instance.addContact(new User(id, nickname, "", "", "", "", status, InetAddress.getByName(ipAddress)));
-            System.out.println("contact added");
+            if (!((id.equals("[]")) && (nickname.equals("[]")))) {
+                instance.addContact(new User(id, nickname, "", "", "", "", status, InetAddress.getByName(ipAddress)));
+                //System.out.println("contact added");
+            }
         }
     }
 

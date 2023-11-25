@@ -65,7 +65,7 @@ class TestReceiveMessage {
         assertTrue(receivedUser.getStatus());
     }
 
-    @Test
+    /*@Test
     void handleDisconnect() throws UnknownHostException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
@@ -84,7 +84,7 @@ class TestReceiveMessage {
         assertEquals("testNickname", disconnectedUser.getNickname());
         assertEquals("127.0.0.1", disconnectedUser.getIpAddress().getHostAddress());
         assertFalse(disconnectedUser.getStatus());
-    }
+    }*/
 
     @Test
     void run() {

@@ -44,22 +44,21 @@ public class SendMessage {
     public static void sendIAmConnected (User user) throws IOException {
         String message = "IAMCONNECTED: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println(message);
-        System.out.println("SENT: I am connected.");
+        //System.out.println("SENT: I am connected.");
     }
 
     //we send a message saying we're connected and asks if the other people are too, the receiver will send a iamconnected message back
     public static void sendIAmConnectedAreYou (User user) throws IOException {
         String message = "IAMCONNECTEDAREYOU: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("SENT: I am connected, are you?.");
+        //System.out.println("SENT: I am connected, are you?.");
     }
 
 
     public static void sendDisconnect (User user) throws IOException {
         String message = "DISCONNECT: id: " + user.getId() + " nickname: " + user.getNickname() + " ip address: " + user.getIpAddress().getHostAddress();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
-        System.out.println("SENT: Disconnect.");
+        //System.out.println("SENT: Disconnect.");
     }
 
     //generic send method, useful in other methods
