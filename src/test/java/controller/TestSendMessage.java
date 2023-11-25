@@ -1,100 +1,47 @@
-/*package controller;
+package controller;
+
+import controller.SendMessage;
 import model.User;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.InetAddress;
-import java.net.SocketException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TestSendMessage {
+// Test to verify that the methods in SendMessage can be called without errors
+class TestSendMessage {
 
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
+    @Test
+    void sendToChooseNickname() {
+        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
-    @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-    }
-
-    @After
-    public void restoreStreams() {
-        System.setOut(originalOut);
+        assertDoesNotThrow(() -> SendMessage.sendToChooseNickname(user));
     }
 
     @Test
-    public void testSendBroadcastBeginning() throws IOException {
-        SendMessageRaph sendMessageRaph = new SendMessageRaph();
-        User user = new User("TestUser", "192.168.0.1");
-        sendMessageRaph.sendBroadcastBeginning(user);
+    void sendIAmConnected() {
+        //User with test info.
+        // The loopback address is IP address that is used to do tests locally without actually sending data
+        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
-        // Verify the output contains the expected message
-        String expectedOutput = "Broadcast message sent.";
-        assertEquals(expectedOutput, outContent.toString().trim());
-
-        // Clean up
-        sendMessageRaph.closeSocket();
+        //makes sure that no exceptions are thrown
+        assertDoesNotThrow(() -> SendMessage.sendIAmConnected(user));
     }
 
     @Test
-    public void testSendDisconnect() throws IOException {
-        SendMessageRaph sendMessageRaph = new SendMessageRaph();
-        User user = new User("TestUser", "192.168.0.1");
-        sendMessageRaph.sendDisconnect(user);
+    void sendIAmConnectedAreYou() {
+        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
-        // Verify the output contains the expected message
-        String expectedOutput = "Disconnect message sent.";
-        assertEquals(expectedOutput, outContent.toString().trim());
-
-        // Clean up
-        sendMessageRaph.closeSocket();
+        assertDoesNotThrow(() -> SendMessage.sendIAmConnectedAreYou(user));
     }
 
     @Test
-    public void testSendConnect() throws IOException {
-        SendMessageRaph sendMessageRaph = new SendMessageRaph();
-        User user = new User("TestUser", "192.168.0.1");
-        sendMessageRaph.sendConnect(user);
+    void sendDisconnect() {
+        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
-        // Verify the output contains the expected message
-        String expectedOutput = "Connect message sent.";
-        assertEquals(expectedOutput, outContent.toString().trim());
-
-        // Clean up
-        sendMessageRaph.closeSocket();
-    }
-
-    @Test
-    public void testSendNicknameExists() throws IOException {
-        SendMessageRaph sendMessageRaph = new SendMessageRaph();
-        User user = new User("TestUser", "192.168.0.1");
-        sendMessageRaph.sendNicknameExists(user);
-
-        // Verify the output contains the expected message
-        String expectedOutput = "Nickname Exists message sent.";
-        assertEquals(expectedOutput, outContent.toString().trim());
-
-        // Clean up
-        sendMessageRaph.closeSocket();
-    }
-
-    @Test
-    public void testSendNicknameUnique() throws IOException {
-        SendMessageRaph sendMessageRaph = new SendMessageRaph();
-        User user = new User("TestUser", "192.168.0.1");
-        sendMessageRaph.sendNicknameUnique(user);
-
-        // Verify the output contains the expected message
-        String expectedOutput = "Nickname Unique message sent.";
-        assertEquals(expectedOutput, outContent.toString().trim());
-
-        // Clean up
-        sendMessageRaph.closeSocket();
+        assertDoesNotThrow(() -> SendMessage.sendDisconnect(user));
     }
 }
-*/
+
+

@@ -1,63 +1,28 @@
-/*package controller;
+package controller;
 
-import model.User;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import controller.ReceiveMessage;
+import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+class TestReceiveMessage {
 
-public class TestReceiveMessage {
+    @Test
+    void extractInfoFromPattern() {
+        ReceiveMessage receiveMessage = new ReceiveMessage();
+        String[] result = receiveMessage.extractInfoFromPattern("IAMCONNECTED: id: testId nickname: testNickname ip address: 127.0.0.1");
 
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
-
-    @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-    }
-
-    @After
-    public void restoreStreams() {
-        System.setOut(originalOut);
+        assertNotNull(result);
+        assertEquals(4, result.length);
+        assertEquals("IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)", result[0]);
+        assertEquals("testId", result[1]);
+        assertEquals("testNickname", result[2]);
+        assertEquals("127.0.0.1", result[3]);
     }
 
     @Test
-    public void testReceiveMessage() throws IOException, InterruptedException {
-        // Setup
-        ReceiveMessage.running = true;
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(() -> {
-            ReceiveMessage receiveMessage = new ReceiveMessage();
-            receiveMessage.start();
-        });
+    void run() {
 
-        // Give some time for the thread to start
-        Thread.sleep(1000);
-
-        // Simulate receiving a message
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.sendBroadcastBeginning(new User("TestUser", InetAddress.getLocalHost()));
-
-        // Give some time for the message to be processed
-        Thread.sleep(1000);
-
-        // Assert
-        assertTrue(outContent.toString().contains("Broadcast message sent."));
-
-        // Cleanup
-        ReceiveMessage.running = false;
-        executorService.shutdown();
     }
 }
-*/
