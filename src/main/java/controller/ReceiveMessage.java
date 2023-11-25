@@ -111,29 +111,29 @@ public class ReceiveMessage extends Thread {
         }
     }
 
-    private void handleToChooseNickname(String ipAddress, InetAddress requesterAddress) throws IOException {
+    public void handleToChooseNickname(String ipAddress, InetAddress requesterAddress) throws IOException {
         //when we receive the request, we respond by saying who we are
         SendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED to choose nickname request");
     }
 
-    private void handleIAmConnected(String id, String nickname, String ipAddress) throws UnknownHostException {
+    public void handleIAmConnected(String id, String nickname, String ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, true);
         System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
-    private void handleIAmConnectedAreYou(String id, String nickname, String ipAddress) throws IOException {
+    public void handleIAmConnectedAreYou(String id, String nickname, String ipAddress) throws IOException {
         changeStatus(id, nickname, ipAddress, true);
         SendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
-    private void handleDisconnect(String id, String nickname, String ipAddress) throws UnknownHostException {
+    public void handleDisconnect(String id, String nickname, String ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, false);
         System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    private void changeStatus(String id, String nickname, String ipAddress, Boolean status) throws UnknownHostException {
+    public void changeStatus(String id, String nickname, String ipAddress, Boolean status) throws UnknownHostException {
         if (instance.existsContact(id)) { //if we know him, we change his status
             User user = instance.getContact(id);
             user.setStatus(status);
