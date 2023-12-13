@@ -30,9 +30,6 @@ public class User{
     public User(String testUser, InetAddress localHost) {
     }
 
-    public User(String testUser, String s) {
-    }
-
     //METHODS
     public String getId() { return this.idUser; }
     public String getNickname (){ return this.nickname;}

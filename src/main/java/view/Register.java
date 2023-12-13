@@ -38,7 +38,7 @@ public class Register {
     //constructor: sets up the basic properties of the window like the title
     public Register(ReceiveMessage r, SendMessage s) throws IOException {
 
-        SendMessage.sendToChooseNickname(MainClass.me);
+        SendMessage.sendToChooseNickname();
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");

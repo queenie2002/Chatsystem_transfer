@@ -41,7 +41,7 @@ public class ContactList {
     }
 
     public void addContact(User user) {
-        myContactList.add(user); printContactList();
+        myContactList.add(user);
     }
 
     public void removeContact(String idUser) { //on utilise idUser

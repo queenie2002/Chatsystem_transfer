@@ -16,7 +16,7 @@ class TestSendMessage {
     void sendToChooseNickname() {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
-        assertDoesNotThrow(() -> SendMessage.sendToChooseNickname(user));
+        assertDoesNotThrow(SendMessage::sendToChooseNickname);
     }
 
     @Test

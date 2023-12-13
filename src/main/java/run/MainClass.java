@@ -19,7 +19,7 @@ public class MainClass {
 
     static {
         try {
-            me = new User("[]", "[]", "[]", "[]", "[]" , "[]", null, InetAddress.getLocalHost());
+            me = new User("[]", "[]", "[]", "[]", "[]" , "[]", null, InetAddress.getByName("0.0.0.0"));
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
@@ -34,13 +34,11 @@ public class MainClass {
         receiveMessage.start();
         ContactList instance = getInstance();
 
-        SendMessage.sendIAmConnected(me);
-
-
         //startContactDiscovery
-        //SendMessage.sendToChooseNickname(me);
+        SendMessage.sendToChooseNickname();
         // Create a Scanner object to read input
         Scanner scanner = new Scanner(System.in);
+
 
         boolean isUnique = false;
         while(!isUnique) {
