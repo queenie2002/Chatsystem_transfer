@@ -49,6 +49,8 @@ class TestReceiveMessage {
         assertEquals("testNickname", receivedUser.getNickname());
         assertEquals("127.0.0.1", receivedUser.getIpAddress().getHostAddress());
         assertTrue(receivedUser.getStatus());
+
+        System.out.println("handleIAmConnected success");
     }
 
     @Test
@@ -67,6 +69,8 @@ class TestReceiveMessage {
         assertEquals("testNickname", receivedUser.getNickname());
         assertEquals("127.0.0.1", receivedUser.getIpAddress().getHostAddress());
         assertTrue(receivedUser.getStatus());
+
+        System.out.println("handleIAmConnectedAreYou success");
     }
 
     /*@Test

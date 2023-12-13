@@ -3,6 +3,7 @@ package controller;
 import controller.SendMessage;
 import model.User;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.engine.support.descriptor.FileSystemSource;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +18,8 @@ class TestSendMessage {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(SendMessage::sendToChooseNickname);
+        System.out.println("sendToChooseNickname success");
+
     }
 
     @Test
@@ -27,6 +30,7 @@ class TestSendMessage {
 
         //makes sure that no exceptions are thrown
         assertDoesNotThrow(() -> SendMessage.sendIAmConnected(user));
+        System.out.println("sendIAmConnected success");
     }
 
     @Test
@@ -34,6 +38,7 @@ class TestSendMessage {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(() -> SendMessage.sendIAmConnectedAreYou(user));
+        System.out.println("sendIAmConnectedAreYou success");
     }
 
     @Test
@@ -41,6 +46,7 @@ class TestSendMessage {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(() -> SendMessage.sendDisconnect(user));
+        System.out.println("sendDisconnect success");
     }
 }
 
