@@ -122,7 +122,7 @@ public class ContactList {
         Boolean found = false;
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getId(), user.getId())) {
-                System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+" password: "+user.getPassword()+" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
+                System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
                 found = true;
             }
 

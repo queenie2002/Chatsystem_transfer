@@ -43,6 +43,9 @@ public class Beginning extends JFrame {
                 frame.dispose();
             }
         });
+
+
+
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

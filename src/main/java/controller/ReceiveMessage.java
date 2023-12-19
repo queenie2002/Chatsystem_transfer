@@ -148,7 +148,11 @@ public class ReceiveMessage extends Thread {
 
     public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, true);
-       System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
+        System.out.println();
+        System.out.println("Printing Contact List ");
+        instance.printContactList();
+
     }
 
     public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress) throws IOException {

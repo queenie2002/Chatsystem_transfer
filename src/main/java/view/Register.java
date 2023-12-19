@@ -105,23 +105,22 @@ public class Register {
 
         PopUpTab popup = new PopUpTab("we're checking for unicity of your nickname");
 
-        //wait a little for the answers to come in, 8 sec
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
 
         ContactList instance = getInstance();
         if (instance.existsContactWithNickname(username)) { //if someone already has nickname
             PopUpTab popup1 = new PopUpTab("choose another nickname");
-            return;
         }
         else { //if unique i go to next tab and tell people i am connected
             HomeTab hometab = new HomeTab(r, s);
             try {
                 SendMessage.sendIAmConnected(MainClass.me);
+
+                System.out.println();
+                System.out.println("Printing Contact List after choose nickname ");
+                instance.printContactList();
+
+
+
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

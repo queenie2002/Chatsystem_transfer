@@ -33,66 +33,11 @@ public class MainClass {
         SendMessage sendMessage = new SendMessage();
         receiveMessage.start();
         ContactList instance = getInstance();
-        Scanner scanner = new Scanner(System.in);
-
-        //New User or Not ?
-
-
-        boolean notCorrectAnswer = true;
-
-        while (notCorrectAnswer) {
-
-            System.out.print("Login or Register ? ");
-            String areYouNew = scanner.nextLine();
-
-            if (areYouNew.equalsIgnoreCase("login")) {
-                notCorrectAnswer = false;
-            } else if (areYouNew.equalsIgnoreCase("register")) {
-                notCorrectAnswer = false;
-            } else {
-                System.out.print("answer with 'login' or 'register'");
-            }
-        }
-
-        //Start Contact Discovery---------------------------------------------------------
-        SendMessage.sendToChooseNickname();
-
-
-        boolean isUnique = false;
-        while(!isUnique) {
-
-            System.out.print("Enter Nickname: ");
-            String nicknameInput = scanner.nextLine();
-
-            if (instance.existsContactWithNickname(nicknameInput)) { //if someone already has nickname
-                System.out.println("nickname not unique, choose another one");
-                PopUpTab popup1 = new PopUpTab("choose another nickname");
-            } else {
-                isUnique = true;
-
-                try {
-                    me.setNickname(nicknameInput);
-                    me.setId("id"+nicknameInput);
-                    SendMessage.sendIAmConnected(MainClass.me);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-
-        }
-
-        System.out.println();
-        System.out.println("Printing Contact List ");
-        instance.printContactList();
-
+        //Scanner scanner = new Scanner(System.in);
 
 
         // Create an instance of the Beginning class
-        //Beginning beginning = new Beginning(receiveMessage, sendMessage);
-
-
-        scanner.close();
-
+        Beginning beginning = new Beginning(receiveMessage, sendMessage);
 
     }
 

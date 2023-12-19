@@ -17,9 +17,10 @@ Java 17
 Maven 3.9.5
 IntelliJ IDEA
 
-###Pour aller sur l'autre ordi
+###To connect to another computer from ours
 ssh -X identifiant@ordi
-
+This command allows us to access another computer and get their graphics ???
+    
 ###Instructions on How to Compile and Run
 Compile:
 mvn compile
