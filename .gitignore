@@ -28,4 +28,7 @@ target/
 *.war
 *.ear
 
+#Database file
+*.db
+
 
