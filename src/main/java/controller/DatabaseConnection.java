@@ -6,12 +6,12 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     public static void connect() {
-        Connection conn = null;
+        Connection connection = null;
         try {
             // db parameters
             String url = "jdbc:sqlite:my_database.db";
             // create a connection to the database
-            conn = DriverManager.getConnection(url);
+            connection = DriverManager.getConnection(url);
 
             System.out.println("Connection to SQLite has been established.");
 
@@ -19,8 +19,8 @@ public class DatabaseConnection {
             System.out.println(e.getMessage());
         } finally {
             try {
-                if (conn != null) {
-                    conn.close();
+                if (connection != null) {
+                    connection.close();
                 }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
