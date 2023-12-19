@@ -17,6 +17,9 @@ Java 17
 Maven 3.9.5
 IntelliJ IDEA
 
+###Pour aller sur l'autre ordi
+ssh -X identifiant@ordi
+
 ###Instructions on How to Compile and Run
 Compile:
 mvn compile

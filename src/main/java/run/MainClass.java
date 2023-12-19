@@ -28,16 +28,34 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException {
 
-
+        //Initialize----------------------------------------------------------------------
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();
         receiveMessage.start();
         ContactList instance = getInstance();
-
-        //startContactDiscovery
-        SendMessage.sendToChooseNickname();
-        // Create a Scanner object to read input
         Scanner scanner = new Scanner(System.in);
+
+        //New User or Not ?
+
+
+        boolean notCorrectAnswer = true;
+
+        while (notCorrectAnswer) {
+
+            System.out.print("Login or Register ? ");
+            String areYouNew = scanner.nextLine();
+
+            if (areYouNew.equalsIgnoreCase("login")) {
+                notCorrectAnswer = false;
+            } else if (areYouNew.equalsIgnoreCase("register")) {
+                notCorrectAnswer = false;
+            } else {
+                System.out.print("answer with 'login' or 'register'");
+            }
+        }
+
+        //Start Contact Discovery---------------------------------------------------------
+        SendMessage.sendToChooseNickname();
 
 
         boolean isUnique = false;
@@ -47,11 +65,11 @@ public class MainClass {
             String nicknameInput = scanner.nextLine();
 
             if (instance.existsContactWithNickname(nicknameInput)) { //if someone already has nickname
+                System.out.println("nickname not unique, choose another one");
                 PopUpTab popup1 = new PopUpTab("choose another nickname");
-                return;
             } else {
                 isUnique = true;
-                scanner.close();
+
                 try {
                     me.setNickname(nicknameInput);
                     me.setId("id"+nicknameInput);
@@ -71,6 +89,10 @@ public class MainClass {
 
         // Create an instance of the Beginning class
         //Beginning beginning = new Beginning(receiveMessage, sendMessage);
+
+
+        scanner.close();
+
 
     }
 
