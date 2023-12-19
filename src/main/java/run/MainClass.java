@@ -7,6 +7,8 @@ import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
@@ -20,7 +22,7 @@ public class MainClass {
     static {
         try {
             me = new User("[]", "[]", "[]", "[]", "[]" , "[]", null, InetAddress.getByName("0.0.0.0"));
-        } catch (UnknownHostException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -29,14 +31,11 @@ public class MainClass {
     public static void main(String[] args) throws IOException {
 
         //Initialize----------------------------------------------------------------------
-        ReceiveMessage receiveMessage = new ReceiveMessage();
-        SendMessage sendMessage = new SendMessage();
+        ReceiveMessage receiveMessage = me.getReceiveMessage();
+        SendMessage sendMessage = me.getSendMessage();
         receiveMessage.start();
-        ContactList instance = getInstance();
-        //Scanner scanner = new Scanner(System.in);
 
 
-        // Create an instance of the Beginning class
         Beginning beginning = new Beginning(receiveMessage, sendMessage);
 
     }

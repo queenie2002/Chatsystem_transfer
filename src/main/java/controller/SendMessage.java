@@ -4,6 +4,9 @@ import model.User;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+
+import static run.MainClass.me;
 
 /*implemented :
 *
@@ -24,6 +27,13 @@ we can then choose a pseudo different to all other currently connected users
 public class SendMessage {
 
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
+
+    private static int SENDER_PORT;
+
+
+    public SendMessage(int socket) throws SocketException {
+        SENDER_PORT = socket;
+    }
 
     public void closeSocket(DatagramSocket sendingSocket) {
         if (sendingSocket != null && !sendingSocket.isClosed()) {
@@ -60,13 +70,22 @@ public class SendMessage {
         System.out.println("SENT: Disconnect.");
     }
 
+    public static void toDisconnect() throws IOException {
+        //have to socket close for all contacts ??
+        SendMessage.sendDisconnect(me);
+        me.setStatus(false);
+        System.out.println("am supposed to close app after--------------");
+    }
+
+
+
     //generic send method, useful in other methods
     private static void send (String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
         DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, 2000); //receiver port
 
         try {
-            DatagramSocket sendingSocket = new DatagramSocket(1200); //sending port
+            DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT); //sending port
             sendingSocket.setBroadcast(true);
             sendingSocket.send(outPacket);
             System.out.println();

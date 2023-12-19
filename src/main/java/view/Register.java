@@ -90,6 +90,9 @@ public class Register {
 
     private void registerUser(ReceiveMessage r, SendMessage s, Frame frame) throws IOException {
 
+        //faut créer la database et l'initialiser
+
+
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
         String username = this.username.getText();

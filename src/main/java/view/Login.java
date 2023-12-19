@@ -23,52 +23,21 @@ public class Login {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
+
+
+
+
         //Create buttons
         JButton button_login = new JButton("login");
         button_login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nicknameInput = getNickname();
-                String passwordInput = getPassword();
+                boolean found = false;
+                found = loginFunction(found);
 
-
-                //we check if someone with that nickname exists
-                ContactList instance = ContactList.getInstance();
-                if (instance.existsContactWithNickname(nicknameInput)) {
-
-                    User databaseUser = instance.getContactWithNickname(nicknameInput);
-
-                    if ((Objects.equals(databaseUser.getNickname(), nicknameInput)) && Objects.equals(databaseUser.getPassword(), passwordInput)) {
-
-
-
-                        MainClass.me.setFirstName(databaseUser.getFirstName());
-                        MainClass.me.setLastName(databaseUser.getLastName());
-                        MainClass.me.setNickname(databaseUser.getNickname());
-                        MainClass.me.setBirthday(databaseUser.getBirthday());
-                        MainClass.me.setPassword(databaseUser.getPassword());
-                        MainClass.me.setId("id"+databaseUser.getNickname());
-                        MainClass.me.setStatus(true);
-                        MainClass.me.setIpAddress(databaseUser.getIpAddress());
-
-                        instance.printContact(MainClass.me);
-
-                        HomeTab hometab = new HomeTab(r, s);
-                        try {
-                            SendMessage.sendIAmConnected(MainClass.me);
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        frame.dispose();
-                    }
-                    else { //-----------------------------------------COMMENT FAIRE POUR TOURNER EN BOUCLE
-                        PopUpTab popup = new PopUpTab("wrong login information try again");
-                        System.out.println("error: wrong password and login");
-                    }
-                }
-                else {
-                    PopUpTab popup = new PopUpTab("wrong nickname");
-                    System.out.println("error: there doesn't exist someone with that nickname");
+                if (found) {
+                    HomeTab hometab = new HomeTab(r, s);
+                    frame.dispose();
                 }
             }
         });
@@ -100,5 +69,55 @@ public class Login {
 
     public String getPassword() {
         return this.jpasswordField.getText();
+    }
+
+    public boolean loginFunction(boolean found) {
+
+        //faut récup la database
+
+
+        String nicknameInput = getNickname();
+        String passwordInput = getPassword();
+
+
+        //we check if someone with that nickname exists
+        ContactList instance = ContactList.getInstance();
+        if (instance.existsContactWithNickname(nicknameInput)) {
+
+            User databaseUser = instance.getContactWithNickname(nicknameInput);
+
+            if ((Objects.equals(databaseUser.getNickname(), nicknameInput)) && Objects.equals(databaseUser.getPassword(), passwordInput)) {
+
+
+
+                MainClass.me.setFirstName(databaseUser.getFirstName());
+                MainClass.me.setLastName(databaseUser.getLastName());
+                MainClass.me.setNickname(databaseUser.getNickname());
+                MainClass.me.setBirthday(databaseUser.getBirthday());
+                MainClass.me.setPassword(databaseUser.getPassword());
+                MainClass.me.setId("id"+databaseUser.getNickname());
+                MainClass.me.setStatus(true);
+                MainClass.me.setIpAddress(databaseUser.getIpAddress());
+
+                instance.printContact(MainClass.me);
+
+
+                try {
+                    SendMessage.sendIAmConnected(MainClass.me);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return true;
+            }
+            else { //-----------------------------------------COMMENT FAIRE POUR TOURNER EN BOUCLE
+                PopUpTab popup = new PopUpTab("wrong login information try again");
+                System.out.println("error: wrong password and login");
+            }
+        }
+        else {
+            PopUpTab popup = new PopUpTab("wrong nickname");
+            System.out.println("error: there doesn't exist someone with that nickname");
+        }
+        return false;
     }
 }

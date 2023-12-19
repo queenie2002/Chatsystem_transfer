@@ -7,6 +7,7 @@ import org.junit.platform.engine.support.descriptor.FileSystemSource;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestSendMessage {
 
     @Test
-    void sendToChooseNickname() {
+    void sendToChooseNickname() throws SocketException {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(SendMessage::sendToChooseNickname);
@@ -23,7 +24,7 @@ class TestSendMessage {
     }
 
     @Test
-    void sendIAmConnected() {
+    void sendIAmConnected() throws SocketException {
         //User with test info.
         // The loopback address is IP address that is used to do tests locally without actually sending data
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
@@ -34,7 +35,7 @@ class TestSendMessage {
     }
 
     @Test
-    void sendIAmConnectedAreYou() {
+    void sendIAmConnectedAreYou() throws SocketException {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(() -> SendMessage.sendIAmConnectedAreYou(user));
@@ -42,7 +43,7 @@ class TestSendMessage {
     }
 
     @Test
-    void sendDisconnect() {
+    void sendDisconnect() throws SocketException {
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(() -> SendMessage.sendDisconnect(user));

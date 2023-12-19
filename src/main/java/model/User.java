@@ -1,5 +1,8 @@
 package model;
 
+import controller.ReceiveMessage;
+import controller.SendMessage;
+
 import java.io.*;
 import java.net.*;
 
@@ -14,9 +17,13 @@ public class User{
     private Boolean status;                         //if disconnected = false, connected = true
 
     private InetAddress ipAddress;
-    
+
+    private ReceiveMessage receiveMessage;
+    private SendMessage sendMessage;
+    private static int socket=1025;
+
     //CONSTRUCTOR
-    public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress){
+    public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) throws SocketException {
         this.idUser = idUser;
         this.nickname = nickname;
         this.firstName = firstName;
@@ -25,6 +32,10 @@ public class User{
         this.password=password;
         this.status=status;
         this.ipAddress=ipAddress;
+        socket+=1;
+        receiveMessage = new ReceiveMessage(socket);
+        sendMessage = new SendMessage(socket);
+        receiveMessage.start(); //quand est ce quon larrete?
     }
 
     public User(String testUser, InetAddress localHost) {
@@ -40,6 +51,10 @@ public class User{
     public Boolean getStatus (){ return this.status;}
 
     public InetAddress getIpAddress() { return this.ipAddress; }
+
+    public int getSocket() { return socket; }
+    public ReceiveMessage getReceiveMessage() { return this.receiveMessage; }
+    public SendMessage getSendMessage() { return this.sendMessage; }
 
     public void setId(String idUser) { this.idUser = idUser; }
     public void setNickname (String nickname) { this.nickname=nickname;}

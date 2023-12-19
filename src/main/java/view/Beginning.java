@@ -2,11 +2,14 @@ package view;
 
 import controller.*;
 import model.User;
+import run.MainClass;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import static run.MainClass.me;
 
 /*Reminders on swing
  * JLabel -> display area for text/images
@@ -25,9 +28,12 @@ public class Beginning extends JFrame {
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
         JButton registerButton = new JButton("Register");
         JButton loginButton = new JButton("Login");
+
+
+
+
 
 
         registerButton.addActionListener(new ActionListener() {
@@ -46,6 +52,9 @@ public class Beginning extends JFrame {
 
 
 
+
+
+
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -53,6 +62,10 @@ public class Beginning extends JFrame {
                 frame.dispose();
             }
         });
+
+
+
+
 
         // Create layout
         JPanel panel = new JPanel(new GridLayout(1, 2)); //arranges the components in a grid
@@ -62,13 +75,22 @@ public class Beginning extends JFrame {
 
 
 
+
+
+
+
+
+
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ReceiveMessage.running = false;
+                try {
+                    SendMessage.toDisconnect();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 frame.dispose();
-                System.out.println("am supposed to close app after--------------");
             }
         });
 

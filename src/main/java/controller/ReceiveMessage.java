@@ -16,16 +16,14 @@ import static model.ContactList.getInstance;
 
 public class ReceiveMessage extends Thread {
 
-    private static final int RECEIVER_PORT = 2000;
-
-    public static boolean running = true;
-
+    private static int RECEIVER_PORT;
     private ContactList instance = getInstance();
 
     public final ArrayList<String> myIPAddresses;
-    public ReceiveMessage() throws SocketException { //i'm adding a constructor qui est empty
+    public ReceiveMessage(int socket) throws SocketException { //i'm adding a constructor qui est empty
         myIPAddresses = new ArrayList<String>();
         makeMyIPAddresses();
+        RECEIVER_PORT = socket;
     }
 
     public void makeMyIPAddresses() throws SocketException {
@@ -96,9 +94,17 @@ public class ReceiveMessage extends Thread {
         try (DatagramSocket receivingSocket = new DatagramSocket(RECEIVER_PORT)) {
             byte[] buf = new byte[256];
 
-            while (running) {
+            while (true) {
                 DatagramPacket inPacket = new DatagramPacket(buf, buf.length);
-                receivingSocket.receive(inPacket);
+                try {
+                    receivingSocket.receive(inPacket);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    return;
+                }
+
+
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
 
                 String senderIpAddress = inPacket.getAddress().getHostAddress();
@@ -146,7 +152,7 @@ public class ReceiveMessage extends Thread {
         System.out.println("RECEIVED to choose nickname request");
     }
 
-    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
+    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SocketException {
         changeStatus(id, nickname, ipAddress, true);
         System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
         System.out.println();
@@ -161,12 +167,12 @@ public class ReceiveMessage extends Thread {
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
+    public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SocketException {
         changeStatus(id, nickname, ipAddress, false);
         System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException {
+    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SocketException {
         if (instance.existsContact(id)) { //if we know him, we change his status
             User user = instance.getContact(id);
             user.setStatus(status);
