@@ -27,6 +27,7 @@ we can then choose a pseudo different to all other currently connected users
 public class SendMessage {
 
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
+    private static final int BROADCAST_PORT = 1024;
 
     private static int SENDER_PORT;
 
@@ -46,27 +47,27 @@ public class SendMessage {
     public static void sendToChooseNickname () throws IOException {
         //user sends his ip
         String message = "TO_CHOOSE_NICKNAME:";
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS), BROADCAST_PORT);
         System.out.println("SENT: To choose nickname request.");
     }
 
     //we send a message saying we're connected, the receiver won't send anything back
     public static void sendIAmConnected (User user) throws IOException {
         String message = "IAMCONNECTED: id: " + user.getId() + " nickname: " + user.getNickname();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS), BROADCAST_PORT);
         System.out.println("SENT: I am connected.");
     }
 
     //we send a message saying we're connected and asks if the other people are too, the receiver will send a iamconnected message back
     public static void sendIAmConnectedAreYou (User user) throws IOException {
         String message = "IAMCONNECTEDAREYOU: id: " + user.getId() + " nickname: " + user.getNickname();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS), BROADCAST_PORT);
         System.out.println("SENT: I am connected, are you?.");
     }
 
     public static void sendDisconnect (User user) throws IOException {
         String message = "DISCONNECT: id: " + user.getId() + " nickname: " + user.getNickname();
-        send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        send(message, InetAddress.getByName(BROADCAST_ADDRESS), BROADCAST_PORT);
         System.out.println("SENT: Disconnect.");
     }
 
@@ -79,10 +80,27 @@ public class SendMessage {
 
 
 
+    //TCP PART
+
+    public static void sendAMessage(User user, String message) throws IOException {
+        send(message, user.getIpAddress(), user.getMySocket());
+        System.out.println("SENT: A Message.");
+    }
+
+
+
+
+
+
+
+
+
+
+
     //generic send method, useful in other methods
-    private static void send (String message, InetAddress receiverAddress) throws IOException {
+    private static void send (String message, InetAddress receiverAddress, int receiverPort) throws IOException {
         byte[] buf = message.getBytes();
-        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, 2000); //receiver port
+        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, receiverPort); //receiver port
 
         try {
             DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT); //sending port

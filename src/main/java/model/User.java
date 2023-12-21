@@ -17,10 +17,11 @@ public class User{
     private Boolean status;                         //if disconnected = false, connected = true
 
     private InetAddress ipAddress;
-
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
-    private static int socket=1025;
+    private static int mySocket=1024;
+    private int theirSocket=1024;
+
 
     //CONSTRUCTOR
     public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) throws SocketException {
@@ -32,9 +33,9 @@ public class User{
         this.password=password;
         this.status=status;
         this.ipAddress=ipAddress;
-        socket+=1;
-        receiveMessage = new ReceiveMessage(socket);
-        sendMessage = new SendMessage(socket);
+        mySocket+=1;
+        receiveMessage = new ReceiveMessage(mySocket);
+        sendMessage = new SendMessage(mySocket);
         receiveMessage.start(); //quand est ce quon larrete?
     }
 
@@ -52,7 +53,8 @@ public class User{
 
     public InetAddress getIpAddress() { return this.ipAddress; }
 
-    public int getSocket() { return socket; }
+    public int getMySocket() { return mySocket;}
+    public int getTheirSocket() { return theirSocket;}
     public ReceiveMessage getReceiveMessage() { return this.receiveMessage; }
     public SendMessage getSendMessage() { return this.sendMessage; }
 
@@ -65,5 +67,5 @@ public class User{
     public void setStatus (Boolean status) { this.status=status;}
 
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
-
+    public void setTheirSocket(int theirSocket) { this.theirSocket=theirSocket; }
 } 

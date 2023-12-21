@@ -7,12 +7,6 @@ import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Scanner;
-
-import static model.ContactList.getInstance;
 
 public class MainClass {
 

@@ -127,10 +127,10 @@ public class ReceiveMessage extends Thread {
                     if (res != null) {
                         switch (res[0]) {
                             case "TO_CHOOSE_NICKNAME:" -> handleToChooseNickname();
-                            case "IAMCONNECTED: id: (\\S+) nickname: (\\S+)" -> handleIAmConnected(res[1], res[2], inPacket.getAddress());
+                            case "IAMCONNECTED: id: (\\S+) nickname: (\\S+)" -> handleIAmConnected(res[1], res[2], inPacket.getAddress(), inPacket.getPort());
                             case "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+)" ->
-                                    handleIAmConnectedAreYou(res[1], res[2], inPacket.getAddress());
-                            case "DISCONNECT: id: (\\S+) nickname: (\\S+)" -> handleDisconnect(res[1], res[2], inPacket.getAddress());
+                                    handleIAmConnectedAreYou(res[1], res[2], inPacket.getAddress(), inPacket.getPort());
+                            case "DISCONNECT: id: (\\S+) nickname: (\\S+)" -> handleDisconnect(res[1], res[2], inPacket.getAddress(), inPacket.getPort());
                             default -> System.out.println("error: unhandled message type");
                         }
                         System.out.println();
@@ -152,8 +152,8 @@ public class ReceiveMessage extends Thread {
         System.out.println("RECEIVED to choose nickname request");
     }
 
-    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SocketException {
-        changeStatus(id, nickname, ipAddress, true);
+    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress, int theirSocket) throws UnknownHostException, SocketException {
+        changeStatus(id, nickname, ipAddress, true, theirSocket);
         System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
         System.out.println();
         System.out.println("Printing Contact List ");
@@ -161,18 +161,18 @@ public class ReceiveMessage extends Thread {
 
     }
 
-    public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress) throws IOException {
-        changeStatus(id, nickname, ipAddress, true);
+    public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress, int theirSocket) throws IOException {
+        changeStatus(id, nickname, ipAddress, true, theirSocket);
         SendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SocketException {
-        changeStatus(id, nickname, ipAddress, false);
+    public void handleDisconnect(String id, String nickname, InetAddress ipAddress, int theirSocket) throws UnknownHostException, SocketException {
+        changeStatus(id, nickname, ipAddress, false, theirSocket);
         System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SocketException {
+    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status, int theirSocket) throws UnknownHostException, SocketException {
         if (instance.existsContact(id)) { //if we know him, we change his status
             User user = instance.getContact(id);
             user.setStatus(status);
@@ -181,7 +181,10 @@ public class ReceiveMessage extends Thread {
         }
         else { //else we add him
             if (!((id.equals("[]")) && (nickname.equals("[]")))) {
-                instance.addContact(new User(id, nickname, "", "", "", "", status, ipAddress));
+                User newUser = new User(id, nickname, "", "", "", "", status, ipAddress);
+                newUser.setTheirSocket(theirSocket);
+                instance.addContact(newUser);
+
             }
         }
     }
