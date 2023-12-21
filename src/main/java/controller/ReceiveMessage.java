@@ -184,7 +184,6 @@ public class ReceiveMessage extends Thread {
                 User newUser = new User(id, nickname, "", "", "", "", status, ipAddress);
                 newUser.setTheirSocket(theirSocket);
                 instance.addContact(newUser);
-
             }
         }
     }

@@ -19,7 +19,7 @@ public class User{
     private InetAddress ipAddress;
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
-    private static int mySocket=1024;
+    private static int mySocket=1023;
     private int theirSocket=1024;
 
 

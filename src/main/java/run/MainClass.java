@@ -27,8 +27,6 @@ public class MainClass {
         //Initialize----------------------------------------------------------------------
         ReceiveMessage receiveMessage = me.getReceiveMessage();
         SendMessage sendMessage = me.getSendMessage();
-        receiveMessage.start();
-
 
         Beginning beginning = new Beginning(receiveMessage, sendMessage);
 
