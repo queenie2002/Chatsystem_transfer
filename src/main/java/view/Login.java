@@ -73,7 +73,7 @@ public class Login {
 
     public boolean loginFunction(boolean found) {
 
-        //faut récup la database
+        //faut récup la database et récup nickname and password
 
 
         String nicknameInput = getNickname();

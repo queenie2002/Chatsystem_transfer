@@ -19,8 +19,8 @@ public class User{
     private InetAddress ipAddress;
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
-    private static int mySocket=2000; //jecoute ici
-    private int theirSocket=3000; //jenvoie ici
+    private static int mySocket=2000;
+    private int theirSocket=3000;
 
 
     //CONSTRUCTOR

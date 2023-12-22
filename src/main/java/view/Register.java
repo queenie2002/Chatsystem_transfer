@@ -40,6 +40,7 @@ public class Register {
 
         SendMessage.sendToChooseNickname();
 
+
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,7 +120,7 @@ public class Register {
                 SendMessage.sendIAmConnected(MainClass.me);
 
                 System.out.println();
-                System.out.println("Printing Contact List after choose nickname ");
+                System.out.println("Printing Contact List after chose nickname ");
                 instance.printContactList();
 
 

@@ -28,9 +28,12 @@ public class MainClass {
     public static void main(String[] args) throws IOException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();
+        receiveMessage.start();
+
+        /*
         ContactList instance = getInstance();
         Scanner scanner = new Scanner(System.in);
-        receiveMessage.start();
+
 
         //New User or Not ?
 
@@ -62,7 +65,7 @@ public class MainClass {
             String nicknameInput = scanner.nextLine();
 
             if (instance.existsContactWithNickname(nicknameInput)) { //if someone already has nickname
-                System.out.println("nickname not unique, choose another one");
+                System.out.println("Nickname already in use. Please choose another one.");
                 PopUpTab popup1 = new PopUpTab("choose another nickname");
                 System.out.println();
             } else {
@@ -79,9 +82,12 @@ public class MainClass {
 
         }
 
-        //Beginning beginning = new Beginning(receiveMessage, sendMessage);
-
         scanner.close();
+        */
+
+
+        Beginning beginning = new Beginning(receiveMessage, sendMessage);
+
 
 
     }

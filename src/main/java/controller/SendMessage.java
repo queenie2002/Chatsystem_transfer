@@ -2,11 +2,8 @@ package controller;
 
 import model.User;
 import static run.MainClass.me;
-
 import java.io.IOException;
 import java.net.*;
-
-
 
 /*implemented :
 *
@@ -27,6 +24,30 @@ we can then choose a pseudo different to all other currently connected users
 public class SendMessage {
 
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
+    private static final int BROADCAST_RECEIVER_PORT = 2000;
+
+    private static int BROADCAST_SENDING_PORT = 1500;
+    private static DatagramSocket sendingSocket;
+
+
+    public SendMessage () {
+        boolean found = false;
+
+        while (!found) {
+            try {
+                sendingSocket = new DatagramSocket(BROADCAST_SENDING_PORT); //sending port
+                sendingSocket.setBroadcast(true);
+                found = true;
+            } catch (Exception e) {
+                BROADCAST_SENDING_PORT +=1;
+                System.out.println("error: couldn't assign a socket to send a message");
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 
     public void closeSocket(DatagramSocket sendingSocket) {
         if (sendingSocket != null && !sendingSocket.isClosed()) {
@@ -40,25 +61,28 @@ public class SendMessage {
         //user sends his ip
         String message = "TO_CHOOSE_NICKNAME:";
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("SENT: To choose nickname request.");
     }
 
     //we send a message saying we're connected, the receiver won't send anything back
     public static void sendIAmConnected (User user) throws IOException {
         String message = "IAMCONNECTED: id: " + user.getId() + " nickname: " + user.getNickname();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("SENT: I am connected.");
     }
 
     //we send a message saying we're connected and asks if the other people are too, the receiver will send a iamconnected message back
     public static void sendIAmConnectedAreYou (User user) throws IOException {
         String message = "IAMCONNECTEDAREYOU: id: " + user.getId() + " nickname: " + user.getNickname();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("SENT: I am connected, are you?.");
     }
 
     public static void sendDisconnect (User user) throws IOException {
         String message = "DISCONNECT: id: " + user.getId() + " nickname: " + user.getNickname();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
+        System.out.println("SENT: Disconnect.");
     }
-
 
     public static void toDisconnect() throws IOException {
         //have to socket close for all contacts ??
@@ -68,21 +92,14 @@ public class SendMessage {
     }
 
 
-
-
-
     //generic send method, useful in other methods
     private static void send (String message, InetAddress receiverAddress) throws IOException {
         byte[] buf = message.getBytes();
-        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, 2000); //receiver port
+        DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, BROADCAST_RECEIVER_PORT); //receiver port
 
         try {
-            DatagramSocket sendingSocket = new DatagramSocket(1200); //sending port
-            sendingSocket.setBroadcast(true);
             sendingSocket.send(outPacket);
             System.out.println();
-
-            sendingSocket.close();
         } catch (Exception e) {
             System.out.println("error: couldn't assign a socket to send a message");
             e.printStackTrace();

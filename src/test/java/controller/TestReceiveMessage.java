@@ -18,24 +18,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class TestReceiveMessage {
 
 
-    /*
-    commenting this pour que je puisse faire des trucs
     @Test
     void extractInfoFromPattern() throws SocketException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
-        String[] result = receiveMessage.extractInfoFromPattern("IAMCONNECTED: id: testId nickname: testNickname ip address: 127.0.0.1");
+        String[] result = receiveMessage.extractInfoFromPattern("IAMCONNECTED: id: testId nickname: testNickname");
 
         assertNotNull(result);
-        assertEquals(4, result.length);
-        assertEquals("IAMCONNECTED: id: (\\S+) nickname: (\\S+) ip address: (\\S+)", result[0]);
+        assertEquals(3, result.length);
+        assertEquals("IAMCONNECTED: id: (\\S+) nickname: (\\S+)", result[0]);
         assertEquals("testId", result[1]);
         assertEquals("testNickname", result[2]);
-        assertEquals("127.0.0.1", result[3]);
     }
-    */
 
-    //I COMMENTED EVERYTHING PCQ j'ai changé comment fonctionne receive message, il est lancé dans user, donc pas accédé comme ca
-    /*
+
     @Test
     void handleIAmConnected() throws UnknownHostException, SocketException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
@@ -75,8 +70,8 @@ class TestReceiveMessage {
 
         System.out.println("handleIAmConnectedAreYou success");
     }
-    */
-    /*@Test
+    /*
+    @Test
     void handleDisconnect() throws UnknownHostException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
@@ -95,7 +90,9 @@ class TestReceiveMessage {
         assertEquals("testNickname", disconnectedUser.getNickname());
         assertEquals("127.0.0.1", disconnectedUser.getIpAddress().getHostAddress());
         assertFalse(disconnectedUser.getStatus());
-    }*/
+    }
+    */
+
 
     @Test
     void run() {

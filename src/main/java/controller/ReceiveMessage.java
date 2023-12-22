@@ -16,7 +16,7 @@ import static model.ContactList.getInstance;
 
 public class ReceiveMessage extends Thread {
 
-    private static final int RECEIVER_PORT = 2000;
+    private static final int BROADCAST_RECEIVER_PORT = 2000;
 
     public static boolean running = true;
 
@@ -93,7 +93,7 @@ public class ReceiveMessage extends Thread {
     }
 
     public void run() {
-        try (DatagramSocket receivingSocket = new DatagramSocket(RECEIVER_PORT)) {
+        try (DatagramSocket receivingSocket = new DatagramSocket(BROADCAST_RECEIVER_PORT)) {
             byte[] buf = new byte[256];
 
             while (running) {
@@ -143,19 +143,23 @@ public class ReceiveMessage extends Thread {
     public void handleToChooseNickname() throws IOException {
         //when we receive the request, we respond by saying who we are
         SendMessage.sendIAmConnected(MainClass.me);
+        System.out.println("RECEIVED to choose nickname request");
     }
 
     public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, true);
+        System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
     public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress) throws IOException {
         changeStatus(id, nickname, ipAddress, true);
         SendMessage.sendIAmConnected(MainClass.me);
+        System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
     public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
         changeStatus(id, nickname, ipAddress, false);
+        System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
     public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException {
@@ -163,6 +167,7 @@ public class ReceiveMessage extends Thread {
             User user = instance.getContact(id);
             user.setStatus(status);
             instance.changeContact(user);
+            System.out.println("contact already exists");
         }
         else { //else we add him
             if (!((id.equals("[]")) && (nickname.equals("[]")))) {
