@@ -7,6 +7,9 @@ import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Scanner;
+
+import static model.ContactList.getInstance;
 
 public class MainClass {
 
@@ -23,12 +26,63 @@ public class MainClass {
 
 
     public static void main(String[] args) throws IOException {
+        ReceiveMessage receiveMessage = new ReceiveMessage();
+        SendMessage sendMessage = new SendMessage();
+        ContactList instance = getInstance();
+        Scanner scanner = new Scanner(System.in);
+        receiveMessage.start();
 
-        //Initialize----------------------------------------------------------------------
-        ReceiveMessage receiveMessage = me.getReceiveMessage();
-        SendMessage sendMessage = me.getSendMessage();
+        //New User or Not ?
 
-        Beginning beginning = new Beginning(receiveMessage, sendMessage);
+
+        boolean notCorrectAnswer = true;
+
+        while (notCorrectAnswer) {
+
+            System.out.print("Login or Register ? ");
+            String areYouNew = scanner.nextLine();
+
+            if (areYouNew.equalsIgnoreCase("login")) {
+                notCorrectAnswer = false;
+            } else if (areYouNew.equalsIgnoreCase("register")) {
+                notCorrectAnswer = false;
+            } else {
+                System.out.print("answer with 'login' or 'register'");
+            }
+        }
+
+        //Start Contact Discovery---------------------------------------------------------
+        SendMessage.sendToChooseNickname();
+
+
+        boolean isUnique = false;
+        while(!isUnique) {
+
+            System.out.print("Enter Nickname: ");
+            String nicknameInput = scanner.nextLine();
+
+            if (instance.existsContactWithNickname(nicknameInput)) { //if someone already has nickname
+                System.out.println("nickname not unique, choose another one");
+                PopUpTab popup1 = new PopUpTab("choose another nickname");
+                System.out.println();
+            } else {
+                isUnique = true;
+
+                try {
+                    me.setNickname(nicknameInput);
+                    me.setId("id"+nicknameInput);
+                    SendMessage.sendIAmConnected(MainClass.me);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+        }
+
+        //Beginning beginning = new Beginning(receiveMessage, sendMessage);
+
+        scanner.close();
+
 
     }
 

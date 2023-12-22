@@ -19,12 +19,12 @@ public class User{
     private InetAddress ipAddress;
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
-    private static int mySocket=50000; //jecoute ici
-    private int theirSocket=60000; //jenvoie ici
+    private static int mySocket=2000; //jecoute ici
+    private int theirSocket=3000; //jenvoie ici
 
 
     //CONSTRUCTOR
-    public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) throws SocketException {
+    public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) {
         this.idUser = idUser;
         this.nickname = nickname;
         this.firstName = firstName;
@@ -33,10 +33,6 @@ public class User{
         this.password=password;
         this.status=status;
         this.ipAddress=ipAddress;
-        mySocket+=1;
-        receiveMessage = new ReceiveMessage(mySocket);
-        sendMessage = new SendMessage(theirSocket);
-        receiveMessage.start(); //quand est ce quon larrete?
     }
 
     public User(String testUser, InetAddress localHost) {

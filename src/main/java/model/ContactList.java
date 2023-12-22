@@ -145,7 +145,6 @@ public class ContactList {
             aUser.setMySocket(newSocket);
         }
         else {
-
             System.out.println("this contact doesn't exist so couldn't update their socket ?");
         }
 
