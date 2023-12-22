@@ -6,6 +6,7 @@ import run.MainClass;
 
 import java.io.IOException;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -134,7 +135,7 @@ public class ReceiveMessage extends Thread {
 
 
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
             System.out.println("error: we closed the socket ??");
         }
@@ -146,23 +147,23 @@ public class ReceiveMessage extends Thread {
         System.out.println("RECEIVED to choose nickname request");
     }
 
-    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
+    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SQLException {
         changeStatus(id, nickname, ipAddress, true);
         System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress) throws IOException {
+    public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress) throws IOException, SQLException {
         changeStatus(id, nickname, ipAddress, true);
         SendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException {
+    public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SQLException {
         changeStatus(id, nickname, ipAddress, false);
         System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException {
+    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SQLException {
         if (instance.existsContact(id)) { //if we know him, we change his status
             User user = instance.getContact(id);
             user.setStatus(status);

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +33,7 @@ class TestReceiveMessage {
 
 
     @Test
-    void handleIAmConnected() throws UnknownHostException, SocketException {
+    void handleIAmConnected() throws UnknownHostException, SocketException, SQLException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
@@ -52,7 +53,7 @@ class TestReceiveMessage {
     }
 
     @Test
-    void handleIAmConnectedAreYou() throws IOException {
+    void handleIAmConnectedAreYou() throws IOException, SQLException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
         User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 

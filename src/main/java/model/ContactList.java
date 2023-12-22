@@ -5,6 +5,9 @@ we only have the contact list of our user
 so we only make one in the main?
  */
 
+import controller.DatabaseMethods;
+
+import java.sql.*;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -41,8 +44,9 @@ public class ContactList {
         }
     }
 
-    public void addContact(User user) {
+    public void addContact(User user) throws SQLException {
         myContactList.add(user);
+        Connection conn = DatabaseMethods.getConnection();
     }
 
     public void removeContact(String idUser) { //on utilise idUser
