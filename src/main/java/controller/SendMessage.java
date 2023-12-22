@@ -1,5 +1,6 @@
 package controller;
 
+import model.ContactList;
 import model.User;
 
 import java.io.IOException;
@@ -95,24 +96,37 @@ public class SendMessage {
 
 
 
-
-
     //generic send method, useful in other methods
     private static void send (String message, InetAddress receiverAddress, int receiverPort) throws IOException {
         byte[] buf = message.getBytes();
         DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, receiverPort); //receiver port
 
-        try {
-            DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT); //sending port
-            sendingSocket.setBroadcast(true);
-            sendingSocket.send(outPacket);
-            System.out.println();
+        boolean found = false;
+        while(!found) {
+            try {
+                DatagramSocket sendingSocket = new DatagramSocket(SENDER_PORT); //sending port
 
-            sendingSocket.close();
-        } catch (Exception e) {
-            System.out.println("error: couldn't assign a socket to send a message");
-            e.printStackTrace();
+                found = true;
+
+                ContactList instance = ContactList.getInstance();
+                instance.updateMySocketOfUser(receiverAddress, SENDER_PORT);
+                System.out.println("FOUND A RIGHT PORT " + SENDER_PORT);
+                sendingSocket.setBroadcast(true);
+                sendingSocket.send(outPacket);
+                System.out.println();
+
+                sendingSocket.close();
+            } catch (Exception e) {
+
+                System.out.println("error: couldn't assign a socket to send a message");
+                e.printStackTrace();
+                System.out.println("SENDER PORT " + SENDER_PORT);
+                SENDER_PORT+=1;
+
+            }
         }
+
+
     }
 }
 

@@ -3,7 +3,7 @@ package view;
 import controller.*;
 import model.*;
 import run.MainClass;
-import view.*;
+import view.HomeTab;
 
 import javax.swing.*;
 import java.awt.*;

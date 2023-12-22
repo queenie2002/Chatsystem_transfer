@@ -5,6 +5,7 @@ we only have the contact list of our user
 so we only make one in the main?
  */
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -72,6 +73,16 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
     }
 
+    public User getContactWithIpAddress(InetAddress ipAddress) { //on utilise ipAddress
+        for (User aUser : myContactList) {
+            if (Objects.equals(aUser.getIpAddress(), ipAddress)) {
+                return aUser;
+            }
+        }
+        System.out.println("couldn't find the user with id: " + ipAddress);
+        return null;  //dans ce cas c'est parce qu'on a pas trouvé ipAddress
+    }
+
     public void changeContact(User user) {
         int index=-1;
         for (User aUser : myContactList) {
@@ -97,6 +108,16 @@ public class ContactList {
         return false;
     }
 
+    public Boolean existsContactWithIpAddress(InetAddress ipAddress) {
+        for (User aUser : myContactList) {
+            if (Objects.equals(aUser.getId(), ipAddress.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public Boolean existsContactWithNickname(String nickname) {
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {
@@ -117,12 +138,25 @@ public class ContactList {
 
     }
 
+    //changes "my socket" in user with ipAddress
+    public void updateMySocketOfUser(InetAddress ipAddress, int newSocket) {
+        if (existsContactWithIpAddress(ipAddress)) {
+            User aUser = getContactWithIpAddress(ipAddress);
+            aUser.setMySocket(newSocket);
+        }
+        else {
+
+            System.out.println("this contact doesn't exist so couldn't update their socket ?");
+        }
+
+    }
+
 
     public void printContact(User user) {
         Boolean found = false;
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getId(), user.getId())) {
-                System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
+                System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress() + " my socket " + user.getMySocket() + " their socket " + user.getTheirSocket());
                 found = true;
             }
 

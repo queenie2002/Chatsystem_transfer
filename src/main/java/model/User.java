@@ -19,7 +19,7 @@ public class User{
     private InetAddress ipAddress;
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
-    private static int mySocket=1023;
+    private static int mySocket=1024;
     private int theirSocket=1024;
 
 
@@ -68,4 +68,6 @@ public class User{
 
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
     public void setTheirSocket(int theirSocket) { this.theirSocket=theirSocket; }
+    public void setMySocket(int newSocket) { mySocket=newSocket; }
+
 } 

@@ -154,7 +154,7 @@ public class ReceiveMessage extends Thread {
 
     public void handleIAmConnected(String id, String nickname, InetAddress ipAddress, int theirSocket) throws UnknownHostException, SocketException {
         changeStatus(id, nickname, ipAddress, true, theirSocket);
-        System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am connected: " + nickname + " from address (" + ipAddress + ") from port " + theirSocket );
         System.out.println();
         System.out.println("Printing Contact List ");
         instance.printContactList();
@@ -164,12 +164,12 @@ public class ReceiveMessage extends Thread {
     public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress, int theirSocket) throws IOException {
         changeStatus(id, nickname, ipAddress, true, theirSocket);
         SendMessage.sendIAmConnected(MainClass.me);
-        System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am connected, are you?: " + nickname + " from address (" + ipAddress + ") from port " + theirSocket);
     }
 
     public void handleDisconnect(String id, String nickname, InetAddress ipAddress, int theirSocket) throws UnknownHostException, SocketException {
         changeStatus(id, nickname, ipAddress, false, theirSocket);
-        System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
+        System.out.println("RECEIVED i am disconnected: " + nickname + " from address (" + ipAddress + ") from port " + theirSocket);
     }
 
     public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status, int theirSocket) throws UnknownHostException, SocketException {
