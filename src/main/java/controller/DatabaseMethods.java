@@ -4,90 +4,69 @@ import java.sql.*;
 
 public class DatabaseMethods {
 
-    private static final String url = "jdbc:sqlite:my_database.db";
-    private static Connection connection = null;
+    private static final String DATABASE_URL = "jdbc:sqlite:my_database.db";
 
-    public static boolean startConnection(String url) throws SQLException {
-        try {
-            connection = DriverManager.getConnection(url);
-            return true;
-        } catch (SQLException e) {
-            return false;
-        }
+    // Method to start the database connection
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DATABASE_URL);
     }
 
-
-    public static void tableUsers() throws SQLException {
-        if(connection == null)
-                throw new SQLException();
-         Statement statement = connection.createStatement();
-
+    // Method to create the Users table
+    public static void createUsersTable(Connection connection) throws SQLException {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
-                + "ipAddress TEXT PRIMARY KEY AUTOINCREMENT, "
+                + "userID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "ipAddress TEXT NOT NULL, "
                 + "name TEXT NOT NULL, "
                 + "status INTEGER NOT NULL)";
 
-        statement.execute(usersTableQuery);
-        System.out.println("Table Users created");
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(usersTableQuery);
+        }
     }
 
-    public static void tableMessages(String tableName) throws SQLException {
+    // Method to add a user to the Users table and create an empty specific Messages table for that user
+    public static void addUser(Connection connection, String ipAddress, String name, int status) throws SQLException {
+        String insertUserSQL = "INSERT INTO Users (ipAddress, name, status) VALUES (?, ?, ?)";
+        String lastInsertIdSQL = "SELECT last_insert_rowid()";
 
-        if(connection == null)
-            throw new SQLException();
-         Statement statement = connection.createStatement();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertUserSQL)) {
+            preparedStatement.setString(1, ipAddress);
+            preparedStatement.setString(2, name);
+            preparedStatement.setInt(3, status);
+            preparedStatement.executeUpdate();
 
-        String messagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + tableName + " ("
+            // Fetch the last inserted ID
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(lastInsertIdSQL)) {
+                if (resultSet.next()) {
+                    long userID = resultSet.getLong(1);
+                    createSpecificMessagesTable(connection, userID); // Create an empty Messages table for this user
+                }
+            }
+        }
+    }
+
+    // Method to create a specific empty Messages table for a user
+    private static void createSpecificMessagesTable(Connection connection, long userID) throws SQLException {
+        String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + userID + " ("
                 + "messageID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "content TEXT NOT NULL, "
                 + "date TEXT NOT NULL)";
 
-        statement.execute(messagesTableQuery);
-        System.out.println("Table Messages_" + tableName + " created");
-
-    }
-
-    public static void addUser(String ipAddress, String name, int status) throws SQLException {
-        String insertUserSQL = "INSERT INTO Users (ipAddress, name, status) VALUES (?, ?, ?)";
-
-        if(connection == null)
-            throw new SQLException();
-         PreparedStatement preparedStatement = connection.prepareStatement(insertUserSQL);
-        preparedStatement.setString(1, ipAddress);
-        preparedStatement.setString(2, name);
-        preparedStatement.setInt(3, status);
-
-        int affectedRows = preparedStatement.executeUpdate();
-        if (affectedRows > 0) {
-            System.out.println("User added successfully");
-        } else {
-            System.out.println("User could not be added");
-        }
-
-    }
-
-    public static void addMessage(String tableName, String content, String date) throws SQLException {
-
-        String insertMessageSQL = "INSERT INTO Messages_" + tableName + " (content, date) VALUES (?, ?)";
-
-        if(connection == null)
-            throw new SQLException();
-         PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL);
-        preparedStatement.setString(1, content);
-        preparedStatement.setString(2, date);
-
-        int affectedRows = preparedStatement.executeUpdate();
-        if (affectedRows > 0) {
-            System.out.println("Message added successfully to table Messages_" + tableName);
-        } else {
-            System.out.println("Message could not be added to table Messages_" + tableName);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(specificMessagesTableQuery);
         }
     }
 
-    public static void closeConnection() throws SQLException {
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
+    // Method to add a message to the specific Messages table of a user
+    public static void addMessage(Connection connection, long userID, String content, String date) throws SQLException {
+        String tableName = "Messages_" + userID;
+        String insertMessageSQL = "INSERT INTO " + tableName + " (content, date) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {
+            preparedStatement.setString(1, content);
+            preparedStatement.setString(2, date);
+            preparedStatement.executeUpdate();
         }
     }
-
 }
