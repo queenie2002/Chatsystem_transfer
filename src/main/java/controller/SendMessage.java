@@ -28,7 +28,7 @@ we can then choose a pseudo different to all other currently connected users
 public class SendMessage {
 
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
-    private static final int BROADCAST_PORT = 1024;
+    private static final int BROADCAST_PORT = 60000;
 
     private static int SENDER_PORT;
 

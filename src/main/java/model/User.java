@@ -19,8 +19,8 @@ public class User{
     private InetAddress ipAddress;
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
-    private static int mySocket=1024;
-    private int theirSocket=1024;
+    private static int mySocket=50000; //jecoute ici
+    private int theirSocket=60000; //jenvoie ici
 
 
     //CONSTRUCTOR
@@ -35,7 +35,7 @@ public class User{
         this.ipAddress=ipAddress;
         mySocket+=1;
         receiveMessage = new ReceiveMessage(mySocket);
-        sendMessage = new SendMessage(mySocket);
+        sendMessage = new SendMessage(theirSocket);
         receiveMessage.start(); //quand est ce quon larrete?
     }
 
