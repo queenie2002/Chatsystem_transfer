@@ -11,7 +11,8 @@ public class DatabaseMethods {
 
     // Method to start the database connection
     public static Connection getConnection(User user) throws SQLException {
-        InetAddress IP = user.getIpAddress();
+        String IP = String.valueOf(user.getIpAddress());
+        System.out.println(IP);
         return DriverManager.getConnection(DATABASE_URL+IP+".db");
     }
 
