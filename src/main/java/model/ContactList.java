@@ -14,8 +14,6 @@ import java.util.Objects;
 
 public class ContactList {
 
-
-
     // Class attribute
     private final static ContactList instance = new ContactList();
     private final ArrayList<User> myContactList;
@@ -46,37 +44,20 @@ public class ContactList {
 
     public void addContact(User user) throws SQLException {
         myContactList.add(user);
-        Connection conn = DatabaseMethods.getConnection(user);
-        DatabaseMethods.addUser(conn, user);
-
+        DatabaseMethods.addUser(user);
     }
 
-    public void removeContact(String idUser) { //on utilise idUser
-        for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getId(), idUser)) {
-                myContactList.remove(aUser);
-            }
-        }
-    }
+    //should be able to remove contact ?
 
-    public User getContact(String idUser) { //on utilise idUser
-        for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getId(), idUser)) {
-                return aUser;
-            }
-        }
-        System.out.println("couldn't find the user with id: " + idUser);
-        return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
-    }
 
-    public User getContactWithNickname(String nickname) { //on utilise idUser
+    public User getContactWithNickname(String nickname) { //on utilise nickname
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {
                 return aUser;
             }
         }
-        System.out.println("couldn't find the user with id: " + nickname);
-        return null;  //dans ce cas c'est parce qu'on a pas trouvé idUser
+        System.out.println("couldn't find the user with nickname: " + nickname);
+        return null;  //dans ce cas c'est parce qu'on a pas trouvé nickname
     }
 
     public User getContactWithIpAddress(InetAddress ipAddress) { //on utilise ipAddress
@@ -85,14 +66,14 @@ public class ContactList {
                 return aUser;
             }
         }
-        System.out.println("couldn't find the user with id: " + ipAddress);
+        System.out.println("couldn't find the user with ipaddress: " + ipAddress);
         return null;  //dans ce cas c'est parce qu'on a pas trouvé ipAddress
     }
 
     public void changeContact(User user) {
         int index=-1;
         for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getId(), user.getId())) {
+            if (Objects.equals(aUser.getNickname(), user.getNickname())) {
                 index = myContactList.indexOf(aUser);
             }
         }
@@ -105,18 +86,10 @@ public class ContactList {
         }
     }
 
-    public Boolean existsContact(String idUser) {
-        for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getId(), idUser)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public Boolean existsContactWithIpAddress(InetAddress ipAddress) {
         for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getId(), ipAddress.toString())) {
+            if (Objects.equals(String.valueOf(aUser.getIpAddress()), ipAddress.toString())) {
                 return true;
             }
         }
@@ -133,9 +106,9 @@ public class ContactList {
         return false;
     }
 
-    public void deleteContact(String id) {
-        if (existsContact(id)) {
-            User aUser = getContact(id);
+    public void deleteContactWithNickname(String nickname) {
+        if (existsContactWithNickname(nickname)) {
+            User aUser = getContactWithNickname(nickname);
             myContactList.remove(aUser);
         }
         else {
@@ -160,14 +133,14 @@ public class ContactList {
     public void printContact(User user) {
         Boolean found = false;
         for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getId(), user.getId())) {
-                System.out.println("id: "+user.getId()+" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress() + " my socket " + user.getMySocket() + " their socket " + user.getTheirSocket());
+            if (Objects.equals(aUser.getNickname(), user.getNickname())) {
+                System.out.println(" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress() + " my socket " + user.getMySocket() + " their socket " + user.getTheirSocket());
                 found = true;
             }
 
         }
         if (!found) {
-            System.out.println("couldn't find the user with id: " + user.getId());
+            System.out.println("couldn't find the user with nickname: " + user.getNickname());
         }
 
     }

@@ -8,7 +8,6 @@ import java.net.*;
 
 public class User{
     //ATTRIBUTES
-    private String idUser;
     private String nickname;
     private String firstName;
     private String lastName;
@@ -24,8 +23,7 @@ public class User{
 
 
     //CONSTRUCTOR
-    public User (String idUser, String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) {
-        this.idUser = idUser;
+    public User (String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,7 +37,6 @@ public class User{
     }
 
     //METHODS
-    public String getId() { return this.idUser; }
     public String getNickname (){ return this.nickname;}
     public String getFirstName (){ return this.firstName;}
     public String getLastName(){ return this.lastName;}
@@ -53,8 +50,6 @@ public class User{
     public int getTheirSocket() { return theirSocket;}
     public ReceiveMessage getReceiveMessage() { return this.receiveMessage; }
     public SendMessage getSendMessage() { return this.sendMessage; }
-
-    public void setId(String idUser) { this.idUser = idUser; }
     public void setNickname (String nickname) { this.nickname=nickname;}
     public void setFirstName (String firstName) { this.firstName=firstName;}
     public void setLastName(String lastName) { this.lastName=lastName;}

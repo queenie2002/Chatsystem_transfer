@@ -15,7 +15,7 @@ class TestDatabaseMethods {
     void setUp() throws SQLException {
         // Establish a new connection to the test database for each test
         connection = DriverManager.getConnection(TEST_DATABASE_URL);
-        DatabaseMethods.createUsersTable(connection); // Ensure Users table is created in the test database
+        DatabaseMethods.createUsersTable(); // Ensure Users table is created in the test database
     }
 
     @AfterEach
@@ -28,7 +28,7 @@ class TestDatabaseMethods {
 
     @Test
     void testTableUsersCreation() throws SQLException {
-        assertDoesNotThrow(() -> DatabaseMethods.createUsersTable(connection));
+        assertDoesNotThrow(DatabaseMethods::createUsersTable);
     }
 
     /*

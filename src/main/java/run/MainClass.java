@@ -7,6 +7,8 @@ import view.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static model.ContactList.getInstance;
@@ -18,14 +20,18 @@ public class MainClass {
 
     static {
         try {
-            me = new User("[]", "[]", "[]", "[]", "[]" , "[]", null, InetAddress.getByName("0.0.0.0"));
+            me = new User("[]", "[]", "[]", "[]" , "[]", null, InetAddress.getByName("0.0.0.0"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
+
+
+        DatabaseMethods.startConnection(me);
+
 
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();

@@ -16,7 +16,7 @@ class TestSendMessage {
 
     @Test
     void sendToChooseNickname() throws SocketException {
-        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(SendMessage::sendToChooseNickname);
         System.out.println("sendToChooseNickname success");
@@ -27,7 +27,7 @@ class TestSendMessage {
     void sendIAmConnected() throws SocketException {
         //User with test info.
         // The loopback address is IP address that is used to do tests locally without actually sending data
-        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         //makes sure that no exceptions are thrown
         assertDoesNotThrow(() -> SendMessage.sendIAmConnected(user));
@@ -36,7 +36,7 @@ class TestSendMessage {
 
     @Test
     void sendIAmConnectedAreYou() throws SocketException {
-        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(() -> SendMessage.sendIAmConnectedAreYou(user));
         System.out.println("sendIAmConnectedAreYou success");
@@ -44,7 +44,7 @@ class TestSendMessage {
 
     @Test
     void sendDisconnect() throws SocketException {
-        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         assertDoesNotThrow(() -> SendMessage.sendDisconnect(user));
         System.out.println("sendDisconnect success");

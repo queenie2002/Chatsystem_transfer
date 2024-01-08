@@ -164,15 +164,15 @@ public class ReceiveMessage extends Thread {
     }
 
     public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SQLException {
-        if (instance.existsContact(id)) { //if we know him, we change his status
-            User user = instance.getContact(id);
+        if (instance.existsContactWithNickname(nickname)) { //if we know him, we change his status
+            User user = instance.getContactWithNickname(nickname);
             user.setStatus(status);
             instance.changeContact(user);
             System.out.println("contact already exists");
         }
         else { //else we add him
             if (!((id.equals("[]")) && (nickname.equals("[]")))) {
-                instance.addContact(new User(id, nickname, "", "", "", "", status, ipAddress));
+                instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
             }
         }
     }
