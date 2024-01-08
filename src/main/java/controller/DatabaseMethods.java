@@ -57,44 +57,56 @@ public class DatabaseMethods {
         }
     }
 
-    // Method to add a user to the Users table and create an empty specific Messages table for that user
+    // Method to add a user to the Users table and create an empty specific Messages table for that user. If user already added, it updates the user
     public static void addUser(User user) throws SQLException {
 
-        if (doesUserExist(user)) {
-            updateUser(user);
+        String addUserSQL;
+        Boolean userAddedAlready = doesUserExist(user);
+
+        if (userAddedAlready) {
+            addUserSQL = "UPDATE users SET nickname = ?, ipAddress = ?, firstName = ?, lastName = ?, birthday = ?, status = ?, password = ?, mySocket = ?, theirSocket = ? WHERE nickname = ?";
         }
         else {
-            String insertUserSQL = "INSERT INTO Users (nickname, ipAddress, firstName, lastName, birthday, status, password, mySocket, theirSocket) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            String lastInsertIdSQL = "SELECT last_insert_rowid()";
+            addUserSQL = "INSERT INTO Users (nickname, ipAddress, firstName, lastName, birthday, status, password, mySocket, theirSocket) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertUserSQL)) {
-                preparedStatement.setString(1, user.getNickname());
-                preparedStatement.setString(2, String.valueOf(user.getIpAddress()));
-                preparedStatement.setString(3, user.getFirstName());
-                preparedStatement.setString(4, user.getLastName());
-                preparedStatement.setInt(5, Integer.parseInt(user.getBirthday()));
+        String lastInsertIdSQL = "SELECT last_insert_rowid()";
 
-                if (user.getStatus()) {
-                    preparedStatement.setInt(6, 1);
-                } else {
-                    preparedStatement.setInt(6, 0);
-                }
-                preparedStatement.setString(7, user.getPassword());
-                preparedStatement.setInt(8, user.getMySocket());
-                preparedStatement.setInt(9, user.getTheirSocket());
-                preparedStatement.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(addUserSQL)) {
+            preparedStatement.setString(1, user.getNickname());
+            preparedStatement.setString(2, String.valueOf(user.getIpAddress()));
+            preparedStatement.setString(3, user.getFirstName());
+            preparedStatement.setString(4, user.getLastName());
+            preparedStatement.setInt(5, Integer.parseInt(user.getBirthday()));
 
-                // Fetch the last inserted ID
-                try (Statement statement = connection.createStatement();
-                     ResultSet resultSet = statement.executeQuery(lastInsertIdSQL)) {
-                    if (resultSet.next()) {
-                        long userID = resultSet.getLong(1);
-                        createSpecificMessagesTable(userID); // Create an empty Messages table for this user
-                    }
+            if (user.getStatus()) {
+                preparedStatement.setInt(6, 1);
+            } else {
+                preparedStatement.setInt(6, 0);
+            }
+            preparedStatement.setString(7, user.getPassword());
+            preparedStatement.setInt(8, user.getMySocket());
+            preparedStatement.setInt(9, user.getTheirSocket());
+            preparedStatement.executeUpdate();
+        }
+
+
+        if (!userAddedAlready) {
+            // Fetch the last inserted ID
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(lastInsertIdSQL)) {
+                if (resultSet.next()) {
+                    long idDatabase = resultSet.getLong(1);
+
+                    user.setIdDatabase((int) idDatabase);
+
+                    createSpecificMessagesTable(idDatabase); // Create an empty Messages table for this user
                 }
             }
         }
     }
+
+
 
     public static boolean doesUserExist(User user) {
 
@@ -119,31 +131,10 @@ public class DatabaseMethods {
 
 
 
-    public static void updateUser(User user) {
-        String sql = "UPDATE users SET nickname = ?, ipAddress = ?, firstName = ?, lastName = ?, birthday = ?, status = ?, password = ?, mySocket = ?, theirSocket = ? WHERE nickname = ?";
-
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, newPassword);
-            preparedStatement.setString(2, username);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Password updated successfully.");
-            } else {
-                System.out.println("User not found or password not updated.");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();  // Handle or log the exception as needed
-        }
-    }
 
     // Method to create a specific empty Messages table for a user
-    private static void createSpecificMessagesTable(long userID) throws SQLException {
-        String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + userID + " ("
+    private static void createSpecificMessagesTable(long idDatabase) throws SQLException {
+        String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + idDatabase + " ("
                 + "messageID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "content TEXT NOT NULL, "
                 + "date TEXT NOT NULL)";
@@ -154,8 +145,8 @@ public class DatabaseMethods {
     }
 
     // Method to add a message to the specific Messages table of a user
-    public static void addMessage(long userID, String content, String date) throws SQLException {
-        String tableName = "Messages_" + userID;
+    public static void addMessage(long idDatabase, String content, String date) throws SQLException {
+        String tableName = "Messages_" + idDatabase;
         String insertMessageSQL = "INSERT INTO " + tableName + " (content, date) VALUES (?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {

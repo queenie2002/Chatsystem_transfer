@@ -95,7 +95,6 @@ public class Login {
                 MainClass.me.setNickname(databaseUser.getNickname());
                 MainClass.me.setBirthday(databaseUser.getBirthday());
                 MainClass.me.setPassword(databaseUser.getPassword());
-                MainClass.me.setId("id"+databaseUser.getNickname());
                 MainClass.me.setStatus(true);
                 MainClass.me.setIpAddress(databaseUser.getIpAddress());
 

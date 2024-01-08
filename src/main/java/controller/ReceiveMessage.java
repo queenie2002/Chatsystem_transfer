@@ -47,9 +47,9 @@ public class ReceiveMessage extends Thread {
     public String[] extractInfoFromPattern(String inputString) {
         List<String> patternList = List.of(
                 "TO_CHOOSE_NICKNAME:",
-                "IAMCONNECTED: id: (\\S+) nickname: (\\S+)",
-                "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+)",
-                "DISCONNECT: id: (\\S+) nickname: (\\S+)"
+                "IAMCONNECTED: nickname: (\\S+)",
+                "IAMCONNECTEDAREYOU: nickname: (\\S+)",
+                "DISCONNECT: nickname: (\\S+)"
         );
 
 
@@ -66,18 +66,15 @@ public class ReceiveMessage extends Thread {
                 if (matcher2.find()) {
                     if (patternString.equals("TO_CHOOSE_NICKNAME:")) {
                         res = new String[]{patternString};
-                    } else if (patternString.equals("IAMCONNECTED: id: (\\S+) nickname: (\\S+)")) {
-                        String id = matcher2.group(1);
-                        String nickname = matcher2.group(2);
-                        res = new String[]{patternString, id, nickname};
-                    } else if (patternString.equals("IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+)")) {
-                        String id = matcher2.group(1);
-                        String nickname = matcher2.group(2);
-                        res = new String[]{patternString, id, nickname};
-                    } else if (patternString.equals("DISCONNECT: id: (\\S+) nickname: (\\S+)")) {
-                        String id = matcher2.group(1);
-                        String nickname = matcher2.group(2);
-                        res = new String[]{patternString, id, nickname};
+                    } else if (patternString.equals("IAMCONNECTED: nickname: (\\S+)")) {
+                        String nickname = matcher2.group(1);
+                        res = new String[]{patternString, nickname};
+                    } else if (patternString.equals("IAMCONNECTEDAREYOU: nickname: (\\S+)")) {
+                        String nickname = matcher2.group(1);
+                        res = new String[]{patternString, nickname};
+                    } else if (patternString.equals("DISCONNECT: nickname: (\\S+)")) {
+                        String nickname = matcher2.group(1);
+                        res = new String[]{patternString, nickname};
                     } else {
                         res = new String[0];
                     }
@@ -122,10 +119,10 @@ public class ReceiveMessage extends Thread {
                     if (res != null) {
                         switch (res[0]) {
                             case "TO_CHOOSE_NICKNAME:" -> handleToChooseNickname();
-                            case "IAMCONNECTED: id: (\\S+) nickname: (\\S+)" -> handleIAmConnected(res[1], res[2], inPacket.getAddress());
-                            case "IAMCONNECTEDAREYOU: id: (\\S+) nickname: (\\S+)" ->
-                                    handleIAmConnectedAreYou(res[1], res[2], inPacket.getAddress());
-                            case "DISCONNECT: id: (\\S+) nickname: (\\S+)" -> handleDisconnect(res[1], res[2], inPacket.getAddress());
+                            case "IAMCONNECTED: nickname: (\\S+)" -> handleIAmConnected(res[1], inPacket.getAddress());
+                            case "IAMCONNECTEDAREYOU: nickname: (\\S+)" ->
+                                    handleIAmConnectedAreYou(res[1], inPacket.getAddress());
+                            case "DISCONNECT: nickname: (\\S+)" -> handleDisconnect(res[1], inPacket.getAddress());
                             default -> System.out.println("error: unhandled message type");
                         }
                         System.out.println();
@@ -147,23 +144,23 @@ public class ReceiveMessage extends Thread {
         System.out.println("RECEIVED to choose nickname request");
     }
 
-    public void handleIAmConnected(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SQLException {
-        changeStatus(id, nickname, ipAddress, true);
+    public void handleIAmConnected(String nickname, InetAddress ipAddress) throws UnknownHostException, SQLException {
+        changeStatus(nickname, ipAddress, true);
         System.out.println("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void handleIAmConnectedAreYou(String id, String nickname, InetAddress ipAddress) throws IOException, SQLException {
-        changeStatus(id, nickname, ipAddress, true);
+    public void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException, SQLException {
+        changeStatus(nickname, ipAddress, true);
         SendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void handleDisconnect(String id, String nickname, InetAddress ipAddress) throws UnknownHostException, SQLException {
-        changeStatus(id, nickname, ipAddress, false);
+    public void handleDisconnect(String nickname, InetAddress ipAddress) throws UnknownHostException, SQLException {
+        changeStatus(nickname, ipAddress, false);
         System.out.println("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public void changeStatus(String id, String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SQLException {
+    public void changeStatus(String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SQLException {
         if (instance.existsContactWithNickname(nickname)) { //if we know him, we change his status
             User user = instance.getContactWithNickname(nickname);
             user.setStatus(status);
@@ -171,7 +168,7 @@ public class ReceiveMessage extends Thread {
             System.out.println("contact already exists");
         }
         else { //else we add him
-            if (!((id.equals("[]")) && (nickname.equals("[]")))) {
+            if (!(nickname.equals("[]"))) {
                 instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
             }
         }

@@ -20,6 +20,7 @@ public class User{
     private SendMessage sendMessage;
     private static int mySocket=2000;
     private int theirSocket=3000;
+    private int idDatabase;
 
 
     //CONSTRUCTOR
@@ -50,6 +51,14 @@ public class User{
     public int getTheirSocket() { return theirSocket;}
     public ReceiveMessage getReceiveMessage() { return this.receiveMessage; }
     public SendMessage getSendMessage() { return this.sendMessage; }
+    public int getIdDatabase() { return this.idDatabase; }
+
+
+
+
+
+
+
     public void setNickname (String nickname) { this.nickname=nickname;}
     public void setFirstName (String firstName) { this.firstName=firstName;}
     public void setLastName(String lastName) { this.lastName=lastName;}
@@ -60,5 +69,6 @@ public class User{
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
     public void setTheirSocket(int theirSocket) { this.theirSocket=theirSocket; }
     public void setMySocket(int newSocket) { mySocket=newSocket; }
+    public void setIdDatabase(int idDatabase) { this.idDatabase = idDatabase; }
 
 } 

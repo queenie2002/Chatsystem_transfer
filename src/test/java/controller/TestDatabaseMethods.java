@@ -1,7 +1,9 @@
 package controller;
 
+import model.User;
 import org.junit.jupiter.api.*;
 
+import java.net.InetAddress;
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,8 +16,9 @@ class TestDatabaseMethods {
     @BeforeEach
     void setUp() throws SQLException {
         // Establish a new connection to the test database for each test
-        connection = DriverManager.getConnection(TEST_DATABASE_URL);
-        DatabaseMethods.createUsersTable(); // Ensure Users table is created in the test database
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        DatabaseMethods.startConnection(user);
+
     }
 
     @AfterEach
@@ -31,25 +34,25 @@ class TestDatabaseMethods {
         assertDoesNotThrow(DatabaseMethods::createUsersTable);
     }
 
-    /*
+
     @Test
     void testAddUserAndCreateMessagesTable() throws SQLException {
-        DatabaseMethods.createUsersTable(connection);
-        assertDoesNotThrow(() -> DatabaseMethods.addUser(connection, "127.0.0.1", "TestUser", 1));
-        assertTrue(checkIfTableExists(connection, "Messages_1"), "Messages table for user 1 should exist");
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        assertDoesNotThrow(() -> DatabaseMethods.addUser(user));
+        assertTrue(checkIfTableExists("Messages_1"), "Messages table for user 1 should exist");
     }
 
     @Test
     void testAddMessage() throws SQLException {
-        DatabaseMethods.createUsersTable(connection);
-        DatabaseMethods.addUser(connection, "127.0.0.1", "TestUser", 1);
-        assertDoesNotThrow(() -> DatabaseMethods.addMessage(connection, 1, "Test Message", "2023-01-01"));
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        DatabaseMethods.addUser(user);
+        assertDoesNotThrow(() -> DatabaseMethods.addMessage(1, "Test Message", "2023-01-01"));
     }
-    */
+
 
 
     // Helper method to check if a table exists in the database
-    private boolean checkIfTableExists(Connection connection, String tableName) throws SQLException {
+    private boolean checkIfTableExists(String tableName) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "'");
             return rs.next();

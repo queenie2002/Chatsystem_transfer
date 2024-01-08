@@ -31,21 +31,20 @@ class TestReceiveMessage {
         assertEquals("testNickname", result[2]);
     }
 
-/*
+
     @Test
     void handleIAmConnected() throws UnknownHostException, SocketException, SQLException {
 
         ReceiveMessage receiveMessage = new ReceiveMessage();
-        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Simulate receiving an "I am connected" message
-        receiveMessage.handleIAmConnected("testId", "testNickname", InetAddress.getByName("127.0.0.1"));
+        receiveMessage.handleIAmConnected("testNickname", InetAddress.getByName("127.0.0.1"));
 
         // Verify the changes in the contact list
-        assertTrue(ContactList.getInstance().existsContact("testId"));
+        assertTrue(ContactList.getInstance().existsContactWithNickname("testId"));
         assertEquals(1, ContactList.getInstance().getContactList().size());
-        User receivedUser = ContactList.getInstance().getContact("testId");
-        assertEquals("testId", receivedUser.getId());
+        User receivedUser = ContactList.getInstance().getContactWithNickname("testId");
         assertEquals("testNickname", receivedUser.getNickname());
         assertEquals("127.0.0.1", receivedUser.getIpAddress().getHostAddress());
         assertTrue(receivedUser.getStatus());
@@ -53,7 +52,7 @@ class TestReceiveMessage {
         System.out.println("handleIAmConnected success");
     }
 
-*/
+
 
     @Test
     void handleIAmConnectedAreYou() throws IOException, SQLException {
@@ -61,40 +60,39 @@ class TestReceiveMessage {
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Simulate receiving an "I am connected, are you?" message
-        receiveMessage.handleIAmConnectedAreYou("testId", "testNickname", InetAddress.getByName("127.0.0.1"));
+        receiveMessage.handleIAmConnectedAreYou("testNickname", InetAddress.getByName("127.0.0.1"));
 
         // Verify the changes in the contact list
-        assertTrue(ContactList.getInstance().existsContactWithNickname("test"));
+        assertTrue(ContactList.getInstance().existsContactWithNickname("testNickname"));
         assertEquals(1, ContactList.getInstance().getContactList().size());
-        User receivedUser = ContactList.getInstance().getContactWithNickname("test");
+        User receivedUser = ContactList.getInstance().getContactWithNickname("testNickname");
         assertEquals("testNickname", receivedUser.getNickname());
         assertEquals("127.0.0.1", receivedUser.getIpAddress().getHostAddress());
         assertTrue(receivedUser.getStatus());
 
         System.out.println("handleIAmConnectedAreYou success");
     }
-    /*
+
     @Test
-    void handleDisconnect() throws UnknownHostException {
+    void handleDisconnect() throws UnknownHostException, SocketException, SQLException {
         ReceiveMessage receiveMessage = new ReceiveMessage();
-        User user = new User("testId", "testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Add a user to the contact list before disconnecting
-        ContactList.getInstance().addContact(new User("testId", "testNickname", "", "", "", "", true, InetAddress.getLoopbackAddress()));
+        ContactList.getInstance().addContact(new User( "testNickname", "", "", "", "", true, InetAddress.getLoopbackAddress()));
 
         // Simulate receiving a "disconnect" message
-        receiveMessage.handleDisconnect("testId", "testNickname", "127.0.0.1");
+        receiveMessage.handleDisconnect("testNickname", InetAddress.getByName("127.0.0.1"));
 
         // Verify the changes in the contact list
-        assertTrue(ContactList.getInstance().existsContact("testId"));
+        assertTrue(ContactList.getInstance().existsContactWithNickname("testNickname"));
         assertEquals(1, ContactList.getInstance().getContactList().size());
-        User disconnectedUser = ContactList.getInstance().getContact("testId");
-        assertEquals("testId", disconnectedUser.getId());
+        User disconnectedUser = ContactList.getInstance().getContactWithNickname("testNickname");
         assertEquals("testNickname", disconnectedUser.getNickname());
         assertEquals("127.0.0.1", disconnectedUser.getIpAddress().getHostAddress());
         assertFalse(disconnectedUser.getStatus());
     }
-    */
+
 
 
     @Test
