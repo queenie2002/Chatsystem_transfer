@@ -65,7 +65,7 @@ public class Register {
         });
 
         // Create layout
-        JPanel panel = new JPanel(new GridLayout(6, 2)); //arranges the components in a grid
+        JPanel panel = new JPanel(new GridLayout(5, 2)); //arranges the components in a grid
         panel.add(new JLabel("First Name:"));
         panel.add(firstName);
         panel.add(new JLabel("Last Name:"));
@@ -76,17 +76,65 @@ public class Register {
         panel.add(birthday);
         panel.add(new JLabel("Password:"));
         panel.add(password);
-        panel.add(new JLabel()); // Empty label for spacing
-        panel.add(registerButton);
+
+
+
+        //Redirection Panel
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    SendMessage.toDisconnect();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                frame.dispose();
+            }
+        });
+
+        JButton previousButton = new JButton("Previous");
+        previousButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Beginning beginning = new Beginning(r, s);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                frame.dispose();
+            }
+        });
+
+        // Create layout
+        JPanel panel1 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+        panel1.add(closeButton);
+        panel1.add(previousButton);
+        panel1.add(registerButton);
+        panel1.setSize(600, 100);
+
+
+
+
+
+
+
+
+
+
+
 
         // Set up the frame
-        frame.setSize(600, 250);
+        frame.setSize(600, 600);
         frame.setLocationRelativeTo(null); //center the JFrame on the screen
-        frame.setLayout(new BorderLayout());
-        frame.add(panel, BorderLayout.CENTER);
+        frame.setLayout(new FlowLayout());
+        frame.add(panel);
+        frame.add(panel1);
 
         // Display the frame
         frame.setVisible(true);
+
+
     }
 
     private void registerUser(ReceiveMessage r, SendMessage s, Frame frame) throws IOException {

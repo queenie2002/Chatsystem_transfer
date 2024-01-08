@@ -1,24 +1,14 @@
 package view;
 
 import controller.*;
-import model.User;
-import run.MainClass;
-
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import static run.MainClass.me;
 
-/*Reminders on swing
- * JLabel -> display area for text/images
- * JPanel -> component that serves as a container for other components
- * JButton -> button that performs an action when clicked on
- * BorderLayout -> places components in 5 areas : N,S,E,W, or center
- * FlowLayout -> places components in a row, sized at their preferred size. If the horizontal space is too small, the next available row is used
- * GridLayout -> places components in a grid of same size cells. Each component takes all available space in the cell
- * */
 
 public class Beginning extends JFrame {
 
@@ -71,6 +61,8 @@ public class Beginning extends JFrame {
         JPanel panel = new JPanel(new GridLayout(1, 2)); //arranges the components in a grid
         panel.add(registerButton);
         panel.add(loginButton);
+        panel.setBorder(new EmptyBorder(200, 100, 200, 100));
+
 
 
 
@@ -99,10 +91,10 @@ public class Beginning extends JFrame {
         panel1.add(new JLabel());
         panel1.add(new JLabel());
         panel1.add(closeButton);
-
+        panel1.setSize(600, 100);
 
         // Set up the frame
-        frame.setSize(600, 100);
+        frame.setSize(600, 600);
         frame.setLocationRelativeTo(null); //center the JFrame on the screen
         frame.setLayout(new BorderLayout());
         frame.add(panel, BorderLayout.CENTER);

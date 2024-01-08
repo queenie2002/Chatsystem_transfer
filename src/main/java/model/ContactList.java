@@ -46,7 +46,8 @@ public class ContactList {
 
     public void addContact(User user) throws SQLException {
         myContactList.add(user);
-        Connection conn = DatabaseMethods.getConnection();
+        Connection conn = DatabaseMethods.getConnection(user);
+
     }
 
     public void removeContact(String idUser) { //on utilise idUser

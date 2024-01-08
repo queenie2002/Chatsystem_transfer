@@ -11,9 +11,9 @@ public class DatabaseMethods {
 
     // Method to start the database connection
     public static Connection getConnection(User user) throws SQLException {
-        String IP = String.valueOf(user.getIpAddress());
-        System.out.println(IP);
-        return DriverManager.getConnection(DATABASE_URL+IP+".db");
+        String IPAddress = String.valueOf(user.getIpAddress());
+        IPAddress = IPAddress.substring(1).replace(".","_"); //we take out the / a,d replace . by _
+        return DriverManager.getConnection(DATABASE_URL+IPAddress+".db");
     }
 
     // Method to create the Users table
