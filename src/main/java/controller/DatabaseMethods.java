@@ -1,14 +1,18 @@
 package controller;
 
+import model.*;
+
+import java.net.InetAddress;
 import java.sql.*;
 
 public class DatabaseMethods {
 
-    private static final String DATABASE_URL = "jdbc:sqlite:my_database.db";
+    private static final String DATABASE_URL = "jdbc:sqlite:my_database_";
 
     // Method to start the database connection
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DATABASE_URL);
+    public static Connection getConnection(User user) throws SQLException {
+        InetAddress IP = user.getIpAddress();
+        return DriverManager.getConnection(DATABASE_URL+IP+".db");
     }
 
     // Method to create the Users table
