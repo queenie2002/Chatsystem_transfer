@@ -5,15 +5,17 @@ import java.util.ArrayList;
 public class Chat {
     // Class attributes
     private int chatId;
-    private int counter; // Number of messages in chat (0 to 5). If counter = 5, delete oldest message in chat history
+    private String content;
+    private String date;
     private int fromUserId; // User who requested the chat session
     private int toUserId; // User who accepted the request
     private boolean isActive; // Status indicating whether the chat is active or not
 
     // Constructor
-    public Chat(int chatId, int counter, int fromUserId, int toUserId, boolean isActive) {
-        this.chatId = chatId;
-        this.counter = counter;
+    public Chat(String content, String date, int fromUserId, int toUserId, boolean isActive) {
+
+        this.content = content;
+        this.date = date;
         this.fromUserId = fromUserId;
         this.toUserId = toUserId;
         this.isActive = isActive;
@@ -23,13 +25,11 @@ public class Chat {
     public int getChatId() {
         return chatId;
     }
-
-    public int getCounter() {
-        return counter;
+    public String getDate() {
+        return date;
     }
-
-    public void setCounter(int counter) {
-        this.counter = counter;
+    public String getContent() {
+        return content;
     }
 
     public int getFromUserId() {
@@ -48,6 +48,12 @@ public class Chat {
         this.isActive = isActive;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+    public void setContent (String content) {
+        this.content = content;
+    }
     public static int createChatId(ArrayList<Chat> myChatHistory) {
         return (ChatHistory.getChatFromIndex(myChatHistory.size() - 1)).getChatId() + 1 ;
     }

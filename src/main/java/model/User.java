@@ -19,7 +19,7 @@ public class User{
     private ReceiveMessage receiveMessage;
     private SendMessage sendMessage;
     private static int mySocket=2000;
-    private int theirSocket=3000;
+    private int theirSocket; //a recuperer
     private int idDatabase;
 
 

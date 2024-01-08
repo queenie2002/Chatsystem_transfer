@@ -135,9 +135,12 @@ public class DatabaseMethods {
     // Method to create a specific empty Messages table for a user
     private static void createSpecificMessagesTable(long idDatabase) throws SQLException {
         String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + idDatabase + " ("
-                + "messageID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "chatID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "content TEXT NOT NULL, "
-                + "date TEXT NOT NULL)";
+                + "date TEXT NOT NULL"
+                + "fromUser INT NOT NULL"
+                + "toUser INT NOT NULL"
+                + ")";
 
         try (Statement statement = connection.createStatement()) {
             statement.execute(specificMessagesTableQuery);
@@ -145,7 +148,7 @@ public class DatabaseMethods {
     }
 
     // Method to add a message to the specific Messages table of a user
-    public static void addMessage(long idDatabase, String content, String date) throws SQLException {
+    public static void addMessage(Chat chat) throws SQLException {
         String tableName = "Messages_" + idDatabase;
         String insertMessageSQL = "INSERT INTO " + tableName + " (content, date) VALUES (?, ?)";
 

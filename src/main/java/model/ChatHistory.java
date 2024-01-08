@@ -56,7 +56,7 @@ public class ChatHistory {
 
     public void startNewChatSession(int fromUserId, int toUserId) {//creates new chatSession and sets it to active so we can begin chatting right away
         int newChatId = createChatId(myChatHistory);
-        Chat newChat = new Chat(newChatId, 0, fromUserId, toUserId, true); // Set initial status to active to allow chatting
+        Chat newChat = new Chat(fromUserId, toUserId, true); // Set initial status to active to allow chatting
         myChatHistory.add(newChat);
     }
 
