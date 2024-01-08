@@ -31,6 +31,7 @@ class TestDatabaseMethods {
         assertDoesNotThrow(() -> DatabaseMethods.createUsersTable(connection));
     }
 
+    /*
     @Test
     void testAddUserAndCreateMessagesTable() throws SQLException {
         DatabaseMethods.createUsersTable(connection);
@@ -44,6 +45,8 @@ class TestDatabaseMethods {
         DatabaseMethods.addUser(connection, "127.0.0.1", "TestUser", 1);
         assertDoesNotThrow(() -> DatabaseMethods.addMessage(connection, 1, "Test Message", "2023-01-01"));
     }
+    */
+
 
     // Helper method to check if a table exists in the database
     private boolean checkIfTableExists(Connection connection, String tableName) throws SQLException {

@@ -20,9 +20,16 @@ public class DatabaseMethods {
     public static void createUsersTable(Connection connection) throws SQLException {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
                 + "userID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "nickname TEXT , " //can make unique
                 + "ipAddress TEXT NOT NULL, "
-                + "name TEXT NOT NULL, "
-                + "status INTEGER NOT NULL)";
+                + "firstName TEXT, "
+                + "lastName TEXT, "
+                + "birthday INTEGER, "
+                + "status INTEGER  NOT NULL,"
+                + "password TEXT,"
+                + "mySocket INTEGER,"
+                + "theirSocket INTEGER"
+                + ")";
 
         try (Statement statement = connection.createStatement()) {
             statement.execute(usersTableQuery);
@@ -30,14 +37,25 @@ public class DatabaseMethods {
     }
 
     // Method to add a user to the Users table and create an empty specific Messages table for that user
-    public static void addUser(Connection connection, String ipAddress, String name, int status) throws SQLException {
-        String insertUserSQL = "INSERT INTO Users (ipAddress, name, status) VALUES (?, ?, ?)";
+    public static void addUser(Connection connection, User user) throws SQLException {
+        String insertUserSQL = "INSERT INTO Users (nickname, ipAddress, firstName, lastName, birthday, status, password, mySocket, theirSocket) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String lastInsertIdSQL = "SELECT last_insert_rowid()";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertUserSQL)) {
-            preparedStatement.setString(1, ipAddress);
-            preparedStatement.setString(2, name);
-            preparedStatement.setInt(3, status);
+            preparedStatement.setString(1, user.getNickname());
+            preparedStatement.setString(2, String.valueOf(user.getIpAddress()));
+            preparedStatement.setString(3, user.getFirstName());
+            preparedStatement.setString(4, user.getLastName());
+            preparedStatement.setInt(5, Integer.parseInt(user.getBirthday()));
+
+            if (user.getStatus()) {
+                preparedStatement.setInt(6, 1);
+            } else {
+                preparedStatement.setInt(6, 0);
+            }
+            preparedStatement.setString(7, user.getPassword());
+            preparedStatement.setInt(8, user.getMySocket());
+            preparedStatement.setInt(9, user.getTheirSocket());
             preparedStatement.executeUpdate();
 
             // Fetch the last inserted ID
