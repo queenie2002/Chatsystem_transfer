@@ -30,7 +30,7 @@ public class tcpClient {
     public static void main(String[] args) {
         tcpClient client = new tcpClient();
         try {
-            client.startConnection(args[0], 8080);
+            client.startConnection(args[0], 8080); //ip adress taken as an arg
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String inputLine;
             System.out.println("Type a message to send to the server (type '.' to disconnect):");

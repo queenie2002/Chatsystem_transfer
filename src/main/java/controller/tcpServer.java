@@ -1,8 +1,32 @@
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class tcpServer {
+
+    interface MessageObserver {
+        void handleMessage(String message);
+    }
     private ServerSocket serverSocket;
+
+    private static List<MessageObserver> observers = new ArrayList<>();
+
+    // Methods to add and remove observers
+    public void addObserver(MessageObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(MessageObserver observer) {
+        observers.remove(observer);
+    }
+
+    // Notify all observers about the received message
+    private static void notifyObservers(String message) {
+        for (MessageObserver observer : observers) {
+            observer.handleMessage(message);
+        }
+    }
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -37,6 +61,7 @@ public class tcpServer {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println("Received from client: " + inputLine);
+                    notifyObservers(inputLine); // Notify observers
                     if (".".equals(inputLine)) {
                         System.out.println("Disconnect signal received. Closing connection.");
                         break;
