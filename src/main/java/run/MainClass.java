@@ -38,7 +38,7 @@ public class MainClass {
 
         Beginning beginning = new Beginning(receiveMessage, sendMessage);
 
-        tcpServer myServer = new tcpServer();
+        /*tcpServer myServer = new tcpServer();
 
         Chat chat = new Chat("content","date","fromUserIP","toUserIP");
         myServer.addObserver(new tcpServer.MessageObserver() {
@@ -46,7 +46,7 @@ public class MainClass {
             public void handleMessage(String msg) throws SQLException {
                 DatabaseMethods.addMessage(chat);
             }
-        });
+        });*/
     }
 
 

@@ -1,6 +1,6 @@
-package controller;
+//package controller;
 
-import model.*;
+//import model.*;
 
 import java.net.*;
 import java.io.*;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class tcpServer {
 
-    public interface MessageObserver {
+    /*public interface MessageObserver {
         void handleMessage(String msg) throws SQLException;
-    }
+    }*/
         /*server.addObserver(new MessageObserver() {
             public void handle(String msg) {
                 DatabaseMethods::addMessage(msg);
@@ -28,7 +28,7 @@ public class tcpServer {
 
     private ServerSocket serverSocket;
 
-    private static final List<MessageObserver> observers = new ArrayList<>();
+    /*private static final List<MessageObserver> observers = new ArrayList<>();
 
     // Methods to add and remove observers
     public void addObserver(MessageObserver observer) {
@@ -44,7 +44,7 @@ public class tcpServer {
         for (MessageObserver observer : observers) {
             observer.handleMessage(msg);
         }
-    }
+    }*/
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -79,14 +79,14 @@ public class tcpServer {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println("Received from client: " + inputLine);
-                    notifyObservers(inputLine); // Notify observers
+                    //notifyObservers(inputLine); // Notify observers
                     if (".".equals(inputLine)) {
                         System.out.println("Disconnect signal received. Closing connection.");
                         break;
                     }
                     send(inputLine); // Echo back the received message
                 }
-            } catch (IOException | SQLException e) {
+            } catch (IOException /*| SQLException*/ e) {
                 System.err.println("IOException in EchoClientHandler: " + e.getMessage());
                 e.printStackTrace();
             } finally {
