@@ -1,8 +1,49 @@
+package controller;
+
+import model.*;
+
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class tcpServer {
+
+    public interface MessageObserver {
+        void handleMessage(String msg);
+    }
+        /*server.addObserver(new MessageObserver() {
+            public void handle(String msg) {
+                DatabaseMethods::addMessage(msg);
+            }
+        });
+        server.addObserver(new MessageObserver() {
+            public void handle(String msg) {
+                if(isCurrentUser())
+                    View.display(msg);
+            }
+        });
+        server.addObserver(this);*/
+
     private ServerSocket serverSocket;
+
+    private static final List<MessageObserver> observers = new ArrayList<>();
+
+    // Methods to add and remove observers
+    public void addObserver(MessageObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(MessageObserver observer) {
+        observers.remove(observer);
+    }
+
+    // Notify all observers about the received message
+    private static void notifyObservers(String msg) {
+        for (MessageObserver observer : observers) {
+            observer.handleMessage(msg);
+        }
+    }
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -37,6 +78,7 @@ public class tcpServer {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println("Received from client: " + inputLine);
+                    notifyObservers(inputLine); // Notify observers
                     if (".".equals(inputLine)) {
                         System.out.println("Disconnect signal received. Closing connection.");
                         break;
@@ -65,11 +107,11 @@ public class tcpServer {
     }
 
     public static void main(String[] args) {
-        int port = 8080; // Default port number
+        int PORT = 8080; // Default port number
 
         try {
             tcpServer server = new tcpServer();
-            server.start(port);
+            server.start(PORT);
         } catch (IOException e) {
             System.err.println("Error starting the server: " + e.getMessage());
             e.printStackTrace();

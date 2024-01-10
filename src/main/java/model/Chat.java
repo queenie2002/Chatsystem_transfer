@@ -9,16 +9,16 @@ public class Chat {
     private String date;
     private String fromUserIP; // User who requested the chat session
     private String toUserIP; // User who accepted the request
-    private boolean isActive; // Status indicating whether the chat is active or not
+    /*private boolean isActive; // Status indicating whether the chat is active or not*/
 
     // Constructor
-    public Chat(String content, String date, String fromUserIP, String toUserIP, boolean isActive) {
+    public Chat(String content, String date, String fromUserIP, String toUserIP/*, boolean isActive*/) {
 
         this.content = content;
         this.date = date;
         this.fromUserIP = fromUserIP;
         this.toUserIP = toUserIP;
-        this.isActive = isActive;
+        /*this.isActive = isActive;*/
     }
 
     // Getter and setter methods
@@ -40,13 +40,13 @@ public class Chat {
         return toUserIP;
     }
 
-    public boolean isActive() {
+    /*public boolean isActive() {
         return isActive;
     }
 
     public void setStatus(boolean isActive) {
         this.isActive = isActive;
-    }
+    }*/
 
     public void setDate(String date) {
         this.date = date;
