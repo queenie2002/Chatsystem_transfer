@@ -66,20 +66,20 @@ public class SendMessage {
 
     //we send a message saying we're connected, the receiver won't send anything back
     public static void sendIAmConnected (User user) throws IOException {
-        String message = "IAMCONNECTED: id: " + user.getId() + " nickname: " + user.getNickname();
+        String message = "IAMCONNECTED: nickname: " + user.getNickname();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("SENT: I am connected.");
     }
 
     //we send a message saying we're connected and asks if the other people are too, the receiver will send a iamconnected message back
     public static void sendIAmConnectedAreYou (User user) throws IOException {
-        String message = "IAMCONNECTEDAREYOU: id: " + user.getId() + " nickname: " + user.getNickname();
+        String message = "IAMCONNECTEDAREYOU: nickname: " + user.getNickname();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("SENT: I am connected, are you?.");
     }
 
     public static void sendDisconnect (User user) throws IOException {
-        String message = "DISCONNECT: id: " + user.getId() + " nickname: " + user.getNickname();
+        String message = "DISCONNECT: nickname: " + user.getNickname();
         send(message, InetAddress.getByName(BROADCAST_ADDRESS));
         System.out.println("SENT: Disconnect.");
     }

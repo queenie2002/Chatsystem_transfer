@@ -7,17 +7,17 @@ public class Chat {
     private int chatId;
     private String content;
     private String date;
-    private int fromUserId; // User who requested the chat session
-    private int toUserId; // User who accepted the request
+    private String fromUserIP; // User who requested the chat session
+    private String toUserIP; // User who accepted the request
     private boolean isActive; // Status indicating whether the chat is active or not
 
     // Constructor
-    public Chat(String content, String date, int fromUserId, int toUserId, boolean isActive) {
+    public Chat(String content, String date, String fromUserIP, String toUserIP, boolean isActive) {
 
         this.content = content;
         this.date = date;
-        this.fromUserId = fromUserId;
-        this.toUserId = toUserId;
+        this.fromUserIP = fromUserIP;
+        this.toUserIP = toUserIP;
         this.isActive = isActive;
     }
 
@@ -32,12 +32,12 @@ public class Chat {
         return content;
     }
 
-    public int getFromUserId() {
-        return fromUserId;
+    public String getFromUserIP() {
+        return fromUserIP;
     }
 
-    public int getToUserId() {
-        return toUserId;
+    public String getToUserIP() {
+        return toUserIP;
     }
 
     public boolean isActive() {
@@ -54,10 +54,11 @@ public class Chat {
     public void setContent (String content) {
         this.content = content;
     }
+    /*
     public static int createChatId(ArrayList<Chat> myChatHistory) {
         return (ChatHistory.getChatFromIndex(myChatHistory.size() - 1)).getChatId() + 1 ;
     }
-
+*/
 
 
 }

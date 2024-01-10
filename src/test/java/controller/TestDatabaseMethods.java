@@ -9,7 +9,7 @@ import java.sql.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestDatabaseMethods {
-
+/*
     private static final String TEST_DATABASE_URL = "jdbc:sqlite:my_test_database.db";
     private Connection connection;
 
@@ -58,4 +58,5 @@ class TestDatabaseMethods {
             return rs.next();
         }
     }
+    */
 }

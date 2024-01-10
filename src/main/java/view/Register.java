@@ -153,7 +153,6 @@ public class Register {
         MainClass.me.setNickname(username);
         MainClass.me.setBirthday(birthday);
         MainClass.me.setPassword(Arrays.toString(password));
-        MainClass.me.setId("id"+username);
 
         PopUpTab popup = new PopUpTab("we're checking for unicity of your nickname");
 
