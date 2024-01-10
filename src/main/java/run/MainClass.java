@@ -29,9 +29,6 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-
-
-
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();
         receiveMessage.start();
@@ -41,8 +38,14 @@ public class MainClass {
 
         Beginning beginning = new Beginning(receiveMessage, sendMessage);
 
+        tcpServer myServer = new tcpServer();
 
-
+        Chat chat = new Chat("content","date","fromUserIP","toUserIP");
+        myServer.addObserver(new tcpServer.MessageObserver() {
+            public void handleMessage(String msg) {
+                DatabaseMethods.addMessage(chat);
+            }
+        });
     }
 
 

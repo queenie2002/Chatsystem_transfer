@@ -1,3 +1,7 @@
+package controller;
+
+import model.*;
+
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -5,12 +9,25 @@ import java.util.List;
 
 public class tcpServer {
 
-    interface MessageObserver {
-        void handleMessage(String message);
+    public interface MessageObserver {
+        void handleMessage(String msg);
     }
+        /*server.addObserver(new MessageObserver() {
+            public void handle(String msg) {
+                DatabaseMethods::addMessage(msg);
+            }
+        });
+        server.addObserver(new MessageObserver() {
+            public void handle(String msg) {
+                if(isCurrentUser())
+                    View.display(msg);
+            }
+        });
+        server.addObserver(this);*/
+
     private ServerSocket serverSocket;
 
-    private static List<MessageObserver> observers = new ArrayList<>();
+    private static final List<MessageObserver> observers = new ArrayList<>();
 
     // Methods to add and remove observers
     public void addObserver(MessageObserver observer) {
@@ -22,9 +39,9 @@ public class tcpServer {
     }
 
     // Notify all observers about the received message
-    private static void notifyObservers(String message) {
+    private static void notifyObservers(String msg) {
         for (MessageObserver observer : observers) {
-            observer.handleMessage(message);
+            observer.handleMessage(msg);
         }
     }
 
@@ -90,11 +107,11 @@ public class tcpServer {
     }
 
     public static void main(String[] args) {
-        int port = 8080; // Default port number
+        int PORT = 8080; // Default port number
 
         try {
             tcpServer server = new tcpServer();
-            server.start(port);
+            server.start(PORT);
         } catch (IOException e) {
             System.err.println("Error starting the server: " + e.getMessage());
             e.printStackTrace();
