@@ -4,13 +4,14 @@ import model.*;
 
 import java.net.*;
 import java.io.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class tcpServer {
 
     public interface MessageObserver {
-        void handleMessage(String msg);
+        void handleMessage(String msg) throws SQLException;
     }
         /*server.addObserver(new MessageObserver() {
             public void handle(String msg) {
@@ -39,7 +40,7 @@ public class tcpServer {
     }
 
     // Notify all observers about the received message
-    private static void notifyObservers(String msg) {
+    private static void notifyObservers(String msg) throws SQLException {
         for (MessageObserver observer : observers) {
             observer.handleMessage(msg);
         }
@@ -85,7 +86,7 @@ public class tcpServer {
                     }
                     send(inputLine); // Echo back the received message
                 }
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 System.err.println("IOException in EchoClientHandler: " + e.getMessage());
                 e.printStackTrace();
             } finally {

@@ -42,7 +42,8 @@ public class MainClass {
 
         Chat chat = new Chat("content","date","fromUserIP","toUserIP");
         myServer.addObserver(new tcpServer.MessageObserver() {
-            public void handleMessage(String msg) {
+            @Override
+            public void handleMessage(String msg) throws SQLException {
                 DatabaseMethods.addMessage(chat);
             }
         });
