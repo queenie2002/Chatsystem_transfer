@@ -154,7 +154,6 @@ public class Register {
         MainClass.me.setBirthday(birthday);
         MainClass.me.setPassword(Arrays.toString(password));
 
-        PopUpTab popup = new PopUpTab("we're checking for unicity of your nickname");
 
 
         ContactList instance = getInstance();

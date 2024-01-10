@@ -39,6 +39,11 @@ public class ReceiveMessage extends Thread {
             {
                 InetAddress i = (InetAddress) ee.nextElement();
                 myIPAddresses.add(i.getHostAddress());
+                if (!i.getHostAddress().contains(":") && !i.getHostAddress().equals("127.0.0.1")) {
+                    MainClass.me.setIpAddress(i);
+                }
+
+
             }
         }
     }
