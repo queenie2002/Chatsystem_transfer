@@ -1,13 +1,11 @@
 package controller;
 
 import model.*;
+import run.*;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.sql.*;
-import java.util.Enumeration;
 
 /*
 could close resources
@@ -30,16 +28,20 @@ get contact
 
 public class DatabaseMethods {
 
-    private static final String DATABASE_URL = "jdbc:sqlite:my_database_";
+    private static String DATABASE_URL;
     private static Connection connection;
 
-    // Method to start the database connection
-    public static void startConnection(User user) throws SQLException, UnknownHostException, SocketException {
+    // We start the connection and create users' table
+    public static void startConnection(User user) throws SQLException {
         //start connection and create database for user
+        String ipAddress = user.getIpAddress().getHostAddress().replace(".","_"); //we replace . by _
+        DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
+        connection = DriverManager.getConnection(DATABASE_URL);
 
-        String ipAddress = String.valueOf(user.getIpAddress());
-        ipAddress = ipAddress.substring(1).replace(".","_"); //we take out the / and replace . by _
-        connection = DriverManager.getConnection(DATABASE_URL+ipAddress+".db");
+
+        //POUR LINSTANT A ENLEVER
+        dropTables();
+
         createUsersTable();
     }
 
@@ -60,6 +62,42 @@ public class DatabaseMethods {
             return false;  // Assuming false if an exception occurs
         }
     }
+
+
+    public static void dropTables() throws SQLException {
+
+        //to get list of tables
+        DatabaseMetaData metaData = connection.getMetaData();
+        // Specify the types of database objects to include in the result set (in this case, tables)
+        String[] types = {"TABLE"};
+        // Get the result set containing table information
+        ResultSet resultSet = metaData.getTables(null, null, "%", types);
+
+        // Iterate through the result set and print table names
+        while (resultSet.next()) {
+            String tableName = resultSet.getString("TABLE_NAME");
+
+            try (Statement statement = connection.createStatement()) {
+
+                // Execute the DROP TABLE statement
+                String dropTableSql = "DROP TABLE " + tableName;
+                statement.executeUpdate(dropTableSql);
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println("Table '" + tableName + "' dropped successfully.");
+                System.out.println();
+                System.out.println();
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 
 
     // Method to create the Users table
@@ -121,9 +159,6 @@ public class DatabaseMethods {
 
         if (!userAddedAlready) {
 
-            createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
-
-
             // Fetch the last inserted ID
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(lastInsertIdSQL)) {
@@ -132,6 +167,17 @@ public class DatabaseMethods {
 
                     user.setIdDatabase((int) idDatabase);
                 }
+            }
+
+            if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
+                //System.out.println("ip address for specific table" + user.getIpAddress());
+                //createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
+
+                //Test
+
+                //System.out.println("the host address??" +MainClass.me.getIpAddress().getHostAddress());
+                //Chat aChat = new Chat("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress(), true);
+                //addMessage(aChat);
             }
         }
     }
@@ -166,26 +212,39 @@ public class DatabaseMethods {
     private static void createSpecificMessagesTable(String ipAddress) throws SQLException {
 
         ipAddress = ipAddress.substring(1).replace(".","_");
+
+        System.out.println( "Messages_" + ipAddress) ;
         String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + ipAddress + " ("
                 + "chatID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "content TEXT NOT NULL, "
-                + "date TEXT NOT NULL"
-                + "fromUser INT NOT NULL"
-                + "toUser INT NOT NULL"
+                + "date TEXT NOT NULL, "
+                + "fromUser TEXT NOT NULL, "
+                + "toUser TEXT NOT NULL"
                 + ")";
 
         try (Statement statement = connection.createStatement()) {
             statement.execute(specificMessagesTableQuery);
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("narrive pas a creer table", e);
+
         }
     }
 
     // Method to add a message to the specific Messages table of a user
     public static void addMessage(Chat chat) throws SQLException {
 
-        boolean table1Exists = doesTableExist("Messages_" + chat.getFromUserIP().substring(1).replace(".","_"));
-        boolean table2Exists = doesTableExist("Messages_" + chat.getToUserIP().substring(1).replace(".","_"));
+        System.out.println("Messages_" + chat.getFromUserIP().replace(".","_"));
+        System.out.println("Messages_" + chat.getToUserIP().replace(".","_"));
 
-        String tableName = "";
+
+        boolean table1Exists = doesTableExist("Messages_" + chat.getFromUserIP().replace(".","_"));
+        boolean table2Exists = doesTableExist("Messages_" + chat.getToUserIP().replace(".","_"));
+
+        System.out.println("table1: " + table1Exists);
+        System.out.println("table2: " + table2Exists);
+
+        String tableName;
 
         if (table1Exists||table2Exists) {
             if (table1Exists) {
@@ -194,11 +253,13 @@ public class DatabaseMethods {
                 tableName = "Messages_" + chat.getToUserIP();
             }
 
-            String insertMessageSQL = "INSERT INTO " + tableName + " (content, date) VALUES (?, ?)";
+            String insertMessageSQL = "INSERT INTO " + tableName + " (content, date, fromUser, toUser) VALUES (?, ?, ?, ?)";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {
                 preparedStatement.setString(1, chat.getContent());
                 preparedStatement.setString(2, chat.getDate());
+                preparedStatement.setString(3, chat.getFromUserIP());
+                preparedStatement.setString(4, chat.getToUserIP());
                 preparedStatement.executeUpdate();
             }
         }
@@ -206,32 +267,5 @@ public class DatabaseMethods {
             throw new RuntimeException("Table doesn't exist in AddMessage");
         }
     }
-
-
-
-
-    //HAVE TO DO THIS
-/*
-    public static void findIdDatabaseFromIP(InetAddress ipAddress) throws SQLException {
-        String sql = "SELECT idUserDatabase FROM users WHERE ipAddress = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, String.valueOf(ipAddress));
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                // If the result set has at least one row, get the ID
-                if (resultSet.next()) {
-                    return resultSet.getInt("idUserDatabase");
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();  // Handle or log the exception as needed
-        }
-
-        return -1;  // Return -1 if the IP address is not found or an error occurs
-    }
-*/
 
 }

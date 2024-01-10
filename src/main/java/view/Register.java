@@ -6,10 +6,12 @@ import run.MainClass;
 import view.HomeTab;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import static model.ContactList.getInstance;
@@ -30,7 +32,7 @@ when register button is clicked, open new window
 public class Register {
 
     //JTextField used for text input
-    private JTextField firstName, lastName, username, birthday;
+    private JTextField firstName, lastName, nickname, birthday;
 
     //JPasswordField used for password input
     private JPasswordField password;
@@ -48,7 +50,7 @@ public class Register {
         // Create components
         firstName = new JTextField(20);
         lastName = new JTextField(20);
-        username = new JTextField(20);
+        nickname = new JTextField(20);
         birthday = new JTextField(20);
         password = new JPasswordField(20);
 
@@ -58,7 +60,7 @@ public class Register {
             public void actionPerformed(ActionEvent e) {
                 try {
                     registerUser(r,s, frame); //when the button is clicked it calls the registerUser method
-                } catch (IOException ex) {
+                } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -70,8 +72,8 @@ public class Register {
         panel.add(firstName);
         panel.add(new JLabel("Last Name:"));
         panel.add(lastName);
-        panel.add(new JLabel("Username:"));
-        panel.add(username);
+        panel.add(new JLabel("Nickname:"));
+        panel.add(nickname);
         panel.add(new JLabel("Birthday: (YYYY-MM-DD)"));
         panel.add(birthday);
         panel.add(new JLabel("Password:"));
@@ -137,27 +139,27 @@ public class Register {
 
     }
 
-    private void registerUser(ReceiveMessage r, SendMessage s, Frame frame) throws IOException {
+    private void registerUser(ReceiveMessage r, SendMessage s, Frame frame) throws IOException, SQLException {
 
         //faut créer la database et l'initialiser
 
 
         String firstName = this.firstName.getText();
         String lastName = this.lastName.getText();
-        String username = this.username.getText();
+        String nickname = this.nickname.getText();
         String birthday = this.birthday.getText();
         char[] password = this.password.getPassword();
 
         MainClass.me.setFirstName(firstName);
         MainClass.me.setLastName(lastName);
-        MainClass.me.setNickname(username);
+        MainClass.me.setNickname(nickname);
         MainClass.me.setBirthday(birthday);
-        MainClass.me.setPassword(Arrays.toString(password));
-
+        MainClass.me.setPassword(String.valueOf(password));
+        MainClass.me.setStatus(true);
 
 
         ContactList instance = getInstance();
-        if (instance.existsContactWithNickname(username)) { //if someone already has nickname
+        if (instance.existsContactWithNickname(nickname)) { //if someone already has nickname
             PopUpTab popup1 = new PopUpTab("choose another nickname");
         }
         else { //if unique i go to next tab and tell people i am connected
@@ -170,12 +172,10 @@ public class Register {
                 instance.printContactList();
 
 
-
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
             frame.dispose();
         }
-
     }
 }
