@@ -30,11 +30,14 @@ public class MainClass {
     public static void main(String[] args) throws IOException, SQLException {
 
 
-        DatabaseMethods.startConnection(me);
+
 
         ReceiveMessage receiveMessage = new ReceiveMessage();
         SendMessage sendMessage = new SendMessage();
         receiveMessage.start();
+
+        DatabaseMethods.startConnection(me);
+
 
         Beginning beginning = new Beginning(receiveMessage, sendMessage);
 

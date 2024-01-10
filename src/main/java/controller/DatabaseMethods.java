@@ -37,24 +37,8 @@ public class DatabaseMethods {
     public static void startConnection(User user) throws SQLException, UnknownHostException, SocketException {
         //start connection and create database for user
 
-
-
-        Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-        if(e.hasMoreElements())
-        {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration<InetAddress> ee = n.getInetAddresses();
-            if (ee.hasMoreElements())
-            {
-                InetAddress i = (InetAddress) ee.nextElement();
-                user.setIpAddress(InetAddress.getByName(i.getHostAddress()));
-            }
-        }
-
-
         String ipAddress = String.valueOf(user.getIpAddress());
         ipAddress = ipAddress.substring(1).replace(".","_"); //we take out the / and replace . by _
-        System.out.println(DATABASE_URL+ipAddress+".db");
         connection = DriverManager.getConnection(DATABASE_URL+ipAddress+".db");
         createUsersTable();
     }
@@ -86,7 +70,7 @@ public class DatabaseMethods {
                 + "ipAddress TEXT NOT NULL, "
                 + "firstName TEXT, "
                 + "lastName TEXT, "
-                + "birthday INTEGER, "
+                + "birthday TEXT, "
                 + "status INTEGER  NOT NULL,"
                 + "password TEXT,"
                 + "mySocket INTEGER,"
@@ -113,12 +97,15 @@ public class DatabaseMethods {
 
         String lastInsertIdSQL = "SELECT last_insert_rowid()";
 
+
+        System.out.println("my birthday " + user.getBirthday());
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(addUserSQL)) {
             preparedStatement.setString(1, user.getNickname());
             preparedStatement.setString(2, String.valueOf(user.getIpAddress()));
             preparedStatement.setString(3, user.getFirstName());
             preparedStatement.setString(4, user.getLastName());
-            preparedStatement.setInt(5, Integer.parseInt(user.getBirthday()));
+            preparedStatement.setString(5, user.getBirthday());
 
             if (user.getStatus()) {
                 preparedStatement.setInt(6, 1);
