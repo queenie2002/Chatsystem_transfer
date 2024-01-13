@@ -19,6 +19,7 @@ target/
 .idea/codeInsightDaemons/
 .idea/dataSources/
 .project
+.vscode/
 
 # Logs
 *.log
