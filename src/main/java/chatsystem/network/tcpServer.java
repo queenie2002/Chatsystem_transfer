@@ -1,4 +1,4 @@
-package chatsystem.controller;//package controller;
+package chatsystem.network;//package controller;
 
 //import model.*;
 

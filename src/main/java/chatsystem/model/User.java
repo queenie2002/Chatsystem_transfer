@@ -1,7 +1,7 @@
 package chatsystem.model;
 
-import chatsystem.controller.UDPSendMessage;
-import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.network.UDPSender;
+import chatsystem.network.UDPReceiver;
 
 import java.net.*;
 
@@ -15,8 +15,8 @@ public class User{
     private Boolean status;                         //if disconnected = false, connected = true
 
     private InetAddress ipAddress;
-    private UDPReceiveMessage UDPReceiveMessage;
-    private UDPSendMessage UDPSendMessage;
+    private UDPReceiver UDPReceiver;
+    private UDPSender UDPSender;
     private static int mySocket=2000;
     private int theirSocket; //a recuperer
     private int idDatabase;
@@ -48,8 +48,8 @@ public class User{
 
     public int getMySocket() { return mySocket;}
     public int getTheirSocket() { return theirSocket;}
-    public chatsystem.controller.UDPReceiveMessage getReceiveMessage() { return this.UDPReceiveMessage; }
-    public UDPSendMessage getSendMessage() { return this.UDPSendMessage; }
+    public UDPReceiver getReceiveMessage() { return this.UDPReceiver; }
+    public UDPSender getSendMessage() { return this.UDPSender; }
     public int getIdDatabase() { return this.idDatabase; }
 
 

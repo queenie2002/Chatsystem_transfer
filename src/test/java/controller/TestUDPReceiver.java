@@ -5,10 +5,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import chatsystem.controller.*;
 import chatsystem.model.*;
 import java.sql.*;
 import java.io.IOException;
+
+import chatsystem.network.UDPReceiver;
 import org.junit.jupiter.api.Test;
 
 
@@ -17,12 +18,12 @@ import java.net.*;
 
 
 
-class TestUDPReceiveMessage {
+class TestUDPReceiver {
 
 
     @Test
     void extractInfoFromPattern() throws SocketException {
-        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
+        UDPReceiver receiveMessage = new UDPReceiver();
         String[] result = receiveMessage.extractInfoFromPattern("IAMCONNECTED: nickname: testNickname");
 
         assertNotNull(result);
@@ -35,7 +36,7 @@ class TestUDPReceiveMessage {
     @Test
     void handleIAmConnected() throws UnknownHostException, SocketException, SQLException {
 
-        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
+        UDPReceiver receiveMessage = new UDPReceiver();
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Simulate receiving an "I am connected" message
@@ -56,7 +57,7 @@ class TestUDPReceiveMessage {
 
     @Test
     void handleIAmConnectedAreYou() throws IOException, SQLException {
-        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
+        UDPReceiver receiveMessage = new UDPReceiver();
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Simulate receiving an "I am connected, are you?" message
@@ -75,7 +76,7 @@ class TestUDPReceiveMessage {
 
     @Test
     void handleDisconnect() throws UnknownHostException, SocketException, SQLException {
-        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
+        UDPReceiver receiveMessage = new UDPReceiver();
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Add a user to the contact list before disconnecting

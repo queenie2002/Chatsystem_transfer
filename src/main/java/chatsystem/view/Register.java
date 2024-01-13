@@ -1,7 +1,7 @@
 package chatsystem.view;
 
-import chatsystem.controller.UDPSendMessage;
-import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.network.UDPSender;
+import chatsystem.network.UDPReceiver;
 import chatsystem.model.ContactList;
 import chatsystem.MainClass;
 
@@ -34,9 +34,9 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(UDPReceiveMessage r, UDPSendMessage s) throws IOException {
+    public Register(UDPReceiver r, UDPSender s) throws IOException {
 
-        UDPSendMessage.sendToChooseNickname();
+        UDPSender.sendToChooseNickname();
 
 
         // Create and set up the window
@@ -83,7 +83,7 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    UDPSendMessage.toDisconnect();
+                    UDPSender.toDisconnect();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -135,7 +135,7 @@ public class Register {
 
     }
 
-    private void registerUser(UDPReceiveMessage r, UDPSendMessage s, Frame frame) throws IOException, SQLException {
+    private void registerUser(UDPReceiver r, UDPSender s, Frame frame) throws IOException, SQLException {
 
         //faut créer la database et l'initialiser
 
@@ -161,7 +161,7 @@ public class Register {
         else { //if unique i go to next tab and tell people i am connected
             HomeTab hometab = new HomeTab(r, s);
             try {
-                UDPSendMessage.sendIAmConnected(MainClass.me);
+                UDPSender.sendIAmConnected(MainClass.me);
 
                 System.out.println();
                 System.out.println("Printing Contact List after chose nickname ");

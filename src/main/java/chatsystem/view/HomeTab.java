@@ -1,7 +1,7 @@
 package chatsystem.view;
 
-import chatsystem.controller.UDPSendMessage;
-import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.network.UDPSender;
+import chatsystem.network.UDPReceiver;
 
 import java.awt.*;
 import javax.swing.*;
@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class HomeTab {
 
-    public HomeTab(UDPReceiveMessage r, UDPSendMessage s) {
+    public HomeTab(UDPReceiver r, UDPSender s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");

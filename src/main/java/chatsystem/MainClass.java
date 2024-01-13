@@ -1,13 +1,12 @@
 package chatsystem;
 
 import chatsystem.controller.DatabaseMethods;
-import chatsystem.controller.UDPSendMessage;
-import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.network.*;
 import chatsystem.model.User;
 import chatsystem.view.Beginning;
 
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.*;
 import java.sql.SQLException;
 
 public class MainClass {
@@ -23,17 +22,30 @@ public class MainClass {
         }
     }
 
+    public static final int BROADCAST_RECEIVER_PORT = 2000;
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws SQLException {
 
-        UDPReceiveMessage UDPReceiveMessage = new UDPReceiveMessage();
-        UDPSendMessage UDPSendMessage = new UDPSendMessage();
-        UDPReceiveMessage.start();
+        UDPSender UDPSender = new UDPSender();
+
+        try {
+            UDPReceiver UDPReceiver = new UDPReceiver();
+            UDPReceiver.start();
+
+            Beginning beginning = new Beginning(UDPReceiver, UDPSender);
+
+        } catch (SocketException e) {
+            System.err.println("Could not start UDP server: " + e.getMessage());
+            System.exit(1);
+        } catch (IOException e) {
+            System.err.println("idk where this comes from, maybe the view ??" );
+            System.exit(1);
+        }
 
         DatabaseMethods.startConnection(me);
 
 
-        Beginning beginning = new Beginning(UDPReceiveMessage, UDPSendMessage);
+
 
         /*tcpServer myServer = new tcpServer();
 

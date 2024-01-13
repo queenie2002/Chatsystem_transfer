@@ -1,4 +1,4 @@
-package chatsystem.controller;
+package chatsystem.network;
 
 import chatsystem.model.ContactList;
 import chatsystem.MainClass;
@@ -7,22 +7,18 @@ import chatsystem.model.User;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.regex.*;
 
-public class UDPReceiveMessage extends Thread {
+public class UDPReceiver extends Thread {
 
-    private static final int BROADCAST_RECEIVER_PORT = 2000;
-
-    public static boolean running = true;
+    private final DatagramSocket receivingSocket;
 
     private ContactList instance = ContactList.getInstance();
 
     public final ArrayList<String> myIPAddresses;
-    public UDPReceiveMessage() throws SocketException { //i'm adding a constructor qui est empty
+    public UDPReceiver() throws SocketException {
+        receivingSocket = new DatagramSocket(MainClass.BROADCAST_RECEIVER_PORT);
         myIPAddresses = new ArrayList<String>();
         makeMyIPAddresses();
     }
@@ -94,18 +90,19 @@ public class UDPReceiveMessage extends Thread {
     }
 
     public void run() {
-        try (DatagramSocket receivingSocket = new DatagramSocket(BROADCAST_RECEIVER_PORT)) {
-            byte[] buf = new byte[256];
+        while (true) {
+            try {
 
-            while (running) {
+                byte[] buf = new byte[1024];
                 DatagramPacket inPacket = new DatagramPacket(buf, buf.length);
+
                 receivingSocket.receive(inPacket);
+
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
+                UDPMessage message = new UDPMessage(received, inPacket.getAddress());
+                System.out.println("udpmessage received: " + message.toString());
 
                 String senderIpAddress = inPacket.getAddress().getHostAddress();
-
-
-
                 //check if i sent this
                 boolean didISendThis = false;
 
@@ -131,19 +128,19 @@ public class UDPReceiveMessage extends Thread {
                         System.out.println();
                     }
                 }
-
-
-
+            } catch (IOException e) {
+                System.err.println("Receive error: " + e.getMessage());
+            } catch (SQLException e){
+                throw new RuntimeException("SQL Exception");
             }
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            System.out.println("error: we closed the socket ??");
+
+
         }
     }
 
     public void handleToChooseNickname() throws IOException {
         //when we receive the request, we respond by saying who we are
-        UDPSendMessage.sendIAmConnected(MainClass.me);
+        UDPSender.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED to choose nickname request");
     }
 
@@ -154,7 +151,7 @@ public class UDPReceiveMessage extends Thread {
 
     public void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException, SQLException {
         changeStatus(nickname, ipAddress, true);
-        UDPSendMessage.sendIAmConnected(MainClass.me);
+        UDPSender.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 

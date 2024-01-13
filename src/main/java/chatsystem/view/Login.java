@@ -1,7 +1,7 @@
 package chatsystem.view;
 
-import chatsystem.controller.UDPSendMessage;
-import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.network.UDPSender;
+import chatsystem.network.UDPReceiver;
 import chatsystem.model.ContactList;
 import chatsystem.model.User;
 import chatsystem.MainClass;
@@ -18,7 +18,7 @@ public class Login {
     private JTextField jtField = new JTextField();
     private JPasswordField jpasswordField = new JPasswordField();
 
-    public  Login(UDPReceiveMessage r, UDPSendMessage s) {
+    public  Login(UDPReceiver r, UDPSender s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Login");
@@ -104,7 +104,7 @@ public class Login {
 
 
                 try {
-                    UDPSendMessage.sendIAmConnected(MainClass.me);
+                    UDPSender.sendIAmConnected(MainClass.me);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
