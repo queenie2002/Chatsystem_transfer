@@ -1,8 +1,6 @@
-package chatsystem.model;
+package chatsystem.network;
 
-import java.util.ArrayList;
-
-public class Chat {
+public class TCPMessage {
     // Class attributes
     private int chatId;
     private String content;
@@ -12,7 +10,7 @@ public class Chat {
     /*private boolean isActive; // Status indicating whether the chat is active or not*/
 
     // Constructor
-    public Chat(String content, String date, String fromUserIP, String toUserIP/*, boolean isActive*/) {
+    public TCPMessage(String content, String date, String fromUserIP, String toUserIP/*, boolean isActive*/) {
 
         this.content = content;
         this.date = date;
@@ -55,7 +53,7 @@ public class Chat {
         this.content = content;
     }
     /*
-    public static int createChatId(ArrayList<Chat> myChatHistory) {
+    public static int createChatId(ArrayList<TCPMessage> myChatHistory) {
         return (ChatHistory.getChatFromIndex(myChatHistory.size() - 1)).getChatId() + 1 ;
     }
 */

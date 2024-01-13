@@ -1,7 +1,7 @@
 package chatsystem.network;
 
 import chatsystem.MainClass;
-import chatsystem.model.User;
+import chatsystem.contacts.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

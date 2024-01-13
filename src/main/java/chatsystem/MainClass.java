@@ -1,8 +1,8 @@
 package chatsystem;
 
-import chatsystem.controller.DatabaseMethods;
+import chatsystem.contacts.User;
+import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
-import chatsystem.model.*;
 import chatsystem.view.Beginning;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -66,7 +66,7 @@ public class MainClass {
 
         /*TCPServer myServer = new TCPServer();
 
-        Chat chat = new Chat("content","date","fromUserIP","toUserIP");
+        TCPMessage chat = new TCPMessage("content","date","fromUserIP","toUserIP");
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
             public void handleMessage(String msg) throws SQLException {

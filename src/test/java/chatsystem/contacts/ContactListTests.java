@@ -1,7 +1,6 @@
 package chatsystem.contacts;
 
-import chatsystem.controller.DatabaseMethods;
-import chatsystem.model.User;
+import chatsystem.database.DatabaseMethods;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;

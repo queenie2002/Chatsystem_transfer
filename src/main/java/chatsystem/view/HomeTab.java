@@ -18,7 +18,7 @@ public class HomeTab {
 
 
         //Create buttons
-        JButton button_startChat = new JButton("Start A New Chat");
+        JButton button_startChat = new JButton("Start A New TCPMessage");
         button_startChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -3,7 +3,7 @@ package chatsystem.network;
 import chatsystem.MainClass;
 import chatsystem.contacts.ContactAlreadyExists;
 import chatsystem.contacts.ContactList;
-import chatsystem.model.*;
+import chatsystem.contacts.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

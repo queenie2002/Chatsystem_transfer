@@ -1,7 +1,7 @@
 # ChatSystem Project
 
 ## Overview
-The ChatSystem project aims to create a decentralized chat system for a company, where each employee is assigned their own machine with a fixed IP address. 
+The ChatSystem project aims to create a decentralized TCPMessage system for a company, where each employee is assigned their own machine with a fixed IP address. 
 All machines in the company are on the same local network.
 
 - **build configuration**: this project can be run and imported based only on the `pom.xml` file.

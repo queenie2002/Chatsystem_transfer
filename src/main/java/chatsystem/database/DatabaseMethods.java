@@ -1,7 +1,7 @@
-package chatsystem.controller;
+package chatsystem.database;
 
-import chatsystem.model.Chat;
-import chatsystem.model.User;
+import chatsystem.network.TCPMessage;
+import chatsystem.contacts.User;
 import chatsystem.MainClass;
 
 import java.sql.*;
@@ -159,8 +159,8 @@ public class DatabaseMethods {
             //Test
 
             System.out.println("my address" +MainClass.me.getIpAddress().getHostAddress());
-            Chat aChat = new Chat("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
-            addMessage(aChat);
+            TCPMessage aTCPMessage = new TCPMessage("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
+            addMessage(aTCPMessage);
         }
 
 
@@ -232,14 +232,14 @@ public class DatabaseMethods {
     }
 
     // Method to add a message to the specific Messages table of a user
-    public static void addMessage(Chat chat) throws SQLException {
+    public static void addMessage(TCPMessage TCPMessage) throws SQLException {
 
-        System.out.println("Checking if table exists: Messages_" + chat.getFromUserIP().replace(".","_"));
-        System.out.println("Checking if table exists: Messages_" + chat.getToUserIP().replace(".","_"));
+        System.out.println("Checking if table exists: Messages_" + TCPMessage.getFromUserIP().replace(".","_"));
+        System.out.println("Checking if table exists: Messages_" + TCPMessage.getToUserIP().replace(".","_"));
 
 
-        boolean table1Exists = doesTableExist("Messages_" + chat.getFromUserIP().replace(".","_"));
-        boolean table2Exists = doesTableExist("Messages_" + chat.getToUserIP().replace(".","_"));
+        boolean table1Exists = doesTableExist("Messages_" + TCPMessage.getFromUserIP().replace(".","_"));
+        boolean table2Exists = doesTableExist("Messages_" + TCPMessage.getToUserIP().replace(".","_"));
 
         System.out.println("table1: " + table1Exists);
         System.out.println("table2: " + table2Exists);
@@ -248,26 +248,26 @@ public class DatabaseMethods {
 
         if (table1Exists||table2Exists) {
             if (table1Exists) {
-                tableName = "Messages_" + chat.getFromUserIP();
+                tableName = "Messages_" + TCPMessage.getFromUserIP();
             } else {
-                tableName = "Messages_" + chat.getToUserIP();
+                tableName = "Messages_" + TCPMessage.getToUserIP();
             }
 
             String insertMessageSQL = "INSERT INTO " + tableName + " (content, date, fromUser, toUser) VALUES (?, ?, ?, ?)";
 
-            System.out.println("content" + chat.getContent());
-            System.out.println("date" + chat.getDate());
-            System.out.println("fromuser" + "10_2_2_2"/*chat.getFromUserIP()*/);
-            System.out.println("touser" + "10_2_2_2"/*chat.getToUserIP()*/);
+            System.out.println("content" + TCPMessage.getContent());
+            System.out.println("date" + TCPMessage.getDate());
+            System.out.println("fromuser" + "10_2_2_2"/*TCPMessage.getFromUserIP()*/);
+            System.out.println("touser" + "10_2_2_2"/*TCPMessage.getToUserIP()*/);
             try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {
 
-                preparedStatement.setString(1, chat.getContent());
+                preparedStatement.setString(1, TCPMessage.getContent());
 
-                preparedStatement.setString(2, chat.getDate());
+                preparedStatement.setString(2, TCPMessage.getDate());
 
-                preparedStatement.setString(3, chat.getFromUserIP());
+                preparedStatement.setString(3, TCPMessage.getFromUserIP());
 
-                preparedStatement.setString(4, chat.getToUserIP());
+                preparedStatement.setString(4, TCPMessage.getToUserIP());
                 preparedStatement.executeUpdate();
             }
             catch (SQLException e){

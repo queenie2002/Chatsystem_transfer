@@ -1,4 +1,4 @@
-package chatsystem.model;
+package chatsystem.contacts;
 
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;

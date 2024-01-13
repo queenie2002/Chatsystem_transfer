@@ -7,8 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import chatsystem.contacts.ContactAlreadyExists;
 import chatsystem.contacts.ContactList;
-import chatsystem.controller.*;
-import chatsystem.model.*;
+import chatsystem.contacts.User;
+import chatsystem.database.*;
+
 import java.sql.*;
 import java.io.IOException;
 

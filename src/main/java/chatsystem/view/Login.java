@@ -3,7 +3,7 @@ package chatsystem.view;
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;
 import chatsystem.contacts.ContactList;
-import chatsystem.model.User;
+import chatsystem.contacts.User;
 import chatsystem.MainClass;
 
 import java.awt.*;

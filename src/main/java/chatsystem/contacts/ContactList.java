@@ -5,8 +5,7 @@ we only have the contact list of our user
 so we only make one in the main?
  */
 
-import chatsystem.controller.DatabaseMethods;
-import chatsystem.model.User;
+import chatsystem.database.DatabaseMethods;
 
 import java.sql.*;
 import java.net.InetAddress;

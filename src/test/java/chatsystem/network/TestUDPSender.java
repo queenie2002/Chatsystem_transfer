@@ -1,7 +1,6 @@
 package chatsystem.network;
 
-import chatsystem.network.UDPSender;
-import chatsystem.model.User;
+import chatsystem.contacts.User;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;

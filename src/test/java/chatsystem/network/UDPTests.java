@@ -1,12 +1,9 @@
 package chatsystem.network;
 
-import chatsystem.model.User;
-import chatsystem.network.*;
+import chatsystem.contacts.User;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
