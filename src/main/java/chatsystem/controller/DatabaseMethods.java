@@ -1,10 +1,9 @@
-package controller;
+package chatsystem.controller;
 
-import model.*;
-import run.*;
+import chatsystem.model.Chat;
+import chatsystem.model.User;
+import chatsystem.MainClass;
 
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.sql.*;
 
 /*
@@ -38,10 +37,6 @@ public class DatabaseMethods {
         DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
         connection = DriverManager.getConnection(DATABASE_URL);
 
-
-        //POUR LINSTANT A ENLEVER
-        dropTables();
-
         createUsersTable();
     }
 
@@ -63,7 +58,7 @@ public class DatabaseMethods {
         }
     }
 
-
+    /*
     public static void dropTables() throws SQLException {
 
         //to get list of tables
@@ -94,8 +89,9 @@ public class DatabaseMethods {
                 e.printStackTrace();
             }
         }
-    }
 
+    }
+*/
 
 
 
@@ -156,6 +152,18 @@ public class DatabaseMethods {
             preparedStatement.executeUpdate();
         }
 
+        if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
+            System.out.println("ip address for specific table" + user.getIpAddress());
+            createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
+
+            //Test
+
+            System.out.println("my address" +MainClass.me.getIpAddress().getHostAddress());
+            Chat aChat = new Chat("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
+            addMessage(aChat);
+        }
+
+
 
         if (!userAddedAlready) {
 
@@ -169,16 +177,7 @@ public class DatabaseMethods {
                 }
             }
 
-            if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
-                //System.out.println("ip address for specific table" + user.getIpAddress());
-                //createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
 
-                //Test
-
-                //System.out.println("the host address??" +MainClass.me.getIpAddress().getHostAddress());
-                //Chat aChat = new Chat("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress(), true);
-                //addMessage(aChat);
-            }
         }
     }
 
@@ -234,8 +233,8 @@ public class DatabaseMethods {
     // Method to add a message to the specific Messages table of a user
     public static void addMessage(Chat chat) throws SQLException {
 
-        System.out.println("Messages_" + chat.getFromUserIP().replace(".","_"));
-        System.out.println("Messages_" + chat.getToUserIP().replace(".","_"));
+        System.out.println("Checking if table exists: Messages_" + chat.getFromUserIP().replace(".","_"));
+        System.out.println("Checking if table exists: Messages_" + chat.getToUserIP().replace(".","_"));
 
 
         boolean table1Exists = doesTableExist("Messages_" + chat.getFromUserIP().replace(".","_"));
@@ -255,12 +254,23 @@ public class DatabaseMethods {
 
             String insertMessageSQL = "INSERT INTO " + tableName + " (content, date, fromUser, toUser) VALUES (?, ?, ?, ?)";
 
+            System.out.println("content" + chat.getContent());
+            System.out.println("date" + chat.getDate());
+            System.out.println("fromuser" + "10_2_2_2"/*chat.getFromUserIP()*/);
+            System.out.println("touser" + "10_2_2_2"/*chat.getToUserIP()*/);
             try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {
+
                 preparedStatement.setString(1, chat.getContent());
+
                 preparedStatement.setString(2, chat.getDate());
+
                 preparedStatement.setString(3, chat.getFromUserIP());
+
                 preparedStatement.setString(4, chat.getToUserIP());
                 preparedStatement.executeUpdate();
+            }
+            catch (SQLException e){
+                e.printStackTrace();
             }
         }
         else {

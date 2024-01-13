@@ -1,4 +1,4 @@
-//package controller;
+package chatsystem.controller;//package controller;
 
 import java.io.*;
 import java.net.*;

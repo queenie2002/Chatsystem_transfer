@@ -1,4 +1,4 @@
-package model;
+package chatsystem.model;
 /*
 
 import model.*;
@@ -15,7 +15,10 @@ public class ChatHistory {
 
     // Constructor
     public ChatHistory() { //i'm adding a constructor qui est empty
-        myChatHistory = new ArrayList<Chat>();
+        myChatHistory = new ArrayList
+import controller.*;
+import model.*;
+import view.*;<Chat>();
     }
 
     // Methods

@@ -1,8 +1,10 @@
-package view;
+package chatsystem.view;
 
-import controller.*;
-import model.*;
-import run.MainClass;
+import chatsystem.controller.UDPSendMessage;
+import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.model.ContactList;
+import chatsystem.model.User;
+import chatsystem.MainClass;
 
 import java.awt.*;
 import javax.swing.*;
@@ -16,7 +18,7 @@ public class Login {
     private JTextField jtField = new JTextField();
     private JPasswordField jpasswordField = new JPasswordField();
 
-    public  Login(ReceiveMessage r, SendMessage s) {
+    public  Login(UDPReceiveMessage r, UDPSendMessage s) {
 
         // Create and set up the window
         JFrame frame = new JFrame("Login");
@@ -102,7 +104,7 @@ public class Login {
 
 
                 try {
-                    SendMessage.sendIAmConnected(MainClass.me);
+                    UDPSendMessage.sendIAmConnected(MainClass.me);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

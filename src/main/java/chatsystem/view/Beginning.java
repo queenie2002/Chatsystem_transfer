@@ -1,19 +1,20 @@
-package view;
+package chatsystem.view;
 
-import controller.*;
+import chatsystem.controller.UDPSendMessage;
+import chatsystem.controller.UDPReceiveMessage;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import static run.MainClass.me;
 
 
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(ReceiveMessage r, SendMessage s) throws IOException {
+    public Beginning(UDPReceiveMessage r, UDPSendMessage s) throws IOException {
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,7 +76,7 @@ public class Beginning extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SendMessage.toDisconnect();
+                    UDPSendMessage.toDisconnect();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

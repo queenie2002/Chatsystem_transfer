@@ -1,20 +1,16 @@
-package view;
+package chatsystem.view;
 
-import controller.*;
-import model.*;
-import run.MainClass;
-import view.HomeTab;
+import chatsystem.controller.UDPSendMessage;
+import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.model.ContactList;
+import chatsystem.MainClass;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-
-import static model.ContactList.getInstance;
 
 /*Reminders on swing
 * JLabel -> display area for text/images
@@ -38,9 +34,9 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(ReceiveMessage r, SendMessage s) throws IOException {
+    public Register(UDPReceiveMessage r, UDPSendMessage s) throws IOException {
 
-        SendMessage.sendToChooseNickname();
+        UDPSendMessage.sendToChooseNickname();
 
 
         // Create and set up the window
@@ -87,7 +83,7 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SendMessage.toDisconnect();
+                    UDPSendMessage.toDisconnect();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -139,7 +135,7 @@ public class Register {
 
     }
 
-    private void registerUser(ReceiveMessage r, SendMessage s, Frame frame) throws IOException, SQLException {
+    private void registerUser(UDPReceiveMessage r, UDPSendMessage s, Frame frame) throws IOException, SQLException {
 
         //faut créer la database et l'initialiser
 
@@ -158,14 +154,14 @@ public class Register {
         MainClass.me.setStatus(true);
 
 
-        ContactList instance = getInstance();
+        ContactList instance = ContactList.getInstance();
         if (instance.existsContactWithNickname(nickname)) { //if someone already has nickname
             PopUpTab popup1 = new PopUpTab("choose another nickname");
         }
         else { //if unique i go to next tab and tell people i am connected
             HomeTab hometab = new HomeTab(r, s);
             try {
-                SendMessage.sendIAmConnected(MainClass.me);
+                UDPSendMessage.sendIAmConnected(MainClass.me);
 
                 System.out.println();
                 System.out.println("Printing Contact List after chose nickname ");

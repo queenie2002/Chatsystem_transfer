@@ -1,7 +1,7 @@
-package controller;
+package chatsystem.controller;
 
-import model.User;
-import static run.MainClass.me;
+import chatsystem.model.User;
+import static chatsystem.MainClass.me;
 import java.io.IOException;
 import java.net.*;
 
@@ -21,7 +21,7 @@ upon receiving this the latter will in turn send their ip and pseudo back allowi
 we can then choose a pseudo different to all other currently connected users
 * */
 
-public class SendMessage {
+public class UDPSendMessage {
 
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
     private static final int BROADCAST_RECEIVER_PORT = 2000;
@@ -30,7 +30,7 @@ public class SendMessage {
     private static DatagramSocket sendingSocket;
 
 
-    public SendMessage () {
+    public UDPSendMessage() {
         boolean found = false;
 
         while (!found) {
@@ -86,7 +86,7 @@ public class SendMessage {
 
     public static void toDisconnect() throws IOException {
         //have to socket close for all contacts ??
-        SendMessage.sendDisconnect(me);
+        UDPSendMessage.sendDisconnect(me);
         me.setStatus(false);
         System.out.println("am supposed to close app after--------------");
     }

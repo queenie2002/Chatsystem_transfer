@@ -1,11 +1,11 @@
-package model;
+package chatsystem.model;
 
 /*
 we only have the contact list of our user
 so we only make one in the main?
  */
 
-import controller.DatabaseMethods;
+import chatsystem.controller.DatabaseMethods;
 
 import java.sql.*;
 import java.net.InetAddress;

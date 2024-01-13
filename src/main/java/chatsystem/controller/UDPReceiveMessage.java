@@ -1,8 +1,8 @@
-package controller;
+package chatsystem.controller;
 
-import model.ContactList;
-import model.User;
-import run.MainClass;
+import chatsystem.model.ContactList;
+import chatsystem.MainClass;
+import chatsystem.model.User;
 
 import java.io.IOException;
 import java.net.*;
@@ -13,18 +13,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
-import static model.ContactList.getInstance;
-
-public class ReceiveMessage extends Thread {
+public class UDPReceiveMessage extends Thread {
 
     private static final int BROADCAST_RECEIVER_PORT = 2000;
 
     public static boolean running = true;
 
-    private ContactList instance = getInstance();
+    private ContactList instance = ContactList.getInstance();
 
     public final ArrayList<String> myIPAddresses;
-    public ReceiveMessage() throws SocketException { //i'm adding a constructor qui est empty
+    public UDPReceiveMessage() throws SocketException { //i'm adding a constructor qui est empty
         myIPAddresses = new ArrayList<String>();
         makeMyIPAddresses();
     }
@@ -145,7 +143,7 @@ public class ReceiveMessage extends Thread {
 
     public void handleToChooseNickname() throws IOException {
         //when we receive the request, we respond by saying who we are
-        SendMessage.sendIAmConnected(MainClass.me);
+        UDPSendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED to choose nickname request");
     }
 
@@ -156,7 +154,7 @@ public class ReceiveMessage extends Thread {
 
     public void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException, SQLException {
         changeStatus(nickname, ipAddress, true);
-        SendMessage.sendIAmConnected(MainClass.me);
+        UDPSendMessage.sendIAmConnected(MainClass.me);
         System.out.println("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 

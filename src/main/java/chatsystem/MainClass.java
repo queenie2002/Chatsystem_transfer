@@ -1,17 +1,14 @@
-package run;
+package chatsystem;
 
-import com.sun.tools.javac.Main;
-import controller.*;
-import model.*;
-import view.*;
+import chatsystem.controller.DatabaseMethods;
+import chatsystem.controller.UDPSendMessage;
+import chatsystem.controller.UDPReceiveMessage;
+import chatsystem.model.User;
+import chatsystem.view.Beginning;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Scanner;
-
-import static model.ContactList.getInstance;
 
 public class MainClass {
 
@@ -29,14 +26,14 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        ReceiveMessage receiveMessage = new ReceiveMessage();
-        SendMessage sendMessage = new SendMessage();
-        receiveMessage.start();
+        UDPReceiveMessage UDPReceiveMessage = new UDPReceiveMessage();
+        UDPSendMessage UDPSendMessage = new UDPSendMessage();
+        UDPReceiveMessage.start();
 
         DatabaseMethods.startConnection(me);
 
 
-        Beginning beginning = new Beginning(receiveMessage, sendMessage);
+        Beginning beginning = new Beginning(UDPReceiveMessage, UDPSendMessage);
 
         /*tcpServer myServer = new tcpServer();
 

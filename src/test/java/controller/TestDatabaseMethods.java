@@ -1,13 +1,5 @@
 package controller;
 
-import model.User;
-import org.junit.jupiter.api.*;
-
-import java.net.InetAddress;
-import java.sql.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class TestDatabaseMethods {
 /*
     private static final String TEST_DATABASE_URL = "jdbc:sqlite:my_test_database.db";

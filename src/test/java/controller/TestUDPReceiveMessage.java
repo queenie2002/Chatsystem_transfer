@@ -1,27 +1,28 @@
 package controller;
 
-import controller.ReceiveMessage;
-import model.ContactList;
-import model.User;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class TestReceiveMessage {
-/*
+import chatsystem.controller.*;
+import chatsystem.model.*;
+import java.sql.*;
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
+
+
+
+import java.net.*;
+
+
+
+class TestUDPReceiveMessage {
+
 
     @Test
     void extractInfoFromPattern() throws SocketException {
-        ReceiveMessage receiveMessage = new ReceiveMessage();
+        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
         String[] result = receiveMessage.extractInfoFromPattern("IAMCONNECTED: nickname: testNickname");
 
         assertNotNull(result);
@@ -34,7 +35,7 @@ class TestReceiveMessage {
     @Test
     void handleIAmConnected() throws UnknownHostException, SocketException, SQLException {
 
-        ReceiveMessage receiveMessage = new ReceiveMessage();
+        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Simulate receiving an "I am connected" message
@@ -55,7 +56,7 @@ class TestReceiveMessage {
 
     @Test
     void handleIAmConnectedAreYou() throws IOException, SQLException {
-        ReceiveMessage receiveMessage = new ReceiveMessage();
+        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Simulate receiving an "I am connected, are you?" message
@@ -74,7 +75,7 @@ class TestReceiveMessage {
 
     @Test
     void handleDisconnect() throws UnknownHostException, SocketException, SQLException {
-        ReceiveMessage receiveMessage = new ReceiveMessage();
+        UDPReceiveMessage receiveMessage = new UDPReceiveMessage();
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
         // Add a user to the contact list before disconnecting
@@ -98,6 +99,6 @@ class TestReceiveMessage {
     void run() {
 
     }
-    */
+
 
 }

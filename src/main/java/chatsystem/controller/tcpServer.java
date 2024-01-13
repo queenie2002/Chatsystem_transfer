@@ -1,12 +1,9 @@
-//package controller;
+package chatsystem.controller;//package controller;
 
 //import model.*;
 
 import java.net.*;
 import java.io.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class tcpServer {
 

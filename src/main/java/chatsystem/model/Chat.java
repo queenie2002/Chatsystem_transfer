@@ -1,4 +1,4 @@
-package model;
+package chatsystem.model;
 
 import java.util.ArrayList;
 
