@@ -1,19 +1,18 @@
-package controller;
+package chatsystem.network;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import chatsystem.contacts.ContactAlreadyExists;
+import chatsystem.contacts.ContactList;
 import chatsystem.controller.*;
 import chatsystem.model.*;
 import java.sql.*;
 import java.io.IOException;
 
-import chatsystem.network.UDPReceiver;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
 
 
 import java.net.*;
@@ -23,11 +22,11 @@ import java.net.*;
 class TestUDPReceiver {
 
     private UDPReceiver UDPReceiveMessage = new UDPReceiver();;
-    private User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+    private User testUser = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
     TestUDPReceiver() throws SocketException, SQLException {
         UDPReceiveMessage.start();
-        DatabaseMethods.startConnection(user);
+        DatabaseMethods.startConnection(testUser);
     }
 
     @Test
@@ -77,9 +76,9 @@ class TestUDPReceiver {
     }
 
     @Test
-    void handleDisconnect() throws UnknownHostException, SQLException {
+    void handleDisconnect() throws UnknownHostException, SQLException, ContactAlreadyExists {
         // Add a user to the contact list before disconnecting
-        ContactList.getInstance().addContact(user);
+        ContactList.getInstance().addContact(testUser);
 
         // Simulate receiving a "disconnect" message
         UDPReceiveMessage.handleDisconnect("testNickname", InetAddress.getByName("127.0.0.1"));

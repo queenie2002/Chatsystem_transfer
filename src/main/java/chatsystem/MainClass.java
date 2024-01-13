@@ -64,10 +64,10 @@ public class MainClass {
 
 
 
-        /*tcpServer myServer = new tcpServer();
+        /*TCPServer myServer = new TCPServer();
 
         Chat chat = new Chat("content","date","fromUserIP","toUserIP");
-        myServer.addObserver(new tcpServer.MessageObserver() {
+        myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
             public void handleMessage(String msg) throws SQLException {
                 DatabaseMethods.addMessage(chat);

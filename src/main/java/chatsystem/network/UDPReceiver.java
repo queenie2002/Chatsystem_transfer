@@ -1,6 +1,8 @@
 package chatsystem.network;
 
 import chatsystem.MainClass;
+import chatsystem.contacts.ContactAlreadyExists;
+import chatsystem.contacts.ContactList;
 import chatsystem.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -188,16 +190,17 @@ public class UDPReceiver extends Thread {
     }
 
     public void changeStatus(String nickname, InetAddress ipAddress, Boolean status) throws UnknownHostException, SQLException {
-        if (instance.existsContactWithNickname(nickname)) { //if we know him, we change his status
+        try {
+            if (!(nickname.equals("[]"))) {
+                instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
+            }
+        } catch (ContactAlreadyExists e) {
+            //if we know him, we change his status
             User user = instance.getContactWithNickname(nickname);
             user.setStatus(status);
             instance.changeContact(user);
             System.out.println("contact already exists");
-        }
-        else { //else we add him
-            if (!(nickname.equals("[]"))) {
-                instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
-            }
+
         }
     }
 

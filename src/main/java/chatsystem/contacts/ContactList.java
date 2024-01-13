@@ -1,4 +1,4 @@
-package chatsystem.model;
+package chatsystem.contacts;
 
 /*
 we only have the contact list of our user
@@ -6,6 +6,7 @@ so we only make one in the main?
  */
 
 import chatsystem.controller.DatabaseMethods;
+import chatsystem.model.User;
 
 import java.sql.*;
 import java.net.InetAddress;
@@ -26,7 +27,7 @@ public class ContactList {
         myContactList = new ArrayList<User>();
     }
 
-    public static ContactList getInstance() {
+    public synchronized static ContactList getInstance() {
         return instance;
     }
 
@@ -36,21 +37,27 @@ public class ContactList {
     // Methods
     public int lengthContactList(){ return myContactList.size(); }
 
-    public void printContactList() {
+    public synchronized void printContactList() {
         for (int i = 0; i < myContactList.size(); i++) {
             printContact(myContactList.get(i));
         }
     }
 
-    public void addContact(User user) throws SQLException {
-        myContactList.add(user);
-        DatabaseMethods.addUser(user);
+    public synchronized void addContact(User user) throws SQLException, ContactAlreadyExists {
+        String username = user.getNickname();
+        if (existsContactWithNickname(username)) {
+            throw new ContactAlreadyExists(username);
+        }
+        else {
+            myContactList.add(user);
+            DatabaseMethods.addUser(user);
+        }
     }
 
     //should be able to remove contact ?
 
 
-    public User getContactWithNickname(String nickname) { //on utilise nickname
+    public synchronized User getContactWithNickname(String nickname) { //on utilise nickname
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {
                 return aUser;
@@ -60,7 +67,7 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé nickname
     }
 
-    public User getContactWithIpAddress(InetAddress ipAddress) { //on utilise ipAddress
+    public synchronized User getContactWithIpAddress(InetAddress ipAddress) { //on utilise ipAddress
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getIpAddress(), ipAddress)) {
                 return aUser;
@@ -70,7 +77,7 @@ public class ContactList {
         return null;  //dans ce cas c'est parce qu'on a pas trouvé ipAddress
     }
 
-    public void changeContact(User user) {
+    public synchronized void changeContact(User user) {
         int index=-1;
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), user.getNickname())) {
@@ -87,7 +94,7 @@ public class ContactList {
     }
 
 
-    public Boolean existsContactWithIpAddress(InetAddress ipAddress) {
+    public synchronized Boolean existsContactWithIpAddress(InetAddress ipAddress) {
         for (User aUser : myContactList) {
             if (Objects.equals(String.valueOf(aUser.getIpAddress()), ipAddress.toString())) {
                 return true;
@@ -97,7 +104,7 @@ public class ContactList {
     }
 
 
-    public Boolean existsContactWithNickname(String nickname) {
+    public synchronized Boolean existsContactWithNickname(String nickname) {
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {
                 return true;
@@ -106,7 +113,7 @@ public class ContactList {
         return false;
     }
 
-    public void deleteContactWithNickname(String nickname) {
+    public synchronized void deleteContactWithNickname(String nickname) {
         if (existsContactWithNickname(nickname)) {
             User aUser = getContactWithNickname(nickname);
             myContactList.remove(aUser);
@@ -118,7 +125,7 @@ public class ContactList {
     }
 
     //changes "my socket" in user with ipAddress
-    public void updateMySocketOfUser(InetAddress ipAddress, int newSocket) {
+    public synchronized void updateMySocketOfUser(InetAddress ipAddress, int newSocket) {
         if (existsContactWithIpAddress(ipAddress)) {
             User aUser = getContactWithIpAddress(ipAddress);
             aUser.setMySocket(newSocket);
@@ -130,7 +137,7 @@ public class ContactList {
     }
 
 
-    public void printContact(User user) {
+    public synchronized void printContact(User user) {
         Boolean found = false;
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), user.getNickname())) {
@@ -144,11 +151,11 @@ public class ContactList {
         }
 
     }
-    public ArrayList<User> getContactList() {
+    public synchronized ArrayList<User> getContactList() {
         return myContactList;
     }
 
-    public ArrayList<User> getConnectedContactsList() {
+    public synchronized ArrayList<User> getConnectedContactsList() {
         ArrayList<User> connectedList = new ArrayList<>();
         for (User u : myContactList) {
             if (u.getStatus()) {

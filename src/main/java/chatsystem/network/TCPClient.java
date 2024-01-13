@@ -3,7 +3,7 @@ package chatsystem.network;//package controller;
 import java.io.*;
 import java.net.*;
 
-public class tcpClient {
+public class TCPClient {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
@@ -30,7 +30,7 @@ public class tcpClient {
     }
 
     public static void main(String[] args) {
-        tcpClient client = new tcpClient();
+        TCPClient client = new TCPClient();
         try {
             client.startConnection(args[0], 8080); //ip adress taken as an arg
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

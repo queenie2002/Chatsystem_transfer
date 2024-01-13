@@ -1,4 +1,4 @@
-package controller;
+package chatsystem.network;
 
 import chatsystem.network.UDPSender;
 import chatsystem.model.User;

@@ -1,4 +1,4 @@
-package controller;
+package chatsystem.network;
 
 import chatsystem.model.User;
 import chatsystem.network.*;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UDPTests {
 
     private final int TEST_PORT = 2000;
-    private User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+    private User testUser = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
 
     @Test
     void sendReceiveTest() throws Exception {

@@ -5,7 +5,7 @@ package chatsystem.network;//package controller;
 import java.net.*;
 import java.io.*;
 
-public class tcpServer {
+public class TCPServer {
 
     /*public interface MessageObserver {
         void handleMessage(String msg) throws SQLException;
@@ -108,7 +108,7 @@ public class tcpServer {
         int PORT = 8080; // Default port number
 
         try {
-            tcpServer server = new tcpServer();
+            TCPServer server = new TCPServer();
             server.start(PORT);
         } catch (IOException e) {
             System.err.println("Error starting the server: " + e.getMessage());
