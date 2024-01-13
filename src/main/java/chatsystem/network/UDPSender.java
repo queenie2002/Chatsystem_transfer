@@ -2,6 +2,9 @@ package chatsystem.network;
 
 import chatsystem.MainClass;
 import chatsystem.model.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import static chatsystem.MainClass.me;
 import java.io.IOException;
 import java.net.*;
@@ -23,6 +26,7 @@ we can then choose a pseudo different to all other currently connected users
 * */
 
 public class UDPSender {
+    private static final Logger LOGGER = LogManager.getLogger(UDPSender.class);
 
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
     private static DatagramSocket sendingSocket;
@@ -71,7 +75,7 @@ public class UDPSender {
 
 
     /**Sends a UDP message to given address and port**/
-    private static void send (String message, InetAddress receiverAddress, int port) throws IOException {
+    public static void send (String message, InetAddress receiverAddress, int port) throws IOException {
         sendingSocket = new DatagramSocket(); //sending port
         sendingSocket.setBroadcast(true);
         byte[] buf = message.getBytes();

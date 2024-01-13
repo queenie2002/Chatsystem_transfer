@@ -225,7 +225,8 @@ public class DatabaseMethods {
             statement.execute(specificMessagesTableQuery);
         }
         catch (SQLException e) {
-            throw new RuntimeException("narrive pas a creer table", e);
+            System.out.println("DATABASE METHODS: narrive pas a creer table");
+            /*throw new RuntimeException("narrive pas a creer table", e);*/
 
         }
     }
@@ -274,7 +275,8 @@ public class DatabaseMethods {
             }
         }
         else {
-            throw new RuntimeException("Table doesn't exist in AddMessage");
+            System.out.println("DATABASE METHODS: Table doesn't exist in AddMessage");
+            /*throw new RuntimeException("Table doesn't exist in AddMessage");*/
         }
     }
 

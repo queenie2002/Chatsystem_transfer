@@ -1,8 +1,9 @@
 package chatsystem.network;
 
-import chatsystem.model.ContactList;
 import chatsystem.MainClass;
-import chatsystem.model.User;
+import chatsystem.model.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.*;
@@ -10,9 +11,19 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.*;
 
+/** UDP server that (once started) listens indefinitely on a given port*/
 public class UDPReceiver extends Thread {
 
+    private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
+
+    /** Interface that observers of the UDP server must implement*/
+    public interface Observer {
+        /** Method that is called each time a message is received*/
+        void handle(UDPMessage received);
+    }
+
     private final DatagramSocket receivingSocket;
+    private final List<Observer> observers = new ArrayList<>();
 
     private ContactList instance = ContactList.getInstance();
 
@@ -89,6 +100,14 @@ public class UDPReceiver extends Thread {
         return null;
     }
 
+    /** Add a new observer to the class, for which the handle method will be called for each incoming message */
+    public void addObserver (Observer obs) {
+        synchronized (this.observers) {
+            this.observers.add(obs);
+        }
+    }
+
+
     public void run() {
         while (true) {
             try {
@@ -100,9 +119,17 @@ public class UDPReceiver extends Thread {
 
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
                 UDPMessage message = new UDPMessage(received, inPacket.getAddress());
-                System.out.println("udpmessage received: " + message.toString());
+
+                LOGGER.trace("Received on port " + MainClass.BROADCAST_RECEIVER_PORT + ": " + message.content() + " from " + message.originAddress());
+
+                synchronized (this.observers) {
+                    for (Observer obs : this.observers) {
+                        obs.handle(message);
+                    }
+                }
 
                 String senderIpAddress = inPacket.getAddress().getHostAddress();
+
                 //check if i sent this
                 boolean didISendThis = false;
 

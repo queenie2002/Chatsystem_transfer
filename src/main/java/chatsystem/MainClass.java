@@ -2,14 +2,20 @@ package chatsystem;
 
 import chatsystem.controller.DatabaseMethods;
 import chatsystem.network.*;
-import chatsystem.model.User;
+import chatsystem.model.*;
 import chatsystem.view.Beginning;
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.Level;
+
 
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
-
 public class MainClass {
+
+
+    private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
     //we create an empty user to keep my information
     public static User me;
@@ -24,15 +30,26 @@ public class MainClass {
 
     public static final int BROADCAST_RECEIVER_PORT = 2000;
 
+
     public static void main(String[] args) throws SQLException {
+        LOGGER.info("Starting ChatSystem application");
+        Configurator.setRootLevel(Level.INFO);
 
         UDPSender UDPSender = new UDPSender();
 
         try {
-            UDPReceiver UDPReceiver = new UDPReceiver();
-            UDPReceiver.start();
+            UDPReceiver udpReceiver = new UDPReceiver();
+            udpReceiver.start();
 
-            Beginning beginning = new Beginning(UDPReceiver, UDPSender);
+            udpReceiver.addObserver(new UDPReceiver.Observer() {
+                @Override
+                public void handle(UDPMessage received) {
+                    //whatever you want to do
+                }
+            });
+
+            Beginning beginning = new Beginning(udpReceiver, UDPSender);
+
 
         } catch (SocketException e) {
             System.err.println("Could not start UDP server: " + e.getMessage());

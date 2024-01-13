@@ -26,7 +26,6 @@ class TestUDPSender {
         //User with test info.
         // The loopback address is IP address that is used to do tests locally without actually sending data
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
-
         //makes sure that no exceptions are thrown
         assertDoesNotThrow(() -> UDPSender.sendIAmConnected(user));
         System.out.println("sendIAmConnected success");
