@@ -84,10 +84,12 @@ import chatsystem.contacts.*;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
 import chatsystem.view.Beginning;
+import chatsystem.view.ChatWindow;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.Level;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
@@ -99,6 +101,7 @@ public class MainClass {
     public static User me;
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
+    private static ChatWindow chatWindow; // Reference to ChatWindow
 
     static {
         try {
@@ -124,11 +127,13 @@ public class MainClass {
         // Check online contacts
         checkOnlineContacts();
 
+        // Create and set the chat window
+        chatWindow = new ChatWindow();
         // Additional logic, if any, goes here
     }
 
     private static void initializeUDPComponents() {
-        UDPSender UDPSender = new UDPSender();
+        UDPSender udpSender = new UDPSender();
         UDPReceiver udpReceiver;
         try {
             udpReceiver = new UDPReceiver();
@@ -140,7 +145,7 @@ public class MainClass {
                 }
             });
 
-            Beginning beginning = new Beginning(udpReceiver, UDPSender);
+            new Beginning(udpReceiver, udpSender);
         } catch (SocketException e) {
             LOGGER.error("Could not start UDP server: " + e.getMessage());
             System.exit(1);
@@ -155,9 +160,11 @@ public class MainClass {
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
             public void handleMessage(String msg) throws SQLException {
-                // Assuming the message received is a serialized TCPMessage
                 TCPMessage chat = TCPMessage.deserialize(msg);
                 DatabaseMethods.addMessage(chat);
+                if (chatWindow != null) {
+                    SwingUtilities.invokeLater(() -> chatWindow.displayNewMessage(chat));
+                }
             }
         });
 
