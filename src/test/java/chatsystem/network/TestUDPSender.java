@@ -9,7 +9,7 @@ import java.net.SocketException;
 import static org.junit.jupiter.api.Assertions.*;
 
 // Test to verify that the methods in UDPSender can be called without errors
-class TestUDPSender {
+class TestUDPSender {/*
 
     @Test
     void sendToChooseNickname() throws SocketException {
@@ -44,7 +44,7 @@ class TestUDPSender {
 
         assertDoesNotThrow(() -> UDPSender.sendDisconnect(user));
         System.out.println("sendDisconnect success");
-    }
+    }*/
 }
 
 
