@@ -70,4 +70,4 @@ public class User{
     public void setMySocket(int newSocket) { mySocket=newSocket; }
     public void setIdDatabase(int idDatabase) { this.idDatabase = idDatabase; }
 
-} 
+}

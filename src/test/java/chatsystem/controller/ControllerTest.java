@@ -1,6 +1,5 @@
 package chatsystem.controller;
 
-import chatsystem.contacts.Contact;
 import chatsystem.contacts.ContactList;
 import chatsystem.contacts.User;
 import chatsystem.database.DatabaseMethods;

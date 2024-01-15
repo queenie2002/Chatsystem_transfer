@@ -1,6 +1,5 @@
 package chatsystem.ui;
 
-import chatsystem.contacts.Contact;
 import chatsystem.contacts.ContactList;
 import chatsystem.contacts.User;
 
