@@ -126,7 +126,7 @@ public class MainClass {
         DatabaseMethods.startConnection(me);
         ContactList.getInstance().addObserver(new ContactList.Observer() {
             @Override
-            public void newContactAdded(User user) {
+            public void newContactAdded(User user) throws SQLException {
                 DatabaseMethods.addUser(user);
             }
 
@@ -134,7 +134,7 @@ public class MainClass {
             public void nicknameChanged(User newUser, String previousNickname) {
 
             }
-        }Observer())
+        });
 
         // Initialize and start UDP components
         initializeUDPComponents();

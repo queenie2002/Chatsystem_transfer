@@ -13,7 +13,7 @@ import java.util.Objects;
 public class ContactList {
 
     public interface Observer {
-        void newContactAdded(User user);
+        void newContactAdded(User user) throws SQLException;
         void nicknameChanged(User newUser, String previousNickname);
     }
 
