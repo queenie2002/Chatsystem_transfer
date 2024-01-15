@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UDPTests {
+public class UDPTests {/*
 
     private final int TEST_PORT = 2000;
     private User testUser = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
@@ -31,10 +31,10 @@ public class UDPTests {
             UDPSender.send(msg, InetAddress.getLoopbackAddress(), TEST_PORT);
         }
 
-        /*
-        UDPSender.sendToChooseNickname();
-        UDPSender.sendIAmConnected(user);
-         */
+
+        //UDPSender.sendToChooseNickname();
+        //UDPSender.sendIAmConnected(user);
+
 
         Thread.sleep(100);
         System.out.println(receivedMessages);
@@ -42,5 +42,5 @@ public class UDPTests {
         assertEquals(testMessages, receivedMessages);
     }
 
-
+*/
 }

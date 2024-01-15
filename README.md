@@ -28,7 +28,7 @@ mvn compile  # compile
 mvn test  # run tests
 
 # Run main program (which will simply wait for connection messages)
-mvn exec:java -Dexec.mainClass="chatsystem.Main" 
+mvn exec:java -Dexec.mainClass="chatsystem.MainClass" 
 ```
 In another terminal (linux) you can simulate connection messages:
 ```sh

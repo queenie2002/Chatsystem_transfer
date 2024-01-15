@@ -1,4 +1,4 @@
-package chatsystem.network;//package controller;
+package chatsystem.network;/*package chatsystem.network;//package controller;
 
 import java.io.*;
 import java.net.*;
@@ -46,5 +46,32 @@ public class TCPClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+}
+*/
+
+import java.net.*;
+import java.io.*;
+
+public class TCPClient {
+    private Socket clientSocket;
+    private PrintWriter out;
+    private BufferedReader in;
+
+    public void startConnection(String ip, int port) throws IOException {
+        clientSocket = new Socket(ip, port);
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    }
+
+    public String sendMessage(String msg) throws IOException {
+        out.println(msg);
+        return in.readLine();
+    }
+
+    public void stopConnection() throws IOException {
+        in.close();
+        out.close();
+        clientSocket.close();
     }
 }
