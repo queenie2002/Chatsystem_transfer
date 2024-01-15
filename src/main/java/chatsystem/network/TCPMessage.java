@@ -63,7 +63,7 @@ public class TCPMessage {
         String[] parts = serializedData.split(",");
 
         if (parts.length != 4) {
-            throw new IllegalArgumentException("Serialized data is invalid");
+            throw new IllegalArgumentException("Serialized data is invalid: " + serializedData);
         }
 
         return new TCPMessage(parts[0], parts[1], parts[2], parts[3]);

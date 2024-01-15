@@ -86,6 +86,7 @@ import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
 import chatsystem.ui.Beginning;
 import chatsystem.ui.ChatWindow;
+import chatsystem.ui.HomeTab;
 import chatsystem.ui.View;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -98,6 +99,16 @@ import java.util.ArrayList;
 
 public class MainClass {
 
+    private static UDPSender udpSender;
+    private static UDPReceiver udpReceiver;
+
+    public static UDPSender getUdpSender(){
+        return udpSender;
+    }
+
+    public static UDPReceiver getUdpReceiver(){
+        return udpReceiver;
+    }
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
     public static User me;
     public static final int BROADCAST_RECEIVER_PORT = 2000;
@@ -112,7 +123,7 @@ public class MainClass {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, SocketException {
 
         Configurator.setRootLevel(Level.INFO);
         LOGGER.info("Starting ChatSystem application");
@@ -140,13 +151,16 @@ public class MainClass {
         // Initialize and start TCP server
         initializeTCPServer();
 
+        UDPSender udpSender = new UDPSender();
+        UDPReceiver udpReceiver = new UDPReceiver();
 
+        HomeTab homeTab = new HomeTab(udpReceiver, udpSender);
 
         // Check online contacts
         checkOnlineContacts();
 
-        // Create and set the chat window
-        chatWindow = new ChatWindow(me.getIpAddress().getHostAddress()); // Corrected line
+
+
         // Additional logic, if any, goes here
     }
 
@@ -175,7 +189,7 @@ public class MainClass {
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
             public void handleMessage(String msg) throws SQLException {
-                TCPMessage chat = TCPMessage.deserialize(msg);
+                TCPMessage chat = new TCPMessage(msg,"date","ip1","ip2");
                 DatabaseMethods.addMessage(chat);
                 if (chatWindow != null) {
                     SwingUtilities.invokeLater(() -> chatWindow.displayMessage(chat));
