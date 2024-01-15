@@ -89,7 +89,6 @@ import chatsystem.ui.ChatWindow;
 import chatsystem.ui.View;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.Level;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -121,6 +120,8 @@ public class MainClass {
         // Initialize View
         View.initialize();
 
+        // Initialize and start UDP components
+        initializeUDPComponents();
 
         // Start connection with the database
         DatabaseMethods.startConnection(me);
@@ -135,9 +136,6 @@ public class MainClass {
 
             }
         });
-
-        // Initialize and start UDP components
-        initializeUDPComponents();
 
         // Initialize and start TCP server
         initializeTCPServer();
