@@ -159,8 +159,8 @@ public class DatabaseMethods {
             //Test
 
             System.out.println("my address" +MainClass.me.getIpAddress().getHostAddress());
-            TCPMessage aTCPMessage = new TCPMessage("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
-            addMessage(aTCPMessage);
+            //TCPMessage aTCPMessage = new TCPMessage("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
+            //addMessage(aTCPMessage);
         }
 
 

@@ -60,6 +60,7 @@ public class TCPClient {
 
     public void startConnection(String ip, int port) throws IOException {
         clientSocket = new Socket(ip, port);
+        System.out.println("startConnection with ip: "+ip+" with port: "+port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
