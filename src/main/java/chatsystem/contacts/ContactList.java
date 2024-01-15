@@ -1,9 +1,6 @@
 package chatsystem.contacts;
 
-/*
-we only have the contact list of our user
-so we only make one in the main?
- */
+/** Contact List */
 
 import chatsystem.database.DatabaseMethods;
 
@@ -14,14 +11,11 @@ import java.util.Objects;
 
 public class ContactList {
 
-    // Class attribute
     private final static ContactList instance = new ContactList();
     private final ArrayList<User> myContactList;
 
 
 
-
-    // Constructor
     ContactList() { //i'm adding a constructor qui est empty
         myContactList = new ArrayList<User>();
     }
@@ -33,8 +27,12 @@ public class ContactList {
 
 
 
-    // Methods
-    public int lengthContactList(){ return myContactList.size(); }
+
+
+
+
+
+    public synchronized int lengthContactList(){ return myContactList.size(); }
 
     public synchronized void printContactList() {
         for (int i = 0; i < myContactList.size(); i++) {
@@ -53,10 +51,7 @@ public class ContactList {
         }
     }
 
-    //should be able to remove contact ?
-
-
-    public synchronized User getContactWithNickname(String nickname) { //on utilise nickname
+    public synchronized User getContactWithNickname(String nickname) {
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {
                 return aUser;

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import chatsystem.contacts.ContactAlreadyExists;
+import chatsystem.contacts.ContactDoesntExist;
 import chatsystem.contacts.ContactList;
 import chatsystem.contacts.User;
 import chatsystem.database.*;
@@ -43,7 +44,7 @@ class TestUDPReceiver {
 
 
     @Test
-    void handleIAmConnected() throws UnknownHostException, SocketException, SQLException {
+    void handleIAmConnected() throws UnknownHostException, SocketException, SQLException, ContactDoesntExist {
         // Simulate receiving an "I am connected" message
         UDPReceiveMessage.handleIAmConnected("testNickname", InetAddress.getByName("127.0.0.1"));
 
@@ -61,7 +62,7 @@ class TestUDPReceiver {
 
 
     @Test
-    void handleIAmConnectedAreYou() throws IOException, SQLException {
+    void handleIAmConnectedAreYou() throws IOException, SQLException, ContactDoesntExist {
         // Simulate receiving an "I am connected, are you?" message
         UDPReceiveMessage.handleIAmConnectedAreYou("testNickname", InetAddress.getByName("127.0.0.1"));
 
@@ -77,7 +78,7 @@ class TestUDPReceiver {
     }
 
     @Test
-    void handleDisconnect() throws UnknownHostException, SQLException, ContactAlreadyExists {
+    void handleDisconnect() throws UnknownHostException, SQLException, ContactAlreadyExists, ContactDoesntExist {
         // Add a user to the contact list before disconnecting
         ContactList.getInstance().addContact(testUser);
 
