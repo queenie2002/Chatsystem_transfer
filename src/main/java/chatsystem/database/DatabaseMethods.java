@@ -20,12 +20,12 @@ removeuser
 updateuser
 print contact
 get contact
-
-
  */
 
 
 public class DatabaseMethods {
+
+
 
     private static String DATABASE_URL;
     private static Connection connection;

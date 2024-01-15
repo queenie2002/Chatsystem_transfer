@@ -25,13 +25,20 @@ public class ContactList {
 
 
 
+
+
     private ContactList() { //i'm adding a constructor qui est empty
         myContactList = new ArrayList<User>();
     }
 
+
+
+
+
     public synchronized void addObserver(Observer obs) {
         this.observers.add(obs);
     }
+
 
     public synchronized static ContactList getInstance() {
         return INSTANCE;
@@ -43,9 +50,6 @@ public class ContactList {
 
 
 
-
-
-    public synchronized int lengthContactList(){ return myContactList.size(); }
 
     public synchronized void printContactList() {
         for (int i = 0; i < myContactList.size(); i++) {
@@ -65,7 +69,6 @@ public class ContactList {
                 obs.newContactAdded(user);
             }
 
-            DatabaseMethods.addUser(user);
         }
     }
 

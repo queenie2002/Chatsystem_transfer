@@ -121,8 +121,20 @@ public class MainClass {
         // Initialize View
         View.initialize();
 
+
         // Start connection with the database
         DatabaseMethods.startConnection(me);
+        ContactList.getInstance().addObserver(new ContactList.Observer() {
+            @Override
+            public void newContactAdded(User user) {
+                DatabaseMethods.addUser(user);
+            }
+
+            @Override
+            public void nicknameChanged(User newUser, String previousNickname) {
+
+            }
+        }Observer())
 
         // Initialize and start UDP components
         initializeUDPComponents();

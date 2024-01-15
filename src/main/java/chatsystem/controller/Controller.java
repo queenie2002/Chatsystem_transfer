@@ -20,9 +20,9 @@ public class Controller {
 
 
             instance.addContact(aUser);
-            //Logger.info("New contact added to the list " + message.content());
+            LOGGER.info("New contact added to the list " + message.content());
         } catch (ContactAlreadyExists e) {
-            //Logger.error("Receive a contact already in the contact list " + message.content());
+            LOGGER.error("Receive a contact already in the contact list " + message.content());
         } catch (SQLException e) {
             throw new RuntimeException("User could not be added to database");
         }
