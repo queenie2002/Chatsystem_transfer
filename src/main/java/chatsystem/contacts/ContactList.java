@@ -7,21 +7,34 @@ import chatsystem.database.DatabaseMethods;
 import java.sql.*;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ContactList {
 
-    private final static ContactList instance = new ContactList();
+    public interface Observer {
+        void newContactAdded(User user);
+        void nicknameChanged(User newUser, String previousNickname);
+    }
+
+
+
+    private final static ContactList INSTANCE = new ContactList();
     private final ArrayList<User> myContactList;
+    List<Observer> observers = new ArrayList<>();
 
 
 
-    ContactList() { //i'm adding a constructor qui est empty
+    private ContactList() { //i'm adding a constructor qui est empty
         myContactList = new ArrayList<User>();
     }
 
+    public synchronized void addObserver(Observer obs) {
+        this.observers.add(obs);
+    }
+
     public synchronized static ContactList getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
 
@@ -47,6 +60,11 @@ public class ContactList {
         }
         else {
             myContactList.add(user);
+
+            for (Observer obs : observers) {
+                obs.newContactAdded(user);
+            }
+
             DatabaseMethods.addUser(user);
         }
     }
@@ -157,5 +175,9 @@ public class ContactList {
             }
         }
         return connectedList;
+    }
+
+    public synchronized void clear() {
+        myContactList.clear();
     }
 }

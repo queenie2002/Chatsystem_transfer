@@ -81,10 +81,12 @@
 package chatsystem;
 
 import chatsystem.contacts.*;
+import chatsystem.controller.Controller;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
-import chatsystem.view.Beginning;
-import chatsystem.view.ChatWindow;
+import chatsystem.ui.Beginning;
+import chatsystem.ui.ChatWindow;
+import chatsystem.ui.View;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.Level;
@@ -112,8 +114,15 @@ public class MainClass {
     }
 
     public static void main(String[] args) throws SQLException {
-        LOGGER.info("Starting ChatSystem application");
+
         Configurator.setRootLevel(Level.INFO);
+        LOGGER.info("Starting ChatSystem application");
+
+        // Initialize View
+        View.initialize();
+
+        // Start connection with the database
+        DatabaseMethods.startConnection(me);
 
         // Initialize and start UDP components
         initializeUDPComponents();
@@ -121,8 +130,7 @@ public class MainClass {
         // Initialize and start TCP server
         initializeTCPServer();
 
-        // Start connection with the database
-        DatabaseMethods.startConnection(me);
+
 
         // Check online contacts
         checkOnlineContacts();
@@ -137,14 +145,11 @@ public class MainClass {
         UDPReceiver udpReceiver;
         try {
             udpReceiver = new UDPReceiver();
-            udpReceiver.start();
-            udpReceiver.addObserver(new UDPReceiver.Observer() {
-                @Override
-                public void handle(UDPMessage received) {
-                    // Handle received UDP messages
-                }
-            });
 
+            udpReceiver.addObserver( msg -> Controller.handleContactDiscoveryMessage(msg));
+
+
+            udpReceiver.start();
             new Beginning(udpReceiver, udpSender);
         } catch (SocketException e) {
             LOGGER.error("Could not start UDP server: " + e.getMessage());

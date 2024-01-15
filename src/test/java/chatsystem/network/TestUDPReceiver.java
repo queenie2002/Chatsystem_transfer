@@ -5,21 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import chatsystem.contacts.ContactAlreadyExists;
-import chatsystem.contacts.ContactDoesntExist;
-import chatsystem.contacts.ContactList;
-import chatsystem.contacts.User;
-import chatsystem.database.*;
-
-import java.sql.*;
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
-
-import java.net.*;
-
-
 
 class TestUDPReceiver {/*
 

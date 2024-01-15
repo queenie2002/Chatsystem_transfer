@@ -1,4 +1,4 @@
-package chatsystem.view;
+package chatsystem.ui;
 
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;

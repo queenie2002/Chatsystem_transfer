@@ -1,4 +1,4 @@
-package chatsystem.view;
+package chatsystem.ui;
 
 import javax.swing.*;
 import java.awt.*;

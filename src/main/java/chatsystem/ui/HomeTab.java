@@ -50,7 +50,7 @@ public class HomeTab {
 
 }*/
 
-package chatsystem.view;
+package chatsystem.ui;
 
 import chatsystem.contacts.ContactList;
 import chatsystem.contacts.User;
