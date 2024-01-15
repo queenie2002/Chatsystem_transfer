@@ -128,7 +128,7 @@ public class MainClass {
         checkOnlineContacts();
 
         // Create and set the chat window
-        chatWindow = new ChatWindow();
+        chatWindow = new ChatWindow(me.getIpAddress().getHostAddress()); // Corrected line
         // Additional logic, if any, goes here
     }
 
@@ -163,7 +163,7 @@ public class MainClass {
                 TCPMessage chat = TCPMessage.deserialize(msg);
                 DatabaseMethods.addMessage(chat);
                 if (chatWindow != null) {
-                    SwingUtilities.invokeLater(() -> chatWindow.displayNewMessage(chat));
+                    SwingUtilities.invokeLater(() -> chatWindow.displayMessage(chat));
                 }
             }
         });

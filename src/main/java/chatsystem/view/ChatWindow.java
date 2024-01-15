@@ -1,42 +1,40 @@
 package chatsystem.view;
 
 import chatsystem.network.TCPMessage;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class ChatWindow {
-
     private JFrame frame;
     private JTextArea messageArea;
+    private String myUserIP; // IP address of the current user
 
-    public ChatWindow() {
-        // Create and set up the window
-        frame = new JFrame("Chat Window");
+    public ChatWindow(String myUserIP) {
+        this.myUserIP = myUserIP;
+        createAndShowGUI();
+    }
+
+    private void createAndShowGUI() {
+        frame = new JFrame("Chat System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 300);
+        frame.setSize(600, 400);
 
-        // Create a text area to display messages
         messageArea = new JTextArea();
-        messageArea.setEditable(false); // Make it read-only
+        messageArea.setEditable(false);
         messageArea.setLineWrap(true);
         messageArea.setWrapStyleWord(true);
 
-        // Add a scroll pane to the text area
         JScrollPane scrollPane = new JScrollPane(messageArea);
-
-        // Add components to the frame
         frame.add(scrollPane, BorderLayout.CENTER);
 
-        // Display the window
         frame.setVisible(true);
     }
 
-    public void displayNewMessage(TCPMessage message) {
-        // Append the new message to the text area
-        // You might want to format the message (e.g., show sender, timestamp)
-        messageArea.append("From " + message.getFromUserIP() + ": " + message.getContent() + "\n");
+    public void displayMessage(TCPMessage message) {
+        if (message.getFromUserIP().equals(myUserIP)) {
+            messageArea.append("Me: " + message.getContent() + "\n");
+        } else {
+            messageArea.append("From " + message.getFromUserIP() + ": " + message.getContent() + "\n");
+        }
     }
-
-    // Additional methods if needed...
 }
