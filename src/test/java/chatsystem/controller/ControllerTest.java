@@ -20,7 +20,7 @@ public class ControllerTest {
     void setUp() throws SQLException {
         DatabaseMethods.startConnection(alice);
         contacts = ContactList.getInstance();
-        contacts.clear();
+        contacts.clearContactList();
     }
     @Test
     void messageHandlingTest() throws UnknownHostException {

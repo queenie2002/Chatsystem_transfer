@@ -22,9 +22,12 @@ public class View implements ContactList.Observer {
 
     @Override
     public void newContactAdded(User user) {
+        /*
         System.out.println("[VIEW] New contact: " + user.getNickname());
         displayContactList();
+     */
     }
+
 
     @Override
     public void nicknameChanged(User newUser, String previousNickname) {

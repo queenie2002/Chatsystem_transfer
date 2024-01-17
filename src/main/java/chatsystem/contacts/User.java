@@ -15,10 +15,6 @@ public class User{
     private Boolean status;                         //if disconnected = false, connected = true
 
     private InetAddress ipAddress;
-    private UDPReceiver UDPReceiver;
-    private UDPSender UDPSender;
-    private static int mySocket=2000;
-    private int theirSocket; //a recuperer
     private int idDatabase;
 
 
@@ -33,7 +29,7 @@ public class User{
         this.ipAddress=ipAddress;
     }
 
-    public User(String testUser, InetAddress localHost) {
+    public User() {
     }
 
     //METHODS
@@ -43,13 +39,7 @@ public class User{
     public String getBirthday (){ return this.birthday;}
     public String getPassword (){ return this.password;}
     public Boolean getStatus (){ return this.status;}
-
     public InetAddress getIpAddress() { return this.ipAddress; }
-
-    public int getMySocket() { return mySocket;}
-    public int getTheirSocket() { return theirSocket;}
-    public UDPReceiver getReceiveMessage() { return this.UDPReceiver; }
-    public UDPSender getSendMessage() { return this.UDPSender; }
     public int getIdDatabase() { return this.idDatabase; }
 
 
@@ -64,10 +54,7 @@ public class User{
     public void setBirthday (String birthday) { this.birthday=birthday;}
     public void setPassword (String password) { this.password=password;}
     public void setStatus (Boolean status) { this.status=status;}
-
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
-    public void setTheirSocket(int theirSocket) { this.theirSocket=theirSocket; }
-    public void setMySocket(int newSocket) { mySocket=newSocket; }
     public void setIdDatabase(int idDatabase) { this.idDatabase = idDatabase; }
 
 }

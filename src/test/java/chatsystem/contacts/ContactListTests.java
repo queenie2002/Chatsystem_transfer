@@ -29,7 +29,7 @@ public class ContactListTests {
     void setUp() throws SQLException {
         DatabaseMethods.startConnection(alice);
         contacts = ContactList.getInstance();
-        contacts.clear();
+        contacts.clearContactList();
     }
 
 

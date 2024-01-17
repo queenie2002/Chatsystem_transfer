@@ -1,40 +1,4 @@
-//package chatsystem;
-//
-//import chatsystem.contacts.User;
-//import chatsystem.database.DatabaseMethods;
-//import chatsystem.network.*;
-//import chatsystem.view.Beginning;
-//import org.apache.logging.log4j.*;
-//import org.apache.logging.log4j.core.config.Configurator;
-//import org.apache.logging.log4j.Level;
-//
-//
-//import java.io.IOException;
-//import java.net.*;
-//import java.sql.SQLException;
-//public class MainClass {
-//
-//
-//    private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
-//
-//    //we create an empty user to keep my information
-//    public static User me;
-//
-//    static {
-//        try {
-//            me = new User("[]", "[]", "[]", "[]" , "[]", null, InetAddress.getByName("0.0.0.0"));
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    public static final int BROADCAST_RECEIVER_PORT = 2000;
-//
-//
-//    public static void main(String[] args) throws SQLException {
-//        LOGGER.info("Starting ChatSystem application");
-//        Configurator.setRootLevel(Level.INFO);
-//
+
 //        UDPSender UDPSender = new UDPSender();
 //
 //        try {
@@ -84,9 +48,8 @@ import chatsystem.contacts.*;
 import chatsystem.controller.Controller;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
-import chatsystem.ui.Beginning;
-import chatsystem.ui.ChatWindow;
-import chatsystem.ui.View;
+import chatsystem.ui.*;
+import com.sun.tools.javac.Main;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -99,11 +62,12 @@ import java.util.ArrayList;
 public class MainClass {
 
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
-    public static User me;
+
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
     private static ChatWindow chatWindow; // Reference to ChatWindow
 
+    public static User me;
     static {
         try {
             me = new User("[]", "[]", "[]", "[]", "[]", null, InetAddress.getByName("0.0.0.0"));
@@ -111,6 +75,9 @@ public class MainClass {
             throw new RuntimeException(e);
         }
     }
+    private Controller controller = new Controller();
+
+
 
     public static void main(String[] args) throws SQLException {
 
@@ -120,43 +87,37 @@ public class MainClass {
         // Initialize View
         View.initialize();
 
+        MainClass mainclass = new MainClass();
+
         // Initialize and start UDP components
-        initializeUDPComponents();
+        mainclass.initializeUDPComponents();
 
-        // Start connection with the database
-        DatabaseMethods.startConnection(me);
-        ContactList.getInstance().addObserver(new ContactList.Observer() {
-            @Override
-            public void newContactAdded(User user) throws SQLException {
-                DatabaseMethods.addUser(user);
-            }
-
-            @Override
-            public void nicknameChanged(User newUser, String previousNickname) {
-
-            }
-        });
+        //Initialize Database and Contact List
+        mainclass.initializeDatabaseAndContactList();
 
         // Initialize and start TCP server
-        initializeTCPServer();
+        mainclass.initializeTCPServer();
 
 
 
         // Check online contacts
-        checkOnlineContacts();
+        mainclass.checkOnlineContacts();
 
         // Create and set the chat window
         chatWindow = new ChatWindow(me.getIpAddress().getHostAddress()); // Corrected line
         // Additional logic, if any, goes here
     }
 
-    private static void initializeUDPComponents() {
+    private void initializeUDPComponents() {
         UDPSender udpSender = new UDPSender();
         UDPReceiver udpReceiver;
         try {
             udpReceiver = new UDPReceiver();
 
-            udpReceiver.addObserver( msg -> Controller.handleContactDiscoveryMessage(msg));
+
+            udpReceiver.addObserver(Controller::handle);
+            udpReceiver.addObserver(Controller::handleContactDiscoveryMessage);
+
 
 
             udpReceiver.start();
@@ -170,7 +131,7 @@ public class MainClass {
         }
     }
 
-    private static void initializeTCPServer() {
+    private void initializeTCPServer() {
         TCPServer myServer = new TCPServer();
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
@@ -191,7 +152,27 @@ public class MainClass {
         }
     }
 
-    public static void checkOnlineContacts() {
+    private void initializeDatabaseAndContactList() throws SQLException {
+
+        // Start connection with the database
+        DatabaseMethods.startConnection(me);
+
+
+        ContactList.getInstance().addObserver(new ContactList.Observer() {
+            @Override
+            public void newContactAdded(User user) {
+                DatabaseMethods.addUser(user);
+            }
+
+            @Override
+            public void nicknameChanged(User newUser, String previousNickname) {
+
+            }
+        });
+
+    }
+
+    public void checkOnlineContacts() {
         ArrayList<User> onlineUsers = ContactList.getInstance().getConnectedContactsList();
 
         if (onlineUsers.isEmpty()) {
