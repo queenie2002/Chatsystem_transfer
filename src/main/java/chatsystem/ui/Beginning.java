@@ -1,5 +1,6 @@
 package chatsystem.ui;
 
+import chatsystem.controller.Controller;
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;
 
@@ -76,7 +77,7 @@ public class Beginning extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    UDPSender.toDisconnect();
+                    Controller.toDisconnect();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

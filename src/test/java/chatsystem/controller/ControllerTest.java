@@ -29,14 +29,14 @@ public class ControllerTest {
         UDPMessage msg2 = new UDPMessage("bob", InetAddress.getByName("10.1.5.11"));
 
         assert !instance.existsContactWithNickname("alice");
-        Controller.handleContactDiscoveryMessage(msg1);
+        Controller.handle(msg1);
         assert instance.existsContactWithNickname("alice");
 
         assert !instance.existsContactWithNickname("bob");
-        Controller.handleContactDiscoveryMessage(msg2);
+        Controller.handle(msg2);
         assert instance.existsContactWithNickname("bob");
 
-        Controller.handleContactDiscoveryMessage(msg2);
+        Controller.handle(msg2);
 
 
     }

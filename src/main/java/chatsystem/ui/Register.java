@@ -1,5 +1,6 @@
 package chatsystem.ui;
 
+import chatsystem.controller.Controller;
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;
 import chatsystem.contacts.ContactList;
@@ -36,7 +37,7 @@ public class Register {
     //constructor: sets up the basic properties of the window like the title
     public Register(UDPReceiver r, UDPSender s) throws IOException {
 
-        UDPSender.sendToChooseNickname();
+        Controller.sendToChooseNickname();
 
 
         // Create and set up the window
@@ -83,7 +84,7 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    UDPSender.toDisconnect();
+                    Controller.toDisconnect();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -161,7 +162,7 @@ public class Register {
         else { //if unique i go to next tab and tell people i am connected
             HomeTab hometab = new HomeTab(r, s);
             try {
-                UDPSender.sendIAmConnected(MainClass.me);
+                Controller.sendIAmConnected(MainClass.me);
 
                 System.out.println();
                 System.out.println("Printing Contact List after chose nickname ");

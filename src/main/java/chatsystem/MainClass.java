@@ -159,7 +159,7 @@ public class MainClass {
 
         ContactList.getInstance().addObserver(new ContactList.Observer() {
             @Override
-            public void newContactAdded(User user) {
+            public void newContactAdded(User user) throws SQLException {
                 DatabaseMethods.addUser(user);
             }
 

@@ -11,16 +11,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static chatsystem.MainClass.me;
+
 public class Controller {
 
-    private static Logger LOGGER = LogManager.getLogger(Controller.class);
-
+    private static Logger LOGGER = LogManager.getLogger(MainClass.class);
+    private static final String BROADCAST_ADDRESS = "255.255.255.255";
 
     public static void handle(UDPMessage message) {
 
@@ -37,7 +38,7 @@ public class Controller {
                     default -> System.out.println("error: unhandled message type");
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             LOGGER.error("Couldn't send back message for contact discovery.");
         }
     }
@@ -94,7 +95,7 @@ public class Controller {
 
     public static void handleToChooseNickname() throws IOException {
         //when we receive the request, we respond by saying who we are
-        UDPSender.sendIAmConnected(MainClass.me);
+        sendIAmConnected(MainClass.me);
         LOGGER.info("RECEIVED to choose nickname request");
     }
 
@@ -103,30 +104,71 @@ public class Controller {
         LOGGER.info("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public static void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException{
+    public static void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException, SQLException {
         changeStatus(nickname, ipAddress, true);
-        UDPSender.sendIAmConnected(MainClass.me);
+        sendIAmConnected(MainClass.me);
         LOGGER.info("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
-    public static void handleDisconnect(String nickname, InetAddress ipAddress) {
+    public static void handleDisconnect(String nickname, InetAddress ipAddress) throws SQLException {
         changeStatus(nickname, ipAddress, false);
         LOGGER.info("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    public static void changeStatus(String nickname, InetAddress ipAddress, Boolean status) {
+    public static void changeStatus(String nickname, InetAddress ipAddress, Boolean status) throws SQLException {
         ContactList instance = ContactList.getInstance();
         try {
             if (!(nickname.equals("[]"))) {
                 instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
             }
-        } catch (ContactAlreadyExists e) {
+        } catch (ContactAlreadyExists | SQLException e) {
             //if we know him, we change his status
             User user = instance.getContactWithNickname(nickname);
             user.setStatus(status);
             instance.updateContact(user);
         }
     }
+
+
+
+    /**we ask all connected users for their information to be able to choose a nickname(broadcast)*/
+    public static void sendToChooseNickname () throws IOException {
+        //user sends his ip
+        String message = "TO_CHOOSE_NICKNAME:";
+        UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
+        LOGGER.info("SENT: To choose nickname request.");
+    }
+
+    /** we send a message saying we're connected, the receiver won't send anything back */
+    public static void sendIAmConnected (User user) throws IOException {
+        String message = "IAMCONNECTED: nickname: " + user.getNickname();
+        UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
+        LOGGER.info("SENT: I am connected.");
+    }
+
+    /** we send a message saying we're connected and asks if the other people are too, the receiver will send a iamconnected message back */
+    public static void sendIAmConnectedAreYou (User user) throws IOException {
+        String message = "IAMCONNECTEDAREYOU: nickname: " + user.getNickname();
+        UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
+        LOGGER.info("SENT: I am connected, are you?.");
+    }
+
+    public static void sendDisconnect (User user) throws IOException {
+        String message = "DISCONNECT: nickname: " + user.getNickname();
+        UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
+        LOGGER.info("SENT: Disconnect.");
+    }
+
+    public static void toDisconnect() throws IOException {
+        //have to socket close for all contacts ??
+        sendDisconnect(me);
+        me.setStatus(false);
+        System.out.println("am supposed to close app after--------------");
+    }
+
+
+
+
 
 }
 

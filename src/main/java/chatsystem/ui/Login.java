@@ -1,5 +1,6 @@
 package chatsystem.ui;
 
+import chatsystem.controller.Controller;
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;
 import chatsystem.contacts.ContactList;
@@ -104,7 +105,7 @@ public class Login {
 
 
                 try {
-                    UDPSender.sendIAmConnected(MainClass.me);
+                    Controller.sendIAmConnected(MainClass.me);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

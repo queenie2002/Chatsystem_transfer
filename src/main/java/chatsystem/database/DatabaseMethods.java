@@ -6,6 +6,8 @@ import chatsystem.MainClass;
 import org.apache.logging.log4j.*;
 import java.net.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 could close resources
@@ -41,7 +43,7 @@ public class DatabaseMethods {
     }
 
     /** Checks if table exists in database */
-    private static boolean doesTableExist(String tableName) {
+    private static boolean doesTableExist(String tableName) throws SQLException {
         String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -54,12 +56,12 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("Couldn't check if table exists in database" + tableName);
-            return false;
+            throw new SQLException();
         }
     }
 
     /** Checks if a user is already in the database */
-    private static boolean doesUserExist(User user) {
+    private static boolean doesUserExist(User user) throws SQLException {
 
         String nickname= user.getNickname();
         String sql = "SELECT COUNT(*) FROM users WHERE nickname = ?";
@@ -75,7 +77,7 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("Couldn't check if user exists in database" + user);
-            return false;
+            throw new SQLException();
         }
     }
 
@@ -85,46 +87,8 @@ public class DatabaseMethods {
     }
 
 
-    /*
-    public static void dropTables() throws SQLException {
-
-        //to get list of tables
-        DatabaseMetaData metaData = connection.getMetaData();
-        // Specify the types of database objects to include in the result set (in this case, tables)
-        String[] types = {"TABLE"};
-        // Get the result set containing table information
-        ResultSet resultSet = metaData.getTables(null, null, "%", types);
-
-        // Iterate through the result set and print table names
-        while (resultSet.next()) {
-            String tableName = resultSet.getString("TABLE_NAME");
-
-            try (Statement statement = connection.createStatement()) {
-
-                // Execute the DROP TABLE statement
-                String dropTableSql = "DROP TABLE " + tableName;
-                statement.executeUpdate(dropTableSql);
-                System.out.println();
-                System.out.println();
-                System.out.println();
-                System.out.println("Table '" + tableName + "' dropped successfully.");
-                System.out.println();
-                System.out.println();
-
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-*/
-
-
-
-
     /** Creates the users table in database */
-    private static void createUsersTable() {
+    private static void createUsersTable() throws SQLException {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
                 + "idUserDatabase INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "nickname TEXT , " //can make unique
@@ -141,11 +105,12 @@ public class DatabaseMethods {
             LOGGER.info("Table users created");
         } catch (SQLException e) {
             LOGGER.error("Users Table couldn't be created in database");
+            throw new SQLException();
         }
     }
 
     /** Creates a specific empty messages table for a user with their IP Address*/
-    private static void createSpecificMessagesTable(String ipAddress) {
+    private static void createSpecificMessagesTable(String ipAddress) throws SQLException {
         ipAddress = ipAddress.substring(1).replace(".","_");
 
         String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + ipAddress + " ("
@@ -162,12 +127,13 @@ public class DatabaseMethods {
         }
         catch (SQLException e) {
             LOGGER.error("Table messages couldn't be created in database");
+            throw new SQLException();
         }
     }
 
 
     /** Adds a user and creates an empty specific Messages table for that user. If user already added, it updates the user */
-    public static void addUser(User user) {
+    public static void addUser(User user) throws SQLException {
 
         String addUserSQL;
         boolean userAddedAlready = doesUserExist(user);
@@ -199,11 +165,7 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("User couldn't be added to database " + user.getNickname());
-            //Test
-
-            System.out.println("my address" +MainClass.me.getIpAddress().getHostAddress());
-            //TCPMessage aTCPMessage = new TCPMessage("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
-            //addMessage(aTCPMessage);
+            throw new SQLException();
         }
 
 
@@ -218,24 +180,18 @@ public class DatabaseMethods {
                 }
             } catch (SQLException e) {
                 LOGGER.error("Couldn't get the user ID in database");
+                throw new SQLException();
             }
         }
 
         //If it's another user, we create a specific message table
         if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
             createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
-
-
-            //TEST
-            System.out.println("we try to add a message");
-            TCPMessage aTCPMessage = new TCPMessage("bonjour", "2002", "10.1.5.12", MainClass.me.getIpAddress().getHostAddress());
-            addMessage(aTCPMessage);
-
         }
     }
 
     /** Adds a message to database */
-    public static void addMessage(TCPMessage tcpMessage) {
+    public static void addMessage(TCPMessage tcpMessage) throws SQLException {
 
         boolean table1Exists = doesTableExist("Messages_" + convertIPAddressForDatabase(tcpMessage.getFromUserIP()));
         boolean table2Exists = doesTableExist("Messages_" + convertIPAddressForDatabase(tcpMessage.getToUserIP()));
@@ -260,9 +216,12 @@ public class DatabaseMethods {
                 preparedStatement.executeUpdate();
 
                 LOGGER.info("Message added to database");
+
+
             }
             catch (SQLException e){
                 LOGGER.error("Couldn't add message to database");
+                throw new SQLException();
             }
         }
         else {
@@ -271,7 +230,7 @@ public class DatabaseMethods {
     }
 
     /** Get user from database */
-    private static User getUser(String nickname) {
+    public static User getUser(String nickname) throws SQLException, UnknownHostException {
 
         User user = new User();
 
@@ -303,10 +262,53 @@ public class DatabaseMethods {
             }
         } catch (SQLException e) {
             LOGGER.error("Couldn't get user due to SQLException" + nickname);
+            throw new SQLException();
         } catch (UnknownHostException e) {
             LOGGER.error("Couldn't get user due to UnknownHostException " + nickname);
+            throw new UnknownHostException();
         }
 
         return user;
     }
+
+
+    public static ArrayList<TCPMessage> getMessages(String nickname) throws SQLException, UnknownHostException {
+
+        ArrayList<TCPMessage> myMessagesList = new ArrayList<TCPMessage>();
+
+        User user = getUser(nickname);
+        String ipAddress = convertIPAddressForDatabase(user.getIpAddress().getHostAddress());
+        System.out.println("SELECT * FROM messages_" + ipAddress);
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages_" + ipAddress)) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    while (resultSet.next()) {
+
+                        TCPMessage message = new TCPMessage();
+
+                        // User found
+                        message.setChatId(resultSet.getInt("chatID"));
+                        message.setContent(resultSet.getString("content"));
+                        message.setDate(resultSet.getString("date"));
+                        message.setFromUserIP(resultSet.getString("fromUser"));
+                        message.setToUserIP(resultSet.getString("toUser"));
+
+                        myMessagesList.add(message);
+                        TCPMessage.printTCPMessageList(myMessagesList);
+                    }
+                } else {
+                    LOGGER.error("We don't have any message from  " + nickname);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Couldn't get messages due to SQLException" + nickname);
+            throw new SQLException();
+        }
+
+        return myMessagesList;
+    }
+
+
 }

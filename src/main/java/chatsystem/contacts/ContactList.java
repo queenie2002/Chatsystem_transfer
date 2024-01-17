@@ -7,8 +7,7 @@ import chatsystem.database.DatabaseMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
-import java.net.InetAddress;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class ContactList {
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
     public interface Observer {
-        void newContactAdded(User user);
+        void newContactAdded(User user) throws SQLException;
         void nicknameChanged(User newUser, String previousNickname);
     }
     List<Observer> observers = new ArrayList<>();
@@ -62,7 +61,7 @@ public class ContactList {
 
 
 
-    public synchronized void addContact(User user) throws ContactAlreadyExists {
+    public synchronized void addContact(User user) throws ContactAlreadyExists, SQLException {
         String nickname = user.getNickname();
         if (existsContactWithNickname(nickname)) {
             throw new ContactAlreadyExists(nickname);
@@ -75,7 +74,7 @@ public class ContactList {
             }
         }
     }
-    public synchronized void updateContact(User user) {
+    public synchronized void updateContact(User user) throws SQLException {
         int index=-1;
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), user.getNickname())) {
@@ -86,7 +85,7 @@ public class ContactList {
         if (index != -1) {
             // Replace the element at the found index
             myContactList.set(index, user);
-            LOGGER.error("Updated user in ContactList " + user.getNickname());
+            LOGGER.info("Updated user in ContactList " + user.getNickname());
         } else {
             LOGGER.error("Couldn't find user in ContactList " + user.getNickname());
         }
@@ -109,27 +108,9 @@ public class ContactList {
         LOGGER.error("Couldn't find the user with nickname: " + nickname);
         return null;
     }
-    public synchronized User getContactWithIpAddress(InetAddress ipAddress) {
-        for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getIpAddress(), ipAddress)) {
-                return aUser;
-            }
-        }
-        LOGGER.error("Couldn't find the user with ipaddress: " + ipAddress);
-        return null;
-    }
 
 
 
-
-    public synchronized Boolean existsContactWithIpAddress(InetAddress ipAddress) {
-        for (User aUser : myContactList) {
-            if (Objects.equals(String.valueOf(aUser.getIpAddress()), ipAddress.toString())) {
-                return true;
-            }
-        }
-        return false;
-    }
     public synchronized Boolean existsContactWithNickname(String nickname) {
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {

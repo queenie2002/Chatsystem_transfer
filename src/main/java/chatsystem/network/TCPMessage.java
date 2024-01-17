@@ -1,5 +1,7 @@
 package chatsystem.network;
 
+import java.util.ArrayList;
+
 public class TCPMessage {
     // Class attributes
     private int chatId;
@@ -17,6 +19,9 @@ public class TCPMessage {
         this.fromUserIP = fromUserIP;
         this.toUserIP = toUserIP;
         /*this.isActive = isActive;*/
+    }
+
+    public TCPMessage() {
     }
 
     // Getter and setter methods
@@ -38,26 +43,22 @@ public class TCPMessage {
         return toUserIP;
     }
 
-    /*public boolean isActive() {
-        return isActive;
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
     }
-
-    public void setStatus(boolean isActive) {
-        this.isActive = isActive;
-    }*/
-
     public void setDate(String date) {
         this.date = date;
     }
     public void setContent (String content) {
         this.content = content;
     }
-    /*
-    public static int createChatId(ArrayList<TCPMessage> myChatHistory) {
-        return (ChatHistory.getChatFromIndex(myChatHistory.size() - 1)).getChatId() + 1 ;
+    public void setFromUserIP(String fromUserIP) {
+        this.fromUserIP = fromUserIP;
     }
-*/
-
+    public void setToUserIP (String toUserIP) {
+        this.toUserIP = toUserIP;
+    }
 
     public static TCPMessage deserialize(String serializedData) {
         String[] parts = serializedData.split(",");
@@ -69,5 +70,16 @@ public class TCPMessage {
         return new TCPMessage(parts[0], parts[1], parts[2], parts[3]);
     }
 
+    public static void printTCPMessage(TCPMessage message) {
+        System.out.println("ChatID: "+message.getChatId()+" content: "+message.getContent()+" date: "+message.getDate()+" fromUserIP: "+message.getFromUserIP()+" toUserIP: "+message.getToUserIP());
+    }
+
+    public static void printTCPMessageList(ArrayList<TCPMessage> messagesList) {
+
+        System.out.println("Printing list of messages :\n");
+        for (TCPMessage message : messagesList) {
+            printTCPMessage(message);
+        }
+    }
 
 }
