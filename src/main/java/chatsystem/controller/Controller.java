@@ -99,7 +99,7 @@ public class Controller {
         LOGGER.info("RECEIVED to choose nickname request");
     }
 
-    public static void handleIAmConnected(String nickname, InetAddress ipAddress){
+    public static void handleIAmConnected(String nickname, InetAddress ipAddress) throws SQLException {
         changeStatus(nickname, ipAddress, true);
         LOGGER.info("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
