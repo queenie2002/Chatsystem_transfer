@@ -136,8 +136,7 @@ public class HomeTab {
         try {
             String localUserIP = MainClass.me.getIpAddress().getHostAddress();
             tcpClient.startConnection(user.getIpAddress().getHostAddress(), MainClass.TCP_SERVER_PORT);
-            ChatWindow cw = new ChatWindow(localUserIP, tcpClient);
-            // Open a chat window or handle the session as needed
+            MainClass.initializeChatWindow(localUserIP, tcpClient);
         } catch (IOException ex) {
             ex.printStackTrace(); // Handle connection errors here
         }

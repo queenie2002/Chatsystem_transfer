@@ -51,6 +51,7 @@ public class ChatWindow implements TCPServer.MessageObserver{
 
     @Override
     public void handleMessage(TCPMessage msg) {
+        System.out.println("DANS HANDLEMESSAGE My IP: " + myUserIP + ", From IP: " + msg.getFromUserIP());
         SwingUtilities.invokeLater(() -> displayMessage(msg));
     }
 
@@ -63,6 +64,7 @@ public class ChatWindow implements TCPServer.MessageObserver{
                 TCPMessage tcpMessage = TCPMessage.deserialize(serializedData);
 
                 tcpClient.sendMessage(tcpMessage);
+                System.out.println("DANS SENDMESSAGE My IP: " + myUserIP + ", From IP: " + tcpMessage.getFromUserIP());
                 displayMessage(tcpMessage);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -77,10 +79,19 @@ public class ChatWindow implements TCPServer.MessageObserver{
     }
 
     public void displayMessage(TCPMessage message) {
+        System.out.println("My IP: " + myUserIP + ", From IP: " + message.getFromUserIP());
+
         if (message.getFromUserIP().equals(myUserIP)) {
+            System.out.println("Displaying my message: " + message.getContent());
             messageArea.append("Me: " + message.getContent() + "\n");
         } else {
+            System.out.println("Displaying message: " + message.getContent());
             messageArea.append("From " + message.getFromUserIP() + ": " + message.getContent() + "\n");
         }
     }
+
+    public void setVisible(boolean visible) {
+        frame.setVisible(visible);
+    }
+
 }

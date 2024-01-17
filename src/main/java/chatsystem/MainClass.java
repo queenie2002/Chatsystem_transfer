@@ -157,8 +157,10 @@ public class MainClass {
             @Override
             public void handleMessage(TCPMessage msg) throws SQLException {
                 // Assuming msg is already a TCPMessage object
+                System.out.println("Received message: " + msg.getContent());
                 DatabaseMethods.addMessage(msg);
                 if (chatWindow != null) {
+                    System.out.println("DANS MAINCLASS My IP: " + me.getIpAddress() + ", From IP: " + msg.getFromUserIP());
                     SwingUtilities.invokeLater(() -> chatWindow.displayMessage(msg));
                 }
             }
@@ -171,6 +173,20 @@ public class MainClass {
             System.exit(1);
         }
     }
+
+    // Static method to initialize the chat window
+    public static void initializeChatWindow(String localUserIP, TCPClient tcpClient) {
+        if (chatWindow == null) {
+            chatWindow = new ChatWindow(localUserIP, tcpClient);
+            chatWindow.setVisible(true); // Assuming there is a method to make it visible
+        }
+    }
+
+    // Method to get the chat window
+    public static ChatWindow getChatWindow() {
+        return chatWindow;
+    }
+
 
     private void initializeDatabaseAndContactList() throws SQLException {
 
