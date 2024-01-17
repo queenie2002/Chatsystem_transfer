@@ -103,8 +103,8 @@ public class MainClass {
         // Check online contacts
         mainclass.checkOnlineContacts();
 
-        // Create and set the chat window
-        chatWindow = new ChatWindow(me.getIpAddress().getHostAddress()); // Corrected line
+
+
         // Additional logic, if any, goes here
     }
 
@@ -136,7 +136,7 @@ public class MainClass {
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
             public void handleMessage(String msg) throws SQLException {
-                TCPMessage chat = TCPMessage.deserialize(msg);
+                TCPMessage chat = new TCPMessage(msg,"date","ip1","ip2");
                 DatabaseMethods.addMessage(chat);
                 if (chatWindow != null) {
                     SwingUtilities.invokeLater(() -> chatWindow.displayMessage(chat));

@@ -21,6 +21,7 @@ print contact
 get contact
  */
 
+
 public class DatabaseMethods {
 
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
@@ -198,6 +199,11 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("User couldn't be added to database " + user.getNickname());
+            //Test
+
+            System.out.println("my address" +MainClass.me.getIpAddress().getHostAddress());
+            //TCPMessage aTCPMessage = new TCPMessage("bonjour", "2002", "10.1.5.156", MainClass.me.getIpAddress().getHostAddress());
+            //addMessage(aTCPMessage);
         }
 
 

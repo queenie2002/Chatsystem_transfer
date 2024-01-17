@@ -131,9 +131,12 @@ public class HomeTab {
     }
 
     private void startTcpSession(User user) {
+        System.out.println("startTCPSession with user : "+user);
         TCPClient tcpClient = new TCPClient();
         try {
+            String localUserIP = MainClass.me.getIpAddress().getHostAddress();
             tcpClient.startConnection(user.getIpAddress().getHostAddress(), MainClass.TCP_SERVER_PORT);
+            ChatWindow cw = new ChatWindow(localUserIP, tcpClient);
             // Open a chat window or handle the session as needed
         } catch (IOException ex) {
             ex.printStackTrace(); // Handle connection errors here
