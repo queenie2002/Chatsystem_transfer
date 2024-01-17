@@ -11,7 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatWindow {
+public class ChatWindow implements TCPServer.MessageObserver{
     private JFrame frame;
     private JTextArea messageArea;
     private String myUserIP; // IP address of the current user
@@ -49,6 +49,12 @@ public class ChatWindow {
         frame.setVisible(true);
     }
 
+    @Override
+    public void handleMessage(TCPMessage msg) {
+        System.out.println("DANS HANDLEMESSAGE My IP: " + myUserIP + ", From IP: " + msg.getFromUserIP());
+        SwingUtilities.invokeLater(() -> displayMessage(msg));
+    }
+
     private void sendMessage(){
         String message = messageInputField.getText();
         if(!message.isEmpty()){
@@ -58,6 +64,7 @@ public class ChatWindow {
                 TCPMessage tcpMessage = TCPMessage.deserialize(serializedData);
 
                 tcpClient.sendMessage(tcpMessage);
+                System.out.println("DANS SENDMESSAGE My IP: " + myUserIP + ", From IP: " + tcpMessage.getFromUserIP());
                 displayMessage(tcpMessage);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -72,10 +79,19 @@ public class ChatWindow {
     }
 
     public void displayMessage(TCPMessage message) {
+        System.out.println("My IP: " + myUserIP + ", From IP: " + message.getFromUserIP());
+
         if (message.getFromUserIP().equals(myUserIP)) {
+            System.out.println("Displaying my message: " + message.getContent());
             messageArea.append("Me: " + message.getContent() + "\n");
         } else {
+            System.out.println("Displaying message: " + message.getContent());
             messageArea.append("From " + message.getFromUserIP() + ": " + message.getContent() + "\n");
         }
     }
+
+    public void setVisible(boolean visible) {
+        frame.setVisible(visible);
+    }
+
 }
