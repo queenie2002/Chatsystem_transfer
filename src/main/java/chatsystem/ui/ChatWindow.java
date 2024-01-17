@@ -11,7 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatWindow {
+public class ChatWindow implements TCPServer.MessageObserver{
     private JFrame frame;
     private JTextArea messageArea;
     private String myUserIP; // IP address of the current user
@@ -47,6 +47,11 @@ public class ChatWindow {
         frame.add(sendButton,BorderLayout.EAST);
 
         frame.setVisible(true);
+    }
+
+    @Override
+    public void handleMessage(TCPMessage msg) {
+        SwingUtilities.invokeLater(() -> displayMessage(msg));
     }
 
     private void sendMessage(){
