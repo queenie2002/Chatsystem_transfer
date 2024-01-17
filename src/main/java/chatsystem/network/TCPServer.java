@@ -125,18 +125,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TCPServer {
-    private ServerSocket serverSocket;
+    private static ServerSocket serverSocket;
     private List<MessageObserver> observers = new ArrayList<>();
 
     public interface MessageObserver {
-        void handleMessage(String msg) throws SQLException;
+        void handleMessage(TCPMessage msg) throws SQLException;
     }
 
     public void addObserver(MessageObserver observer) {
         observers.add(observer);
     }
 
-    private void notifyObservers(String message) {
+    private void notifyObservers(TCPMessage message) {
         for (MessageObserver observer : observers) {
             try {
                 observer.handleMessage(message);
@@ -170,22 +170,24 @@ public class TCPServer {
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    server.notifyObservers(inputLine);
-                    out.println(inputLine);
+                String line;
+                while ((line = in.readLine()) != null) {
+                    try {
+                        TCPMessage inputLine = TCPMessage.deserialize(line);
+                        server.notifyObservers(inputLine);
+                        out.println(inputLine.getContent()); // Modify as needed
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                        // Handle invalid message format
+                    }
                 }
-
-                in.close();
-                out.close();
-                clientSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
-    }
 
-    public void stop() throws IOException {
-        serverSocket.close();
+        /*public void stop() throws IOException {
+            serverSocket.close();
+        }*/
     }
 }

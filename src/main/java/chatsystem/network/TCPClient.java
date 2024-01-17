@@ -65,9 +65,14 @@ public class TCPClient {
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
-    public String sendMessage(String msg) throws IOException {
-        out.println(msg);
+    public String sendMessage(TCPMessage message) throws IOException {
+        String serializedMessage = serializeMessage(message);
+        out.println(serializedMessage);
         return in.readLine();
+    }
+
+    private String serializeMessage(TCPMessage message) {
+        return message.getContent() + "," + message.getDate() + "," + message.getFromUserIP() + "," + message.getToUserIP();
     }
 
     public void stopConnection() throws IOException {
