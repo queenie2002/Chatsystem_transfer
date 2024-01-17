@@ -1,12 +1,14 @@
 package chatsystem.ui;
 
 import chatsystem.controller.Controller;
+import chatsystem.database.DatabaseMethods;
 import chatsystem.network.UDPSender;
 import chatsystem.network.UDPReceiver;
 import chatsystem.contacts.ContactList;
 import chatsystem.MainClass;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +37,7 @@ public class Register {
     private JPasswordField password;
 
     //constructor: sets up the basic properties of the window like the title
-    public Register(UDPReceiver r, UDPSender s) throws IOException {
+    public Register() throws IOException {
 
         Controller.sendToChooseNickname();
 
@@ -56,7 +58,7 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    registerUser(r,s, frame); //when the button is clicked it calls the registerUser method
+                    registerUser(frame); //when the button is clicked it calls the registerUser method
                 } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -97,7 +99,7 @@ public class Register {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Beginning beginning = new Beginning(r, s);
+                    Beginning beginning = new Beginning();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -136,7 +138,7 @@ public class Register {
 
     }
 
-    private void registerUser(UDPReceiver r, UDPSender s, Frame frame) throws IOException, SQLException {
+    private void registerUser(Frame frame) throws IOException, SQLException {
 
         //faut créer la database et l'initialiser
 
@@ -160,18 +162,16 @@ public class Register {
             PopUpTab popup1 = new PopUpTab("choose another nickname");
         }
         else { //if unique i go to next tab and tell people i am connected
-            HomeTab hometab = new HomeTab(r, s);
+            HomeTab hometab = new HomeTab();
             try {
+
+                DatabaseMethods.addMe(MainClass.me);
                 Controller.sendIAmConnected(MainClass.me);
-
-                System.out.println();
-                System.out.println("Printing Contact List after chose nickname ");
-                instance.printContactList();
-
 
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+
             frame.dispose();
         }
     }

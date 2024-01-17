@@ -49,7 +49,6 @@ import chatsystem.controller.Controller;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
 import chatsystem.ui.*;
-import com.sun.tools.javac.Main;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -65,7 +64,7 @@ public class MainClass {
 
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
-    private static ChatWindow chatWindow; // Reference to ChatWindow
+    private static ChatWindow chatWindow;
 
     public static User me;
     static {
@@ -75,11 +74,10 @@ public class MainClass {
             throw new RuntimeException(e);
         }
     }
-    private Controller controller = new Controller();
 
 
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, UnknownHostException {
 
         Configurator.setRootLevel(Level.INFO);
         LOGGER.info("Starting ChatSystem application");
@@ -98,18 +96,12 @@ public class MainClass {
         // Initialize and start TCP server
         mainclass.initializeTCPServer();
 
-
-
         // Check online contacts
         mainclass.checkOnlineContacts();
 
-
-
-        // Additional logic, if any, goes here
     }
 
     private void initializeUDPComponents() {
-        UDPSender udpSender = new UDPSender();
         UDPReceiver udpReceiver;
         try {
             udpReceiver = new UDPReceiver();
@@ -120,7 +112,7 @@ public class MainClass {
 
 
             udpReceiver.start();
-            new Beginning(udpReceiver, udpSender);
+            new Beginning();
         } catch (SocketException e) {
             LOGGER.error("Could not start UDP server: " + e.getMessage());
             System.exit(1);
@@ -172,11 +164,10 @@ public class MainClass {
         }
     }
 
-    private void initializeDatabaseAndContactList() throws SQLException {
+    private void initializeDatabaseAndContactList() throws SQLException, UnknownHostException {
 
         // Start connection with the database
         DatabaseMethods.startConnection(me);
-
 
         ContactList.getInstance().addObserver(new ContactList.Observer() {
             @Override
@@ -206,5 +197,4 @@ public class MainClass {
         }
     }
 
-    // MainClass other methods...
 }

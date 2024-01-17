@@ -68,12 +68,8 @@ import java.util.ArrayList;
 
 public class HomeTab {
 
-    private UDPReceiver udpReceiver;
-    private UDPSender udpSender;
 
-    public HomeTab(UDPReceiver r, UDPSender s) {
-        this.udpReceiver = r;
-        this.udpSender = s;
+    public HomeTab() {
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");

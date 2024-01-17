@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Beginning extends JFrame {
 
     //constructor: sets up the basic properties of the window like the title
-    public Beginning(UDPReceiver r, UDPSender s) throws IOException {
+    public Beginning() throws IOException {
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,7 +30,7 @@ public class Beginning extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 try {
-                    Register register = new Register(r, s);
+                    Register register = new Register();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -47,7 +47,7 @@ public class Beginning extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Login login = new Login(r, s);
+                Login login = new Login();
                 frame.dispose();
             }
         });

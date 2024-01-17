@@ -7,20 +7,12 @@ import org.apache.logging.log4j.*;
 import java.net.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
 could close resources
 query
 update
-
-find length of a tale
-delete table
-
 deletecontact
-
-print contact
-get contact
  */
 
 
@@ -40,6 +32,7 @@ public class DatabaseMethods {
         LOGGER.info("Created database with my IP address " + ipAddress);
 
         createUsersTable();
+        createMeTable();
     }
 
     /** Checks if table exists in database */
@@ -130,6 +123,28 @@ public class DatabaseMethods {
             throw new SQLException();
         }
     }
+
+    /** Creates the ME table in database */
+    private static void createMeTable() throws SQLException {
+        String usersTableQuery = "CREATE TABLE IF NOT EXISTS Me ("
+                + "nickname TEXT , " //can make unique
+                + "ipAddress TEXT NOT NULL, "
+                + "firstName TEXT, "
+                + "lastName TEXT, "
+                + "birthday TEXT, "
+                + "password TEXT"
+                + ")";
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(usersTableQuery);
+            LOGGER.info("Table Me created");
+        } catch (SQLException e) {
+            LOGGER.error("Users Me couldn't be created in database");
+            throw new SQLException();
+        }
+    }
+
+
 
 
     /** Adds a user and creates an empty specific Messages table for that user. If user already added, it updates the user */
@@ -229,6 +244,33 @@ public class DatabaseMethods {
         }
     }
 
+    /** Adds Me to database if I register*/
+    public static void addMe(User user) throws SQLException {
+
+        String insertMessageSQL = "INSERT INTO Me (nickname, ipAddress, firstName, lastName, birthday, password) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {
+
+            preparedStatement.setString(1, user.getNickname());
+            preparedStatement.setString(2, user.getIpAddress().getHostAddress());
+            preparedStatement.setString(3, user.getFirstName());
+            preparedStatement.setString(4, user.getLastName());
+            preparedStatement.setString(5, user.getBirthday());
+            preparedStatement.setString(6, user.getPassword());
+            preparedStatement.executeUpdate();
+
+            LOGGER.info("Me added to database");
+        }
+        catch (SQLException e){
+            LOGGER.error("Couldn't add Me to database");
+            throw new SQLException();
+        }
+    }
+
+
+
+
+
     /** Get user from database */
     public static User getUser(String nickname) throws SQLException, UnknownHostException {
 
@@ -271,14 +313,13 @@ public class DatabaseMethods {
         return user;
     }
 
-
+    /** Get messages from user from database */
     public static ArrayList<TCPMessage> getMessages(String nickname) throws SQLException, UnknownHostException {
 
         ArrayList<TCPMessage> myMessagesList = new ArrayList<TCPMessage>();
 
         User user = getUser(nickname);
         String ipAddress = convertIPAddressForDatabase(user.getIpAddress().getHostAddress());
-        System.out.println("SELECT * FROM messages_" + ipAddress);
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages_" + ipAddress)) {
 
@@ -310,5 +351,39 @@ public class DatabaseMethods {
         return myMessagesList;
     }
 
+    /** Get me from database */
+    public static User getMe() throws UnknownHostException, SQLException {
+
+
+        User user = new User();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Me")) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+
+                    // User found
+                    user.setNickname(resultSet.getString("nickname"));
+                    user.setIpAddress(InetAddress.getByName(resultSet.getString("ipAddress")));
+                    user.setFirstName(resultSet.getString("firstName"));
+                    user.setLastName(resultSet.getString("lastName"));
+                    user.setBirthday(resultSet.getString("birthday"));
+                    user.setPassword(resultSet.getString("password"));
+
+                } else {
+                    LOGGER.error("Couldn't find me");
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Couldn't get me due to SQLException");
+            throw new SQLException();
+        }
+        catch (UnknownHostException e) {
+            LOGGER.error("Couldn't get me due to UnknownHostException");
+            throw new UnknownHostException();
+        }
+
+        return user;
+    }
 
 }

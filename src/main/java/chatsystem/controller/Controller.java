@@ -1,22 +1,22 @@
 package chatsystem.controller;
 
 import chatsystem.MainClass;
-import chatsystem.contacts.ContactAlreadyExists;
-import chatsystem.contacts.ContactList;
-import chatsystem.contacts.User;
+import static chatsystem.MainClass.me;
+import chatsystem.contacts.*;
+import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
+import chatsystem.ui.*;
+import org.apache.logging.log4j.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Objects;
+import java.util.regex.*;
 
-import static chatsystem.MainClass.me;
 
 public class Controller {
 
@@ -44,6 +44,34 @@ public class Controller {
     }
 
 
+    public void loginFunction(String nicknameInput, String passwordInput) throws UnknownHostException, SQLException {
+
+        me = DatabaseMethods.getMe();
+
+        ContactList instance = ContactList.getInstance();
+
+        if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
+
+            me.setStatus(true);
+
+
+            instance.printContact(me);
+
+
+            try {
+                Controller.sendIAmConnected(me);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            HomeTab hometab = new HomeTab();
+            Login.frame.dispose();
+        }
+        else { //-----------------------------------------COMMENT FAIRE POUR TOURNER EN BOUCLE
+            PopUpTab popup = new PopUpTab("wrong login information try again");
+            System.out.println("error: wrong password and login");
+        }
+    }
 
 
 

@@ -1,17 +1,16 @@
 package chatsystem.contacts;
 
-/** Contact List */
+
 
 import chatsystem.MainClass;
-import chatsystem.database.DatabaseMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/** Contact List */
 public class ContactList {
 
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
