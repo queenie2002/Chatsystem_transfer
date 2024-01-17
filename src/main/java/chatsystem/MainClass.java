@@ -116,7 +116,6 @@ public class MainClass {
 
 
             udpReceiver.addObserver(Controller::handle);
-            udpReceiver.addObserver(Controller::handleContactDiscoveryMessage);
 
 
 

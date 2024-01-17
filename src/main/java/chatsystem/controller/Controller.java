@@ -22,24 +22,6 @@ public class Controller {
     private static Logger LOGGER = LogManager.getLogger(Controller.class);
 
 
-
-    public static void handleContactDiscoveryMessage(UDPMessage message) {
-        ContactList instance = ContactList.getInstance();
-
-        try {
-
-            User aUser = new User(message.content(), "", "", "", "", true, message.originAddress());
-
-
-            instance.addContact(aUser);
-            LOGGER.info("New contact added to the list " + message.content());
-        } catch (ContactAlreadyExists e) {
-            LOGGER.error("Receive a contact already in the contact list " + message.content());
-        }
-
-
-    }
-
     public static void handle(UDPMessage message) {
 
         String[] res = extractInfoFromPattern(message.content());
@@ -59,9 +41,6 @@ public class Controller {
             LOGGER.error("Couldn't send back message for contact discovery.");
         }
     }
-
-
-
 
 
 
@@ -112,7 +91,6 @@ public class Controller {
         }
         return null;
     }
-
 
     public static void handleToChooseNickname() throws IOException {
         //when we receive the request, we respond by saying who we are
