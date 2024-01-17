@@ -130,7 +130,7 @@ public class MainClass {
         }
     }
 
-    private void initializeTCPServer() {
+    /*private void initializeTCPServer() {
         TCPServer myServer = new TCPServer();
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
@@ -139,6 +139,27 @@ public class MainClass {
                 DatabaseMethods.addMessage(chat);
                 if (chatWindow != null) {
                     SwingUtilities.invokeLater(() -> chatWindow.displayMessage(chat));
+                }
+            }
+        });
+
+        try {
+            myServer.start(TCP_SERVER_PORT);
+        } catch (IOException e) {
+            LOGGER.error("Failed to start TCP Server: " + e.getMessage());
+            System.exit(1);
+        }
+    }*/
+
+    private void initializeTCPServer() {
+        TCPServer myServer = new TCPServer();
+        myServer.addObserver(new TCPServer.MessageObserver() {
+            @Override
+            public void handleMessage(TCPMessage msg) throws SQLException {
+                // Assuming msg is already a TCPMessage object
+                DatabaseMethods.addMessage(msg);
+                if (chatWindow != null) {
+                    SwingUtilities.invokeLater(() -> chatWindow.displayMessage(msg));
                 }
             }
         });

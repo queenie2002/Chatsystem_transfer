@@ -7,6 +7,9 @@ import chatsystem.network.TCPServer;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ChatWindow {
     private JFrame frame;
@@ -50,12 +53,22 @@ public class ChatWindow {
         String message = messageInputField.getText();
         if(!message.isEmpty()){
             try{
-                tcpClient.sendMessage(message);
-                displayMessage(new TCPMessage(message,"date",myUserIP, "IP"));
+                // Create a properly formatted string for serialization
+                String serializedData = message + "," + getCurrentDate() + "," + myUserIP + "," + "RecipientIP"; // Replace "RecipientIP" as needed
+                TCPMessage tcpMessage = TCPMessage.deserialize(serializedData);
+
+                tcpClient.sendMessage(tcpMessage);
+                displayMessage(tcpMessage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String getCurrentDate() {
+        // Format the date as required. This is just an example.
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(new Date());
     }
 
     public void displayMessage(TCPMessage message) {
