@@ -18,7 +18,7 @@ public class PopUpTab {
 
         //we create and set a label with the message
         JLabel messageLabel = new JLabel(message, JLabel.CENTER);
-        messageLabel.setPreferredSize(new Dimension(400, 70));
+        messageLabel.setPreferredSize(new Dimension(500, 70));
 
         JPanel panel = new JPanel(new FlowLayout());
         panel.add(messageLabel);

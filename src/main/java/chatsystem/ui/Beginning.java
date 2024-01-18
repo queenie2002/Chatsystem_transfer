@@ -1,9 +1,6 @@
 package chatsystem.ui;
 
-import chatsystem.contacts.ContactList;
-import chatsystem.contacts.User;
 import chatsystem.controller.Controller;
-import chatsystem.database.DatabaseMethods;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -92,7 +89,6 @@ public class Beginning extends JFrame {
 
 
 
-        // Create layout
         JPanel panel = new JPanel(new GridLayout(1, 2)); //arranges the components in a grid
         panel.add(registerButton);
         panel.add(loginButton);

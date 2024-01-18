@@ -28,11 +28,23 @@ public class UDPReceiver extends Thread {
 
 
 
+    //OUR DATAGRAM SOCKET TO RECEIVE MESSAGES
+    private static final DatagramSocket receivingSocket;
 
-    private final DatagramSocket receivingSocket;
-    public final ArrayList<String> myIPAddresses;
+    static {
+        try {
+            receivingSocket = new DatagramSocket(MainClass.BROADCAST_RECEIVER_PORT);
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+
+    private final ArrayList<String> myIPAddresses;
     public UDPReceiver() throws SocketException {
-        receivingSocket = new DatagramSocket(MainClass.BROADCAST_RECEIVER_PORT);
         myIPAddresses = new ArrayList<String>();
         makeMyIPAddresses();
     }
@@ -54,15 +66,21 @@ public class UDPReceiver extends Thread {
             }
         }
     }
+    private static boolean isRunning = true;
 
 
 
 
+    /** To stop UDP server*/
+    public static void stopServer() {
+        isRunning = false;
+        receivingSocket.close();
+    }
 
 
 
     public void run() {
-        while (true) {
+        while (isRunning) {
             try {
 
                 byte[] buf = new byte[1024];
@@ -96,7 +114,11 @@ public class UDPReceiver extends Thread {
                     }
                 }
             } catch (IOException e) {
-                LOGGER.error("Receive error: " + e.getMessage());
+                if (isRunning = false) {
+                    LOGGER.info("Closed UDP server");
+                } else {
+                    LOGGER.error("Receive error: " + e.getMessage());
+                }
             }
         }
     }

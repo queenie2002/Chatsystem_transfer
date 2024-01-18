@@ -11,15 +11,6 @@ public class View implements ContactList.Observer {
         ContactList.getInstance().addObserver(view);
     }
 
-    void displayContactList() {
-        System.out.println();
-        System.out.println("CONTACT LIST:");
-        for (User user : ContactList.getInstance().getContactList()) {
-            System.out.println("  " + user);
-        }
-        System.out.println();
-    }
-
     @Override
     public void newContactAdded(User user) {
         /*
@@ -32,7 +23,6 @@ public class View implements ContactList.Observer {
     @Override
     public void nicknameChanged(User newUser, String previousNickname) {
         System.out.println("[VIEW] Contact changed: " + newUser.getNickname()+ " (was previously: " + previousNickname + ")");
-        displayContactList();
     }
 
 

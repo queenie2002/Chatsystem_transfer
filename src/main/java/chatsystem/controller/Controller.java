@@ -209,12 +209,17 @@ public class Controller {
 
 
     /** Disconnects us and closes the app
-     * Sets my status to false and warns other that I am disconnected
+     * Sets my status to false
+     * Warns other that I am disconnected
+     * Closes the database connection
+     * Closes UDP server
      * Closes the given frame
      * */
     public static void toDisconnect(JFrame frame) throws IOException {
         sendDisconnect(me);
         me.setStatus(false);
+        DatabaseMethods.closeConnection();
+        UDPReceiver.stopServer();
         System.out.println("am supposed to close app after--------------");
         frame.dispose();
         System.exit(0);
@@ -250,6 +255,8 @@ public class Controller {
     }
 
 
+
+
     /** Login
      * Checks login information
      * If it's me:
@@ -281,19 +288,25 @@ public class Controller {
         }
     }
 
-
-    public static void registerUser(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException {
+    /** Register
+     * If the user didn't input a nickname or password : tells them to choose one.
+     * If the nickname has already been taken : tells the user to choose another one
+     * Else:
+     * We keep our information in the database in table Me
+     * Send a I Am Connected message so the people connected can add us to their database
+     * Go to HomeTab
+     * */
+    public static void registerFunction(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException {
         if (nicknameInfo.isEmpty()) {
             new PopUpTab("Nickname can't be empty. Please choose one.");
         } else if (passwordInfo.isEmpty()) {
             new PopUpTab("Password can't be empty. Please choose one.");
         } else {
 
-
             me = new User(nicknameInfo, firstNameInfo, lastNameInfo, birthdayInfo, passwordInfo, true, me.getIpAddress());
-
-
             ContactList instance = ContactList.getInstance();
+
+
             if (instance.existsContactWithNickname(nicknameInfo)) { //if someone already has nickname
                 new PopUpTab("Nickname already taken. Please choose another one");
             } else { //if unique i go to next tab and tell people i am connected
@@ -305,11 +318,14 @@ public class Controller {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-
                 frame.dispose();
             }
         }
     }
+
+
+
+
 
 
 

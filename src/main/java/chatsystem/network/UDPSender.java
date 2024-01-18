@@ -7,12 +7,6 @@ import java.net.*;
 public class UDPSender {
     private static DatagramSocket sendingSocket;
 
-    //A FAIRE
-    public static void closeSocket(DatagramSocket sendingSocket) {
-        if (sendingSocket != null && !sendingSocket.isClosed()) {
-            sendingSocket.close();
-        }
-    }
 
     /**Sends a UDP message to given address and port**/
     public static void send (String message, InetAddress receiverAddress, int port) throws IOException {

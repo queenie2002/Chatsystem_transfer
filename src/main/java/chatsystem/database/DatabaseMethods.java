@@ -14,16 +14,18 @@ could close resources
 deletecontact
  */
 
-
+/** Methods to use database */
 public class DatabaseMethods {
 
+    //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
+    //OUR CONNECTION
     private static Connection connection;
 
 
 
-    /** We start the connection and create users' table */
+    /** We start the connection, create our database and create users' and me table */
     public static void startConnection(User me) throws SQLException {
         String ipAddress = me.getIpAddress().getHostAddress().replace(".","_"); //we replace . by _
         String DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
@@ -33,6 +35,35 @@ public class DatabaseMethods {
         createUsersTable();
         createMeTable();
     }
+
+    /** We close the connection */
+    public static void closeConnection()  {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Connection closed successfully.");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Couldn't close the database");
+            throw new RuntimeException(e);
+        }
+        LOGGER.info("Closed the database");
+
+    }
+
+
+
+    /** Replaces the . in an IP Address into _ to name tables in database */
+    private static String convertIPAddressForDatabase(String ipAddress) {
+        return ipAddress.replace(".","_");
+    }
+
+
+
+
+
+
+    //CHECKS IF SOMETHING EXISTS
 
     /** Checks if table exists in database */
     private static boolean doesTableExist(String tableName) throws SQLException {
@@ -73,6 +104,7 @@ public class DatabaseMethods {
         }
     }
 
+    /** Checks if I am already in the database */
     public static boolean doesMeExist() throws SQLException {
         String sql = "SELECT * FROM me";
 
@@ -91,11 +123,11 @@ public class DatabaseMethods {
 
 
 
-    /** Replaces the . in an IP Address into _ to name tables in database */
-    private static String convertIPAddressForDatabase(String ipAddress) {
-        return ipAddress.replace(".","_");
-    }
 
+
+
+
+    //CREATE TABLES
 
     /** Creates the users table in database */
     private static void createUsersTable() throws SQLException {
@@ -163,6 +195,10 @@ public class DatabaseMethods {
 
 
 
+
+
+
+    //ADDS SOMETHING TO TABLE
 
     /** Adds a user and creates an empty specific Messages table for that user. If user already added, it updates the user */
     public static void addUser(User user) throws SQLException {
@@ -249,8 +285,6 @@ public class DatabaseMethods {
                 preparedStatement.executeUpdate();
 
                 LOGGER.info("Message added to database");
-
-
             }
             catch (SQLException e){
                 LOGGER.error("Couldn't add message to database");
@@ -290,6 +324,8 @@ public class DatabaseMethods {
 
 
 
+
+    //GET SOMETHING FROM TABLE
 
     /** Get user from database */
     public static User getUser(String nickname) throws SQLException, UnknownHostException {
@@ -333,33 +369,6 @@ public class DatabaseMethods {
         return user;
     }
 
-    /** Load users list from database */
-    public static void loadUserList() throws UnknownHostException, SQLException {
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Users")) {
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-
-                    String nickname = resultSet.getString("nickname");
-                    String ipAddress = resultSet.getString("ipAddress");
-                    boolean status = false;
-                    if (resultSet.getInt("status") == 0) {
-                        status = false;
-                    } else if (resultSet.getInt("status") == 1) {
-                        status = true;
-                    }
-                    Controller.changeStatus(nickname, InetAddress.getByName(ipAddress.substring(1)), status);
-
-                }
-            } catch (SQLException e) {
-                LOGGER.error("Couldn't get users list due to SQLException");
-                throw new SQLException();
-            }
-        }
-    }
-
-
     /** Get messages from user from database */
     public static ArrayList<TCPMessage> getMessagesList(String nickname) throws SQLException, UnknownHostException {
 
@@ -401,7 +410,6 @@ public class DatabaseMethods {
     /** Get me from database */
     public static User getMe() throws UnknownHostException, SQLException {
 
-
         User user = new User();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Me")) {
@@ -432,5 +440,33 @@ public class DatabaseMethods {
 
         return user;
     }
+
+
+
+
+
+    /** Load users list from database into Contact List */
+    public static void loadUserList() throws UnknownHostException, SQLException {
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Users")) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+
+                    String nickname = resultSet.getString("nickname");
+                    String ipAddress = resultSet.getString("ipAddress");
+                    boolean status = resultSet.getInt("status") == 1;
+                    Controller.changeStatus(nickname, InetAddress.getByName(ipAddress.substring(1)), status);
+
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Couldn't get users list due to SQLException");
+                throw new SQLException();
+            }
+        }
+    }
+
+
+
 
 }

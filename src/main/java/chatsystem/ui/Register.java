@@ -18,7 +18,7 @@ public class Register {
     private JPasswordField password;
 
     public interface Observer {
-        void registerUser(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException;
+        void registerFunction(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException;
         }
 
     List<Register.Observer> observers = new ArrayList<>();
@@ -35,7 +35,7 @@ public class Register {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        addObserver(Controller::registerUser);
+        addObserver(Controller::registerFunction);
 
 
 
@@ -56,7 +56,7 @@ public class Register {
 
                 for (Register.Observer obs : observers) {
                     try {
-                        obs.registerUser(nicknameInfo, firstNameInfo,lastNameInfo,birthdayInfo, String.valueOf(passwordInfo),frame);
+                        obs.registerFunction(nicknameInfo, firstNameInfo,lastNameInfo,birthdayInfo, String.valueOf(passwordInfo),frame);
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
