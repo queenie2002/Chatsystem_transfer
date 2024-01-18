@@ -22,26 +22,27 @@ public interface MyObserver {
     // ---------------------------UDP SERVER-------------------------//
 
     /** Method that is called each time a message is received*/
-    void handle(UDPMessage received);
+    void handle(UDPMessage received) throws RuntimeException;
 
 
 
     // ---------------------------VIEW-------------------------//
 
+    /** Method that is called when we're trying to close the app */
     void toCloseApp(JFrame frame);
-    void toDisconnect(JFrame frame) throws IOException ;
-
-    void canRegister(JFrame frame)throws SQLException, IOException;
-    void canLogin(JFrame frame) throws SQLException ;
+    /** Method that is called when we're trying to close the app and to disconnect as well*/
+    void toDisconnect(JFrame frame, User me) throws IOException ;
 
 
-    void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException;
+    /** Method that is called when we're trying to see if we can register */
+    void canRegister(JFrame frame) throws IOException;
+    /** Method that is called when we're trying to see if we can login */
+    void canLogin(JFrame frame) ;
+
+    /** Method that is called when we're trying to register */
     void registerFunction(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException;
-
-
-
-
-
+    /** Method that is called when we're trying to login */
+    void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException;
 
 
 

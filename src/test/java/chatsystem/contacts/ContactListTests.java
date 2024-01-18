@@ -1,7 +1,6 @@
 package chatsystem.contacts;
 
 import chatsystem.database.DatabaseMethods;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +62,7 @@ public class ContactListTests {
     }
 
     @Test
-    void updateContactTest() throws SQLException, ContactAlreadyExists {
+    void updateContactTest() throws SQLException, ContactAlreadyExists, ContactDoesntExist {
 
         assertThrows(() -> contacts.updateContact(alice));
 
@@ -79,21 +78,25 @@ public class ContactListTests {
 
 
     @Test
-    void deleteContactTest() throws SQLException, ContactAlreadyExists {
+    void deleteContactTest() throws SQLException, ContactAlreadyExists, ContactDoesntExist {
 
+        assert contacts.isEmptyContactList();
         assertThrows(() -> contacts.deleteContact("alice"));
 
         contacts.addContact(alice);
         assert contacts.existsContact("alice");
+        assert !contacts.isEmptyContactList();
 
         contacts.deleteContact("alice");
         assertThrows(() ->  contacts.existsContact("alice"));
+
+        assert contacts.isEmptyContactList();
     }
 
 
 
     @Test
-    void getContactTest() throws SQLException, ContactAlreadyExists {
+    void getContactTest() throws SQLException, ContactAlreadyExists, ContactDoesntExist {
 
         assertThrows(() -> contacts.getContact("alice"));
 
@@ -114,6 +117,17 @@ public class ContactListTests {
         assert contacts.existsContact("alice");
 
     }
+
+
+    @Test
+    void emptyContactListTest() throws SQLException, ContactAlreadyExists {
+
+        assert contacts.isEmptyContactList();
+        contacts.addContact(alice);
+        assert contacts.existsContact("alice");
+        assert !contacts.isEmptyContactList();
+    }
+
 
 
 

@@ -13,8 +13,6 @@ public class User{
     private String password;
     private Boolean status;                         //if disconnected = false, connected = true
     private InetAddress ipAddress;
-    private int idDatabase;
-
 
     //CONSTRUCTORS
     public User (String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) {
@@ -43,8 +41,6 @@ public class User{
     public String getPassword (){ return this.password;}
     public Boolean getStatus (){ return this.status;}
     public InetAddress getIpAddress() { return this.ipAddress; }
-    public int getIdDatabase() { return this.idDatabase; }
-
 
 
 
@@ -58,6 +54,5 @@ public class User{
     public void setPassword (String password) { this.password=password;}
     public void setStatus (Boolean status) { this.status=status;}
     public void setIpAddress(InetAddress ipAddress) { this.ipAddress=ipAddress; }
-    public void setIdDatabase(int idDatabase) { this.idDatabase = idDatabase; }
 
 }

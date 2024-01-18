@@ -86,7 +86,7 @@ public class Controller implements MyObserver {
     // ---------------------------RECEIVE UDP MESSAGES-------------------------//
 
     /** Extract information from a pattern */
-    private static String[] extractInfoFromPattern(String inputString) {
+    private static String[] extractInfoFromPattern(String inputString) throws RuntimeException {
         List<String> patternList = List.of(
                 "TO_CHOOSE_NICKNAME:",
                 "IAMCONNECTED: nickname: (\\S+)",
@@ -127,7 +127,7 @@ public class Controller implements MyObserver {
         }
 
         if (!matchesAnyPattern) {
-            LOGGER.error("String does not match any pattern in the list.");
+            throw new RuntimeException("String does not match any pattern in the list.");
         }
         return null;
     }
@@ -135,7 +135,7 @@ public class Controller implements MyObserver {
 
     /** Gets a UDP message, checks what kind of message it is and applies the correct method */
     @Override
-    public void handle(UDPMessage message) {
+    public void handle(UDPMessage message) throws RuntimeException{
 
         String[] res = extractInfoFromPattern(message.content());
 
@@ -200,10 +200,14 @@ public class Controller implements MyObserver {
                 instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
             }
         } catch (ContactAlreadyExists | SQLException e) {
-            //if we know him, we change his status
-            User user = instance.getContact(nickname);
-            user.setStatus(status);
-            instance.updateContact(user);
+            try {
+                //if we know him, we change his status
+                User user = instance.getContact(nickname);
+                user.setStatus(status);
+                instance.updateContact(user);
+            } catch (ContactDoesntExist ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -214,6 +218,7 @@ public class Controller implements MyObserver {
 
     // ---------------------------DATABASE-------------------------//
 
+    /** Adds a user to database*/
     @Override
     public void newContactAdded(User user) throws SQLException {
         DatabaseMethods.addUser(user);
@@ -238,7 +243,7 @@ public class Controller implements MyObserver {
         UDPReceiver.stopServer();
         LOGGER.info("Closed app");
         frame.dispose();
-        System.exit(0);
+        //System.exit(0);
     }
 
     /** Disconnects us and closes the app
@@ -246,7 +251,7 @@ public class Controller implements MyObserver {
      * Warns other that I am disconnected
      * */
     @Override
-    public void toDisconnect(JFrame frame) throws IOException {
+    public void toDisconnect(JFrame frame, User me) throws IOException {
         sendDisconnect(me);
         me.setStatus(false);
         //close tcp sessions
@@ -260,7 +265,7 @@ public class Controller implements MyObserver {
      * Else, sends a To Choose Nickname message to get list of connected users and opens Register tab.
      * */
     @Override
-    public void canRegister(JFrame frame) throws SQLException, IOException {
+    public void canRegister(JFrame frame) throws IOException {
         if (DatabaseMethods.doesMeExist()) {
             new PopUpTab("You already registered. Please Login.");
         } else {
@@ -276,7 +281,7 @@ public class Controller implements MyObserver {
      * Else, opens Login tab.
      * */
     @Override
-    public void canLogin(JFrame frame) throws SQLException {
+    public void canLogin(JFrame frame) {
         if (!DatabaseMethods.doesMeExist()) {
             new PopUpTab("You haven't registered yet. Please Register.");
         } else {
