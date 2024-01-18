@@ -1,8 +1,9 @@
 package chatsystem.network;
 
 import chatsystem.MainClass;
-import org.apache.logging.log4j.*;
+import chatsystem.observers.MyObserver;
 
+import org.apache.logging.log4j.*;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -10,16 +11,15 @@ import java.util.*;
 /** UDP server that (once started) listens indefinitely on a given port*/
 public class UDPReceiver extends Thread {
 
+
+    //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
-    /** Interface that observers of the UDP server must implement*/
-    public interface Observer {
-        /** Method that is called each time a message is received*/
-        void handle(UDPMessage received);
-    }
-    private final List<Observer> observers = new ArrayList<>();
+
+    //OBSERVERS
+    private final List<MyObserver> observers = new ArrayList<>();
     /** Add a new observer to the class, for which the handle method will be called for each incoming message */
-    public void addObserver (Observer obs) {
+    public void addObserver (MyObserver obs) {
         synchronized (this.observers) {
             this.observers.add(obs);
         }
@@ -75,6 +75,8 @@ public class UDPReceiver extends Thread {
     public static void stopServer() {
         isRunning = false;
         receivingSocket.close();
+        LOGGER.info("Closed server.");
+
     }
 
 
@@ -108,15 +110,13 @@ public class UDPReceiver extends Thread {
 
                 if (!didISendThis) {
                     synchronized (this.observers) {
-                        for (Observer obs : this.observers) {
+                        for (MyObserver obs : this.observers) {
                             obs.handle(message);
                         }
                     }
                 }
             } catch (IOException e) {
-                if (isRunning = false) {
-                    LOGGER.info("Closed UDP server");
-                } else {
+                if (isRunning) {
                     LOGGER.error("Receive error: " + e.getMessage());
                 }
             }

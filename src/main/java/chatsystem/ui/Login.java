@@ -1,32 +1,30 @@
 package chatsystem.ui;
 
-import chatsystem.controller.Controller;
+import chatsystem.MainClass;
+import chatsystem.observers.MyObserver;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
+/** Login Tab */
 public class Login {
 
     private JTextField jtField = new JTextField();
     private JPasswordField jpasswordField = new JPasswordField();
 
 
-
-    public interface Observer {
-        void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException;
-    }
-    List<Login.Observer> observers = new ArrayList<>();
-    public synchronized void addObserver(Login.Observer obs) {
+    //OBSERVERS
+    ArrayList<MyObserver> observers = new ArrayList<>();
+    public synchronized void addObserver(MyObserver obs) {
         this.observers.add(obs);
     }
-
 
 
 
@@ -36,11 +34,13 @@ public class Login {
         // Create and set up the window
         JFrame frame = new JFrame("Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 600);
+        frame.setLocationRelativeTo(null); //center the JFrame on the screen
+        frame.setLayout(new BorderLayout());
 
-        addObserver(Controller::loginFunction);
 
 
-        JButton button_login = new JButton("login");
+        JButton button_login = new JButton("Login");
         button_login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -49,7 +49,7 @@ public class Login {
                 String passwordInput = getPassword();
 
 
-                for (Login.Observer obs : observers) {
+                for (MyObserver obs : observers) {
                     try {
                         obs.loginFunction(nicknameInput,  passwordInput, frame);
                     } catch (UnknownHostException | SQLException ex) {
@@ -61,26 +61,30 @@ public class Login {
 
 
         JPanel panel = new JPanel(new FlowLayout());
-        JLabel emptyLabel = new JLabel("Login", JLabel.CENTER);
-        emptyLabel.setPreferredSize(new Dimension(175, 100));
-        panel.add(emptyLabel);
+        JLabel loginLabel = new JLabel("Login", JLabel.CENTER);
+        loginLabel.setPreferredSize(new Dimension(175, 100));
+        panel.add(loginLabel);
 
         JPanel panel1 = new JPanel(new GridLayout(1, 4));
         panel1.add(new JLabel("Nickname"));
         panel1.add(jtField);
         panel1.add(new JLabel("Password"));
         panel1.add(jpasswordField);
+        panel1.setSize(new Dimension(400, 400));
 
-
-
-
+        JPanel biggerPanel = new JPanel(new BorderLayout());
+        Border marginBorder = BorderFactory.createEmptyBorder(200, 70, 200, 100);
+        panel1.setBorder(marginBorder);
+        biggerPanel.add(panel1);
 
         //Redirection Panel
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                for (MyObserver obs : observers) {
+                    obs.toCloseApp(frame);
+                }
             }
         });
 
@@ -89,13 +93,16 @@ public class Login {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new Beginning();
+                    Beginning beginning = new Beginning();
+                    beginning.addObserver(MainClass.controller);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
                 frame.dispose();
             }
         });
+
+
 
         // Create layout
         JPanel panel2 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
@@ -105,21 +112,11 @@ public class Login {
         panel2.setSize(600, 100);
 
 
-        JPanel generalPanel = new JPanel(new GridLayout(3, 1));
-        generalPanel.add(panel);
-        generalPanel.add(panel1);
-        generalPanel.add(panel2);
+        frame.add(panel, BorderLayout.PAGE_START);
+        frame.add(biggerPanel, BorderLayout.CENTER);
+        frame.add(panel2, BorderLayout.PAGE_END);
 
 
-
-
-        frame.add(generalPanel);
-
-        //to make the size of the frame the size of its content
-        frame.pack();
-        frame.setLocationRelativeTo(null); //center the JFrame on the screen
-
-        // Display the window.
         frame.setVisible(true);
     }
 

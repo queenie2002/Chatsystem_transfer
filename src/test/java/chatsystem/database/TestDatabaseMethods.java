@@ -1,4 +1,4 @@
-package database;
+package chatsystem.database;
 
 class TestDatabaseMethods {
 /*

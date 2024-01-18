@@ -76,7 +76,7 @@ public class MainClass {
         }
     }
 
-    MyObserver controller = new Controller();
+    public static MyObserver controller = new Controller();
 
 
 
@@ -84,9 +84,6 @@ public class MainClass {
 
         Configurator.setRootLevel(Level.INFO);
         LOGGER.info("Starting ChatSystem application");
-
-        // Initialize View
-        View.initialize();
 
         MainClass mainclass = new MainClass();
 
@@ -109,13 +106,15 @@ public class MainClass {
         try {
             udpReceiver = new UDPReceiver();
 
-
-            udpReceiver.addObserver(Controller::handle);
+            udpReceiver.addObserver(controller);
 
 
 
             udpReceiver.start();
-            new Beginning();
+
+            Beginning beginning = new Beginning();
+            beginning.addObserver(controller);
+
         } catch (SocketException e) {
             LOGGER.error("Could not start UDP server: " + e.getMessage());
             System.exit(1);

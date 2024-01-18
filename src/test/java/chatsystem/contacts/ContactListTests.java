@@ -34,33 +34,87 @@ public class ContactListTests {
 
 
 
-    private User alice = new User("alice", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
-    private User bob = new User("bob", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
+    private User alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true, InetAddress.getLoopbackAddress());
+    private User bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true, InetAddress.getLoopbackAddress());
 
     @Test
     void contactAdditionTest() throws SQLException, ContactAlreadyExists {
 
-        assert !contacts.existsContactWithNickname("alice");
+        assert !contacts.existsContact("alice");
         contacts.addContact(alice);
-        assert contacts.existsContactWithNickname("alice");
-        assert !contacts.existsContactWithNickname("bob");
+        assert contacts.existsContact("alice");
+        assert !contacts.existsContact("bob");
 
-        assert !contacts.existsContactWithNickname("bob");
+        assert !contacts.existsContact("bob");
         contacts.addContact(bob);
-        assert contacts.existsContactWithNickname("bob");
-        assert contacts.existsContactWithNickname("alice");
+        assert contacts.existsContact("bob");
+        assert contacts.existsContact("alice");
     }
 
     @Test
     void contactDuplicationTest() throws SQLException, ContactAlreadyExists {
 
         contacts.addContact(alice);
-        assert contacts.existsContactWithNickname("alice");
+        assert contacts.existsContact("alice");
 
         assertThrows(() -> contacts.addContact(alice));
         assertThrows(() -> contacts.addContact(alice));
 
     }
+
+    @Test
+    void updateContactTest() throws SQLException, ContactAlreadyExists {
+
+        assertThrows(() -> contacts.updateContact(alice));
+
+        contacts.addContact(alice);
+        assert contacts.existsContact("alice");
+
+        alice.setPassword("another one");
+        contacts.updateContact(alice);
+        assert contacts.existsContact("alice");
+        assert alice.getPassword().equals("another one");
+        assert !alice.getPassword().equals("pwdAlice");
+    }
+
+
+    @Test
+    void deleteContactTest() throws SQLException, ContactAlreadyExists {
+
+        assertThrows(() -> contacts.deleteContact("alice"));
+
+        contacts.addContact(alice);
+        assert contacts.existsContact("alice");
+
+        contacts.deleteContact("alice");
+        assertThrows(() ->  contacts.existsContact("alice"));
+    }
+
+
+
+    @Test
+    void getContactTest() throws SQLException, ContactAlreadyExists {
+
+        assertThrows(() -> contacts.getContact("alice"));
+
+        contacts.addContact(alice);
+        assert contacts.existsContact("alice");
+
+        User test = contacts.getContact("alice");
+        assert test.getFirstName().equals("firstAlice");
+    }
+
+
+    @Test
+    void existsContactTest() throws SQLException, ContactAlreadyExists {
+
+        assert !contacts.existsContact("alice");
+
+        contacts.addContact(alice);
+        assert contacts.existsContact("alice");
+
+    }
+
 
 
 }

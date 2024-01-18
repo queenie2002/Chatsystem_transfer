@@ -1,18 +1,15 @@
 package chatsystem.database;
 
-import chatsystem.controller.Controller;
 import chatsystem.network.TCPMessage;
 import chatsystem.contacts.User;
 import chatsystem.MainClass;
+import chatsystem.observers.MyObserver;
 import org.apache.logging.log4j.*;
+
 import java.net.*;
 import java.sql.*;
 import java.util.ArrayList;
-
-/*
-could close resources
-deletecontact
- */
+import java.util.List;
 
 /** Methods to use database */
 public class DatabaseMethods {
@@ -20,10 +17,21 @@ public class DatabaseMethods {
     //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
+
     //OUR CONNECTION
     private static Connection connection;
 
 
+    //OBSERVERS
+    static List<MyObserver> observers = new ArrayList<>();
+    public void addObserver(MyObserver obs) {
+        observers.add(obs);
+    }
+
+
+
+
+    //HANDLES CONNECTION
 
     /** We start the connection, create our database and create users' and me table */
     public static void startConnection(User me) throws SQLException {
@@ -41,13 +49,12 @@ public class DatabaseMethods {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("Connection closed successfully.");
             }
         } catch (SQLException e) {
-            LOGGER.error("Couldn't close the database");
+            LOGGER.error("Couldn't close the database.");
             throw new RuntimeException(e);
         }
-        LOGGER.info("Closed the database");
+        LOGGER.info("Closed the database.");
 
     }
 
@@ -229,7 +236,7 @@ public class DatabaseMethods {
             preparedStatement.setString(7, user.getPassword());
             preparedStatement.executeUpdate();
 
-            LOGGER.info("User added to database " + user.getNickname());
+            LOGGER.info("User added/updated to database " + user.getNickname());
 
         } catch (SQLException e) {
             LOGGER.error("User couldn't be added to database " + user.getNickname());
@@ -456,8 +463,11 @@ public class DatabaseMethods {
                     String nickname = resultSet.getString("nickname");
                     String ipAddress = resultSet.getString("ipAddress");
                     boolean status = resultSet.getInt("status") == 1;
-                    Controller.changeStatus(nickname, InetAddress.getByName(ipAddress.substring(1)), status);
+                    User user = new User(nickname, "", "", "", "", status, InetAddress.getByName(ipAddress.substring(1)));
 
+                    for (MyObserver obs : observers) {
+                        obs.newContactAdded(user);
+                    }
                 }
             } catch (SQLException e) {
                 LOGGER.error("Couldn't get users list due to SQLException");
@@ -465,7 +475,6 @@ public class DatabaseMethods {
             }
         }
     }
-
 
 
 

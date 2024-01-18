@@ -1,6 +1,7 @@
 package chatsystem.ui;
 
-import chatsystem.controller.Controller;
+import chatsystem.MainClass;
+import chatsystem.observers.MyObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Register {
@@ -17,30 +17,37 @@ public class Register {
     private JTextField firstName, lastName, nickname, birthday;
     private JPasswordField password;
 
-    public interface Observer {
-        void registerFunction(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException;
-        }
 
-    List<Register.Observer> observers = new ArrayList<>();
-    public synchronized void addObserver(Register.Observer obs) {
+
+    //OBSERVERS
+    ArrayList<MyObserver> observers = new ArrayList<>();
+    public synchronized void addObserver(MyObserver obs) {
         this.observers.add(obs);
     }
 
 
 
-    public Register() throws IOException {
+    public Register() {
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-        addObserver(Controller::registerFunction);
-
-
+        frame.setSize(600, 600);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new BorderLayout());
 
 
 
+        JPanel panel = new JPanel(new FlowLayout());
+        JLabel loginLabel = new JLabel("Login", JLabel.CENTER);
+        loginLabel.setPreferredSize(new Dimension(175, 100));
+        panel.add(loginLabel);
+
+
+
+
+
+        JPanel panel1 = new JPanel(new GridLayout(5, 2)); //arranges the components in a grid
 
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(new ActionListener() {
@@ -54,7 +61,7 @@ public class Register {
                 char[] passwordInfo = password.getPassword();
 
 
-                for (Register.Observer obs : observers) {
+                for (MyObserver obs : observers) {
                     try {
                         obs.registerFunction(nicknameInfo, firstNameInfo,lastNameInfo,birthdayInfo, String.valueOf(passwordInfo),frame);
                     } catch (SQLException ex) {
@@ -64,38 +71,41 @@ public class Register {
             }
         });
 
-
-
         firstName = new JTextField(20);
         lastName = new JTextField(20);
         nickname = new JTextField(20);
         birthday = new JTextField(20);
         password = new JPasswordField(20);
 
+        panel1.add(new JLabel("First Name:"));
+        panel1.add(firstName);
+        panel1.add(new JLabel("Last Name:"));
+        panel1.add(lastName);
+        panel1.add(new JLabel("Nickname:"));
+        panel1.add(nickname);
+        panel1.add(new JLabel("Birthday: (YYYY-MM-DD)"));
+        panel1.add(birthday);
+        panel1.add(new JLabel("Password:"));
+        panel1.add(password);
 
-        // Create layout
-        JPanel panel = new JPanel(new GridLayout(5, 2)); //arranges the components in a grid
-        panel.add(new JLabel("First Name:"));
-        panel.add(firstName);
-        panel.add(new JLabel("Last Name:"));
-        panel.add(lastName);
-        panel.add(new JLabel("Nickname:"));
-        panel.add(nickname);
-        panel.add(new JLabel("Birthday: (YYYY-MM-DD)"));
-        panel.add(birthday);
-        panel.add(new JLabel("Password:"));
-        panel.add(password);
+
+
 
 
 
         //Redirection Panel
+        JPanel panel2 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                for (MyObserver obs : observers) {
+                    obs.toCloseApp(frame);
+                }
             }
         });
+
 
         JButton previousButton = new JButton("Previous");
         previousButton.addActionListener(new ActionListener() {
@@ -103,6 +113,7 @@ public class Register {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Beginning beginning = new Beginning();
+                    beginning.addObserver(MainClass.controller);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -110,34 +121,17 @@ public class Register {
             }
         });
 
-        // Create layout
-        JPanel panel1 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
-        panel1.add(closeButton);
-        panel1.add(previousButton);
-        panel1.add(registerButton);
-        panel1.setSize(600, 100);
+        panel2.add(closeButton);
+        panel2.add(previousButton);
+        panel2.add(registerButton);
+        panel2.setSize(600, 100);
 
 
 
-
-
-
-
-
-
-
-
-
-        // Set up the frame
-        frame.setSize(600, 600);
-        frame.setLocationRelativeTo(null); //center the JFrame on the screen
-        frame.setLayout(new FlowLayout());
-        frame.add(panel);
-        frame.add(panel1);
-
-        // Display the frame
+        frame.add(panel, BorderLayout.PAGE_START);
+        frame.add(panel1, BorderLayout.CENTER);
+        frame.add(panel2, BorderLayout.PAGE_END);
         frame.setVisible(true);
-
 
     }
 
