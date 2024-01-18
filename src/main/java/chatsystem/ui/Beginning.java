@@ -1,8 +1,9 @@
 package chatsystem.ui;
 
+import chatsystem.contacts.ContactList;
+import chatsystem.contacts.User;
 import chatsystem.controller.Controller;
-import chatsystem.network.UDPSender;
-import chatsystem.network.UDPReceiver;
+import chatsystem.database.DatabaseMethods;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,15 +11,54 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Beginning extends JFrame {
 
-    //constructor: sets up the basic properties of the window like the title
+
+
+    public interface Observer {
+        void toDisconnect(JFrame frame) throws IOException;
+        void canRegister(JFrame frame);
+        void canLogin(JFrame frame);
+
+    }
+    List<Beginning.Observer> observers = new ArrayList<>();
+    public void addObserver(Beginning.Observer obs) {
+        this.observers.add(obs);
+    }
+
+
+
+
     public Beginning() throws IOException {
 
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        addObserver(new Beginning.Observer() {
+            @Override
+            public void toDisconnect(JFrame frame) throws IOException {
+
+            }
+
+            @Override
+            public void canRegister(JFrame frame) {
+
+            }
+
+            @Override
+            public void canLogin(JFrame frame) {
+
+            }
+
+        });
+
+
 
         JButton registerButton = new JButton("Register");
         JButton loginButton = new JButton("Login");
@@ -28,27 +68,23 @@ public class Beginning extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 try {
-                    Register register = new Register();
-                } catch (IOException ex) {
+                    Controller.canRegister(frame);
+                } catch (SQLException | IOException ex) {
                     throw new RuntimeException(ex);
                 }
-
-                frame.dispose();
             }
         });
-
-
-
-
 
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Login login = new Login();
-                frame.dispose();
+                try {
+                    Controller.canLogin(frame);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -67,23 +103,21 @@ public class Beginning extends JFrame {
 
 
 
-
-
-
-
-
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Controller.toDisconnect();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                for (Beginning.Observer obs : observers) {
+                    try {
+                        obs.toDisconnect(frame);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
-                frame.dispose();
             }
         });
+
+
 
         // Create layout
         JPanel panel1 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid

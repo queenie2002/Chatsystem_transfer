@@ -3,7 +3,7 @@ package chatsystem.ui;
 import javax.swing.*;
 import java.awt.*;
 
-//this is a pop-up tab that shows a message
+/** A pop-up frame that shows a message */
 public class PopUpTab {
     public PopUpTab(String message) {
 
@@ -18,17 +18,15 @@ public class PopUpTab {
 
         //we create and set a label with the message
         JLabel messageLabel = new JLabel(message, JLabel.CENTER);
-        messageLabel.setPreferredSize(new Dimension(175, 100));
+        messageLabel.setPreferredSize(new Dimension(400, 70));
 
         JPanel panel = new JPanel(new FlowLayout());
         panel.add(messageLabel);
 
         //we add it to the frame
-        //frame.getContentPane().add(messageLabel, BorderLayout.PAGE_START);
         frame.add(panel);
         // Size of frame
         frame.pack();
-        //frame.setSize(200, 100);
         // Center the frame on the screen
         frame.setLocationRelativeTo(null);
         // Display the window.

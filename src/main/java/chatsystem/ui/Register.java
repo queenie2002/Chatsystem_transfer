@@ -1,69 +1,77 @@
 package chatsystem.ui;
 
 import chatsystem.controller.Controller;
-import chatsystem.database.DatabaseMethods;
-import chatsystem.network.UDPSender;
-import chatsystem.network.UDPReceiver;
-import chatsystem.contacts.ContactList;
-import chatsystem.MainClass;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-/*Reminders on swing
-* JLabel -> display area for text/images
-* JPanel -> component that serves as a container for other components
-* JButton -> button that performs an action when clicked on
-* BorderLayout -> places components in 5 areas : N,S,E,W, or center
-* FlowLayout -> places components in a row, sized at their preferred size. If the horizontal space is too small, the next available row is used
-* GridLayout -> places components in a grid of same size cells. Each component takes all available space in the cell
-* */
-
-/*TO DO
-when register button is clicked, open new window
-* */
 
 public class Register {
 
-    //JTextField used for text input
     private JTextField firstName, lastName, nickname, birthday;
-
-    //JPasswordField used for password input
     private JPasswordField password;
 
-    //constructor: sets up the basic properties of the window like the title
+    public interface Observer {
+        void registerUser(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException;
+        }
+
+    List<Register.Observer> observers = new ArrayList<>();
+    public synchronized void addObserver(Register.Observer obs) {
+        this.observers.add(obs);
+    }
+
+
+
     public Register() throws IOException {
-
-        Controller.sendToChooseNickname();
-
 
         // Create and set up the window
         JFrame frame = new JFrame("User Registration");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create components
+
+        addObserver(Controller::registerUser);
+
+
+
+
+
+
+        JButton registerButton = new JButton("Register");
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String firstNameInfo = firstName.getText();
+                String lastNameInfo = lastName.getText();
+                String nicknameInfo = nickname.getText();
+                String birthdayInfo = birthday.getText();
+                char[] passwordInfo = password.getPassword();
+
+
+                for (Register.Observer obs : observers) {
+                    try {
+                        obs.registerUser(nicknameInfo, firstNameInfo,lastNameInfo,birthdayInfo, String.valueOf(passwordInfo),frame);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        });
+
+
+
         firstName = new JTextField(20);
         lastName = new JTextField(20);
         nickname = new JTextField(20);
         birthday = new JTextField(20);
         password = new JPasswordField(20);
 
-        JButton registerButton = new JButton("Register");
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    registerUser(frame); //when the button is clicked it calls the registerUser method
-                } catch (IOException | SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
 
         // Create layout
         JPanel panel = new JPanel(new GridLayout(5, 2)); //arranges the components in a grid
@@ -85,11 +93,6 @@ public class Register {
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Controller.toDisconnect();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
                 frame.dispose();
             }
         });
@@ -138,41 +141,5 @@ public class Register {
 
     }
 
-    private void registerUser(Frame frame) throws IOException, SQLException {
 
-        //faut créer la database et l'initialiser
-
-
-        String firstName = this.firstName.getText();
-        String lastName = this.lastName.getText();
-        String nickname = this.nickname.getText();
-        String birthday = this.birthday.getText();
-        char[] password = this.password.getPassword();
-
-        MainClass.me.setFirstName(firstName);
-        MainClass.me.setLastName(lastName);
-        MainClass.me.setNickname(nickname);
-        MainClass.me.setBirthday(birthday);
-        MainClass.me.setPassword(String.valueOf(password));
-        MainClass.me.setStatus(true);
-
-
-        ContactList instance = ContactList.getInstance();
-        if (instance.existsContactWithNickname(nickname)) { //if someone already has nickname
-            PopUpTab popup1 = new PopUpTab("choose another nickname");
-        }
-        else { //if unique i go to next tab and tell people i am connected
-            HomeTab hometab = new HomeTab();
-            try {
-
-                DatabaseMethods.addMe(MainClass.me);
-                Controller.sendIAmConnected(MainClass.me);
-
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            frame.dispose();
-        }
-    }
 }

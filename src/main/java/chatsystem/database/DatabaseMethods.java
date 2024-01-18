@@ -1,5 +1,6 @@
 package chatsystem.database;
 
+import chatsystem.controller.Controller;
 import chatsystem.network.TCPMessage;
 import chatsystem.contacts.User;
 import chatsystem.MainClass;
@@ -10,8 +11,6 @@ import java.util.ArrayList;
 
 /*
 could close resources
-query
-update
 deletecontact
  */
 
@@ -73,6 +72,24 @@ public class DatabaseMethods {
             throw new SQLException();
         }
     }
+
+    public static boolean doesMeExist() throws SQLException {
+        String sql = "SELECT * FROM me";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                // If the result set has at least one row, the user exists
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("I am not in the database");
+            throw new SQLException();
+        }
+    }
+
+
 
     /** Replaces the . in an IP Address into _ to name tables in database */
     private static String convertIPAddressForDatabase(String ipAddress) {
@@ -203,6 +220,7 @@ public class DatabaseMethods {
         if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
             createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
         }
+
     }
 
     /** Adds a message to database */
@@ -313,8 +331,35 @@ public class DatabaseMethods {
         return user;
     }
 
+    /** Load users list from database */
+    public static void loadUserList() throws UnknownHostException, SQLException {
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Users")) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+
+                    String nickname = resultSet.getString("nickname");
+                    String ipAddress = resultSet.getString("ipAddress");
+                    boolean status = false;
+                    if (resultSet.getInt("status") == 0) {
+                        status = false;
+                    } else if (resultSet.getInt("status") == 1) {
+                        status = true;
+                    }
+                    Controller.changeStatus(nickname, InetAddress.getByName(ipAddress.substring(1)), status);
+
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Couldn't get users list due to SQLException");
+                throw new SQLException();
+            }
+        }
+    }
+
+
     /** Get messages from user from database */
-    public static ArrayList<TCPMessage> getMessages(String nickname) throws SQLException, UnknownHostException {
+    public static ArrayList<TCPMessage> getMessagesList(String nickname) throws SQLException, UnknownHostException {
 
         ArrayList<TCPMessage> myMessagesList = new ArrayList<TCPMessage>();
 

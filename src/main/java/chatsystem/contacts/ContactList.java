@@ -138,22 +138,25 @@ public class ContactList {
 
 
     public synchronized void printContactList() {
-        for (int i = 0; i < myContactList.size(); i++) {
-            printContact(myContactList.get(i));
+        for (User user : myContactList) {
+            printContact(user);
         }
     }
     public synchronized void printContact(User user) {
-        boolean found = false;
-        for (User aUser : myContactList) {
-            if (Objects.equals(aUser.getNickname(), user.getNickname())) {
-                System.out.println(" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
-                found = true;
-            }
+
+        //if it's me
+        if (user.getNickname().equals(MainClass.me.getNickname())) {
+            System.out.println(" nickname: "+user.getNickname()+" firstname: "+user.getFirstName()+" lastname: "+user.getLastName()+" birthday: "+user.getBirthday()+/*" password: "+user.getPassword()+*/" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
+
+        } else {
+            //if it's someone else
+            System.out.println(" nickname: "+user.getNickname()+" status: "+user.getStatus()+" ip address: "+user.getIpAddress());
 
         }
-        if (!found) {
-            LOGGER.error("Couldn't find user to print in ContactList " +  user.getNickname());
-        }
+
+
+
+
 
     }
 

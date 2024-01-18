@@ -180,7 +180,6 @@ public class MainClass {
 
 
     private void initializeDatabaseAndContactList() throws SQLException {
-    private void initializeDatabaseAndContactList() throws SQLException, UnknownHostException {
 
         // Start connection with the database
         DatabaseMethods.startConnection(me);
@@ -199,7 +198,7 @@ public class MainClass {
 
     }
 
-    public void checkOnlineContacts() {
+    private void checkOnlineContacts() {
         ArrayList<User> onlineUsers = ContactList.getInstance().getConnectedContactsList();
 
         if (onlineUsers.isEmpty()) {
@@ -208,7 +207,6 @@ public class MainClass {
             System.out.println("Online Contacts:");
             for (User user : onlineUsers) {
                 System.out.println("Nickname: " + user.getNickname() + ", IP Address: " + user.getIpAddress());
-                // Additional logic if needed
             }
         }
     }

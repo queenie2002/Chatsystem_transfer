@@ -52,12 +52,10 @@ public class HomeTab {
 
 package chatsystem.ui;
 
-import chatsystem.contacts.ContactList;
-import chatsystem.contacts.User;
-import chatsystem.network.UDPSender;
-import chatsystem.network.UDPReceiver;
+import chatsystem.contacts.*;
 import chatsystem.network.TCPClient;
 import chatsystem.MainClass;
+import chatsystem.observers.MyObserver;
 
 import java.awt.*;
 import javax.swing.*;
@@ -68,8 +66,18 @@ import java.util.ArrayList;
 
 public class HomeTab {
 
+    private ArrayList<MyObserver> observers = new ArrayList<>();
+
+    public void addObserver(MyObserver observer) {
+        observers.add(observer);
+    }
+
+
 
     public HomeTab() {
+        //addObserver(() -> {showOnlineContacts();});
+        //addObserver(() -> {showAllContacts();});
+
 
         // Create and set up the window
         JFrame frame = new JFrame("Home");
@@ -80,16 +88,25 @@ public class HomeTab {
         button_startChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                /*
+                for (MyObserver observer : observers) {
+                    observer.showOnlineContacts();
+                }
+                */
+
+
                 showOnlineContacts();
                 frame.dispose();
             }
         });
 
-        JButton button_seeHistory = new JButton("See History");
+        JButton button_seeHistory = new JButton("See Past Chats");
         button_seeHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to see history
+
+                showAllContacts();
                 frame.dispose();
             }
         });
@@ -125,6 +142,51 @@ public class HomeTab {
         contactFrame.setLocationRelativeTo(null); // Center the JFrame on the screen
         contactFrame.setVisible(true);
     }
+
+    private void showContact(ArrayList<User> userList, String titleFrame) {
+
+        JFrame contactFrame = new JFrame(titleFrame);
+        contactFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        for (User user : userList) {
+            JButton userButton = new JButton(user.getNickname());
+            panel.add(userButton);
+        }
+
+        contactFrame.add(new JScrollPane(panel), BorderLayout.CENTER);
+        contactFrame.pack();
+        contactFrame.setLocationRelativeTo(null);
+        contactFrame.setVisible(true);
+    }
+
+    private void showOnlineContacts2() {
+        ArrayList<User> onlineUsers = ContactList.getInstance().getConnectedContactsList();
+        showContact(onlineUsers, "Online Contacts");
+
+        //doit lancer tcpsession avec tout le monde mais initialize window aue si on appuie sur  le bouton, connecter le bouton a initialize window
+        for (User user : onlineUsers) {
+            startTcpSession(user);
+        }
+    }
+
+    private void showAllContacts() {
+        ArrayList<User> allUsers = ContactList.getInstance().getContactList();
+        showContact(allUsers, "Chat History");
+
+
+        //doit ouvrir initializiechatwindow que si on appuie sur le bouton, et lance une tcpsession seulement sii status true
+        for (User user : allUsers) {
+            if (user.getStatus()) {
+
+                //startTcpSession(user);
+            }
+        }
+    }
+
+
 
     private void startTcpSession(User user) {
         System.out.println("startTCPSession with user : "+user);

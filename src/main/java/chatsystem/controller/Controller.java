@@ -6,9 +6,13 @@ import chatsystem.contacts.*;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
 import chatsystem.ui.*;
+
+
 import org.apache.logging.log4j.*;
 
-
+import javax.swing.*;
+import javax.xml.crypto.Data;
+import java.awt.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -44,34 +48,7 @@ public class Controller {
     }
 
 
-    public void loginFunction(String nicknameInput, String passwordInput) throws UnknownHostException, SQLException {
 
-        me = DatabaseMethods.getMe();
-
-        ContactList instance = ContactList.getInstance();
-
-        if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
-
-            me.setStatus(true);
-
-
-            instance.printContact(me);
-
-
-            try {
-                Controller.sendIAmConnected(me);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            HomeTab hometab = new HomeTab();
-            Login.frame.dispose();
-        }
-        else { //-----------------------------------------COMMENT FAIRE POUR TOURNER EN BOUCLE
-            PopUpTab popup = new PopUpTab("wrong login information try again");
-            System.out.println("error: wrong password and login");
-        }
-    }
 
 
 
@@ -187,14 +164,89 @@ public class Controller {
         LOGGER.info("SENT: Disconnect.");
     }
 
-    public static void toDisconnect() throws IOException {
-        //have to socket close for all contacts ??
+    public static void toDisconnect(JFrame frame) throws IOException {
         sendDisconnect(me);
         me.setStatus(false);
+
         System.out.println("am supposed to close app after--------------");
+        frame.dispose();
+        System.exit(0);
+    }
+
+    public static void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException {
+
+
+
+        me = DatabaseMethods.getMe();
+        //ContactList instance = ContactList.getInstance();
+
+        if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
+
+            me.setStatus(true);
+
+            DatabaseMethods.loadUserList();
+
+            try {
+                Controller.sendIAmConnectedAreYou(me);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            new HomeTab();
+            frame.dispose();
+        }
+        else {
+            new PopUpTab("Wrong Login information. Please try again");
+        }
+    }
+    public static void registerUser(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException {
+        if (nicknameInfo.isEmpty()) {
+            new PopUpTab("Nickname can't be empty. Please choose one.");
+        } else if (passwordInfo.isEmpty()) {
+            new PopUpTab("Password can't be empty. Please choose one.");
+        } else {
+
+
+            me = new User(nicknameInfo, firstNameInfo, lastNameInfo, birthdayInfo, passwordInfo, true, me.getIpAddress());
+
+
+            ContactList instance = ContactList.getInstance();
+            if (instance.existsContactWithNickname(nicknameInfo)) { //if someone already has nickname
+                new PopUpTab("Nickname already taken. Please choose another one");
+            } else { //if unique i go to next tab and tell people i am connected
+                new HomeTab();
+                try {
+                    DatabaseMethods.addMe(MainClass.me);
+                    Controller.sendIAmConnected(MainClass.me);
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                frame.dispose();
+            }
+        }
+    }
+
+    public static void canRegister(JFrame frame) throws SQLException, IOException {
+        if (DatabaseMethods.doesMeExist()) {
+            new PopUpTab("You already registered. Please Login.");
+        } else {
+            new Register();
+            Controller.sendToChooseNickname();
+            frame.dispose();
+        }
     }
 
 
+    public static void canLogin(JFrame frame) throws SQLException {
+        if (!DatabaseMethods.doesMeExist()) {
+            new PopUpTab("You haven't registered yet. Please Register.");
+        } else {
+            new Login();
+            frame.dispose();
+        }
+    }
 
 
 
