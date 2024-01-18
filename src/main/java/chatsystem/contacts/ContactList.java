@@ -3,10 +3,10 @@ package chatsystem.contacts;
 
 
 import chatsystem.MainClass;
+import chatsystem.observers.MyObserver;
 import org.apache.logging.log4j.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /** Our Contact List, we get it through an Instance */
@@ -16,14 +16,9 @@ public class ContactList {
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
 
-
     //OBSERVERS
-    public interface Observer {
-        void newContactAdded(User user) throws SQLException;
-        void nicknameChanged(User newUser, String previousNickname);
-    }
-    List<Observer> observers = new ArrayList<>();
-    public synchronized void addObserver(Observer obs) {
+    ArrayList<MyObserver> observers = new ArrayList<>();
+    public synchronized void addObserver(MyObserver obs) {
         this.observers.add(obs);
     }
 
@@ -78,7 +73,7 @@ public class ContactList {
         else {
             myContactList.add(user);
             LOGGER.info("Added user to myContactList " + nickname);
-            for (Observer obs : observers) {
+            for (MyObserver obs : observers) {
                 obs.newContactAdded(user);
             }
         }
@@ -100,7 +95,7 @@ public class ContactList {
             LOGGER.error("Couldn't find user in ContactList " + user.getNickname());
         }
 
-        for (Observer obs : observers) {
+        for (MyObserver obs : observers) {
             obs.newContactAdded(user);
         }
     }

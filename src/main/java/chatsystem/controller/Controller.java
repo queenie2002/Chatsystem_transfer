@@ -5,6 +5,7 @@ import static chatsystem.MainClass.me;
 import chatsystem.contacts.*;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
+import chatsystem.observers.MyObserver;
 import chatsystem.ui.*;
 
 
@@ -21,7 +22,7 @@ import java.util.regex.*;
  * Handles UDP messages sent
  *
  * */
-public class Controller {
+public class Controller implements MyObserver {
 
     //LOGGER
     private static Logger LOGGER = LogManager.getLogger(MainClass.class);
@@ -328,7 +329,24 @@ public class Controller {
 
 
 
+    @Override
+    public void showOnlineContacts() {
 
+    }
 
+    @Override
+    public void showAllContacts() {
+
+    }
+
+    @Override
+    public void newContactAdded(User user) throws SQLException {
+        DatabaseMethods.addUser(user);
+    }
+
+    @Override
+    public void nicknameChanged(User newUser, String previousNickname) {
+
+    }
 }
 

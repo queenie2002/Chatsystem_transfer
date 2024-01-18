@@ -48,6 +48,7 @@ import chatsystem.contacts.*;
 import chatsystem.controller.Controller;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
+import chatsystem.observers.MyObserver;
 import chatsystem.ui.*;
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -74,6 +75,8 @@ public class MainClass {
             throw new RuntimeException(e);
         }
     }
+
+    MyObserver controller = new Controller();
 
 
 
@@ -184,17 +187,7 @@ public class MainClass {
         // Start connection with the database
         DatabaseMethods.startConnection(me);
 
-        ContactList.getInstance().addObserver(new ContactList.Observer() {
-            @Override
-            public void newContactAdded(User user) throws SQLException {
-                DatabaseMethods.addUser(user);
-            }
-
-            @Override
-            public void nicknameChanged(User newUser, String previousNickname) {
-
-            }
-        });
+        ContactList.getInstance().addObserver(controller);
 
     }
 
