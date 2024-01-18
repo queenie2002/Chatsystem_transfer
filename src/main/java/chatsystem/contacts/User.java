@@ -1,24 +1,22 @@
 package chatsystem.contacts;
 
-import chatsystem.network.UDPSender;
-import chatsystem.network.UDPReceiver;
-
 import java.net.*;
 
+
+/** A User */
 public class User{
     //ATTRIBUTES
     private String nickname;
     private String firstName;
     private String lastName;
     private String birthday;
-    private String password;                        //ATTENTION PASSWORD IS A STRING
+    private String password;
     private Boolean status;                         //if disconnected = false, connected = true
-
     private InetAddress ipAddress;
     private int idDatabase;
 
 
-    //CONSTRUCTOR
+    //CONSTRUCTORS
     public User (String nickname, String firstName, String lastName, String birthday, String password, Boolean status, InetAddress ipAddress) {
         this.nickname = nickname;
         this.firstName = firstName;
@@ -32,7 +30,12 @@ public class User{
     public User() {
     }
 
-    //METHODS
+
+
+
+
+
+    //GETTERS
     public String getNickname (){ return this.nickname;}
     public String getFirstName (){ return this.firstName;}
     public String getLastName(){ return this.lastName;}
@@ -47,7 +50,7 @@ public class User{
 
 
 
-
+    //SETTERS
     public void setNickname (String nickname) { this.nickname=nickname;}
     public void setFirstName (String firstName) { this.firstName=firstName;}
     public void setLastName(String lastName) { this.lastName=lastName;}

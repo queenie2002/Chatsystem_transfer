@@ -3,16 +3,16 @@ package chatsystem.contacts;
 /** Error that is thrown when a contact is added twice to the list */
 public class ContactAlreadyExists extends Exception {
 
-    private final String username;
+    private final String nickname;
 
-    public ContactAlreadyExists(String username) {
-        this.username = username;
+    public ContactAlreadyExists(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override
     public String toString() {
         return "ContactAlreadyExists{" +
-                "username='" + username + '\'' +
+                "nickname='" + nickname + '\'' +
                 '}';
     }
 }

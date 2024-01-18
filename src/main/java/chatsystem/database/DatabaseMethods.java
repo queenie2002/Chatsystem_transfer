@@ -289,6 +289,8 @@ public class DatabaseMethods {
 
 
 
+
+
     /** Get user from database */
     public static User getUser(String nickname) throws SQLException, UnknownHostException {
 
