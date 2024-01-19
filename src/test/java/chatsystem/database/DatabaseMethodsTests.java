@@ -1,37 +1,48 @@
 package chatsystem.database;
 
-class TestDatabaseMethods {
-/*
-    private static final String TEST_DATABASE_URL = "jdbc:sqlite:my_test_database.db";
-    private Connection connection;
+
+import chatsystem.contacts.ContactList;
+import chatsystem.contacts.User;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+class DatabaseMethodsTests {
+
+    private User alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true,InetAddress.getByName("10.1.5.10"));
+    private User bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true, InetAddress.getByName("10.1.5.11"));
+
+    ContactList contacts;
+
+    DatabaseMethodsTests() throws UnknownHostException {
+    }
 
     @BeforeEach
     void setUp() throws SQLException {
-        // Establish a new connection to the test database for each test
-        User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
-        DatabaseMethods.startConnection(user);
-
+        DatabaseMethods.startConnection(alice);
+        contacts = ContactList.getInstance();
+        contacts.clearContactList();
     }
 
-    @AfterEach
-    void tearDown() throws SQLException {
-        // Close the connection after each test
-        if (connection != null) {
-            connection.close();
-        }
-    }
 
     @Test
     void testTableUsersCreation() throws SQLException {
-        assertDoesNotThrow(DatabaseMethods::createUsersTable);
+        assert !DatabaseMethods.doesTableExist("users");
+        DatabaseMethods.createUsersTable();
+        assert DatabaseMethods.doesTableExist("users");
     }
 
-
+    /*
     @Test
     void testAddUserAndCreateMessagesTable() throws SQLException {
         User user = new User("testNickname", "testFirstName", "testLastName", "testBirthday", "testPassword", true, InetAddress.getLoopbackAddress());
         assertDoesNotThrow(() -> DatabaseMethods.addUser(user));
-        assertTrue(checkIfTableExists("Messages_1"), "Messages table for user 1 should exist");
+        assert checkIfTableExists("Messages_1"),("Messages table for user 1 should exist";
     }
 
     @Test
@@ -51,4 +62,5 @@ class TestDatabaseMethods {
         }
     }
     */
+
 }

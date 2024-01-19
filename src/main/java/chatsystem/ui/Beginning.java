@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class Beginning extends JFrame {
                 for (MyObserver obs : observers) {
                     try {
                         obs.canRegister(frame);
-                    } catch (SQLException | IOException ex) {
+                    } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
@@ -55,11 +54,7 @@ public class Beginning extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (MyObserver obs : observers) {
-                    try {
-                        obs.canLogin(frame);
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    obs.canLogin(frame);
                 }
             }
         });

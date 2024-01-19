@@ -35,7 +35,7 @@ public class DatabaseMethods {
 
     /** We start the connection, create our database and create users' and me table */
     public static void startConnection(User me) throws SQLException {
-        String ipAddress = me.getIpAddress().getHostAddress().replace(".","_"); //we replace . by _
+        String ipAddress = convertIPAddressForDatabase(me.getIpAddress().getHostAddress());
         String DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
         connection = DriverManager.getConnection(DATABASE_URL);
         LOGGER.info("Created database with my IP address " + ipAddress);
@@ -73,7 +73,7 @@ public class DatabaseMethods {
     //CHECKS IF SOMETHING EXISTS
 
     /** Checks if table exists in database */
-    private static boolean doesTableExist(String tableName) throws SQLException {
+    public static boolean doesTableExist(String tableName) {
         String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -86,7 +86,8 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("Couldn't check if table exists in database" + tableName);
-            throw new SQLException();
+            return false;
+
         }
     }
 
@@ -112,7 +113,7 @@ public class DatabaseMethods {
     }
 
     /** Checks if I am already in the database */
-    public static boolean doesMeExist() throws SQLException {
+    public static boolean doesMeExist()  {
         String sql = "SELECT * FROM me";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -124,7 +125,7 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("I am not in the database");
-            throw new SQLException();
+            return false;
         }
     }
 
@@ -137,10 +138,9 @@ public class DatabaseMethods {
     //CREATE TABLES
 
     /** Creates the users table in database */
-    private static void createUsersTable() throws SQLException {
+    static void createUsersTable() throws SQLException {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
-                + "idUserDatabase INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "nickname TEXT , " //can make unique
+                + "nickname TEXT PRIMARY KEY , " //can make unique
                 + "ipAddress TEXT NOT NULL, "
                 + "firstName TEXT, "
                 + "lastName TEXT, "
@@ -160,7 +160,7 @@ public class DatabaseMethods {
 
     /** Creates a specific empty messages table for a user with their IP Address*/
     private static void createSpecificMessagesTable(String ipAddress) throws SQLException {
-        ipAddress = ipAddress.substring(1).replace(".","_");
+        ipAddress = convertIPAddressForDatabase(ipAddress).substring(1);
 
         String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + ipAddress + " ("
                 + "chatID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -176,7 +176,8 @@ public class DatabaseMethods {
         }
         catch (SQLException e) {
             LOGGER.error("Table messages couldn't be created in database");
-            throw new SQLException();
+            e.printStackTrace();
+            throw new SQLException(e);
         }
     }
 
@@ -243,21 +244,6 @@ public class DatabaseMethods {
             throw new SQLException();
         }
 
-
-        // If it's a new user, we set the idDatabase
-        if (!userAddedAlready) {
-            // Fetch the last inserted ID
-            try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(lastInsertIdSQL)) {
-                if (resultSet.next()) {
-                    long idDatabase = resultSet.getLong(1);
-                    user.setIdDatabase((int) idDatabase);
-                }
-            } catch (SQLException e) {
-                LOGGER.error("Couldn't get the user ID in database");
-                throw new SQLException();
-            }
-        }
 
         //If it's another user, we create a specific message table
         if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
@@ -346,7 +332,6 @@ public class DatabaseMethods {
                 if (resultSet.next()) {
 
                     // User found
-                    user.setIdDatabase(resultSet.getInt("idUserDatabase"));
                     user.setNickname(resultSet.getString("nickname"));
                     user.setIpAddress(InetAddress.getByName(resultSet.getString("ipAddress").substring(1)));
                     user.setFirstName(resultSet.getString("firstName"));

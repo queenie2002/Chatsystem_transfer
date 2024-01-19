@@ -60,7 +60,9 @@ public class ContactList {
         LOGGER.info("Cleared myContactList ");
     }
 
-
+    public synchronized boolean isEmptyContactList() {
+        return myContactList.isEmpty();
+    }
 
 
 
@@ -79,8 +81,8 @@ public class ContactList {
             }
         }
     }
-    /** Updates a Contact in the Contact List and the database*/
-    public synchronized void updateContact(User user) throws SQLException {
+    /** Updates a Contact in the Contact List and the database, throws exception ContactDoesntExist*/
+    public synchronized void updateContact(User user) throws SQLException, ContactDoesntExist {
         int index=-1;
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), user.getNickname())) {
@@ -93,7 +95,7 @@ public class ContactList {
             myContactList.set(index, user);
             LOGGER.info("Updated user in ContactList " + user.getNickname());
         } else {
-            LOGGER.error("Couldn't find user in ContactList " + user.getNickname());
+            throw new ContactDoesntExist(user.getNickname());
         }
 
         for (MyObserver obs : observers) {
@@ -101,7 +103,7 @@ public class ContactList {
         }
     }
     /** Deletes Contact with nickname*/
-    public synchronized void deleteContact(String nickname) {
+    public synchronized void deleteContact(String nickname) throws ContactDoesntExist {
         if (existsContact(nickname)) {
             User aUser = getContact(nickname);
             myContactList.remove(aUser);
@@ -109,7 +111,7 @@ public class ContactList {
             LOGGER.info("Deleted user in ContactList " + nickname);
         }
         else {
-            LOGGER.error("Couldn't find user to delete in ContactList " + nickname);
+            throw new ContactDoesntExist(nickname);
         }
     }
 
@@ -118,14 +120,14 @@ public class ContactList {
 
 
     /** Returns Contact with nickname */
-    public synchronized User getContact(String nickname) {
+    public synchronized User getContact(String nickname) throws ContactDoesntExist {
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getNickname(), nickname)) {
                 return aUser;
             }
         }
         LOGGER.error("Couldn't find the user with nickname: " + nickname);
-        return null;
+        throw new ContactDoesntExist(nickname);
     }
 
 
