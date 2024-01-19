@@ -38,6 +38,7 @@ public class ControllerTests {
     @BeforeEach
     void setUp() throws SQLException {
         DatabaseMethods.startConnection(alice);
+        DatabaseMethods.initializeDatabase();
         contacts = ContactList.getInstance();
         contacts.clearContactList();
     }
@@ -73,24 +74,24 @@ public class ControllerTests {
         UDPMessage udpMessage2 = new UDPMessage(message2, InetAddress.getByName("10.1.5.11"));
 
         assert contacts.isEmptyContactList();
-        assert !contacts.existsContact("alice");
+        assert !contacts.existsContact(alice.getIpAddress());
         controller.handle(udpMessage1);
-        assert contacts.existsContact("alice");
-        assert contacts.getContact("alice").getStatus();
-        assert !contacts.existsContact("bob");
+        assert contacts.existsContact(alice.getIpAddress());
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
+        assert !contacts.existsContact(bob.getIpAddress());
 
 
         controller.handle(udpMessage2);
-        assert contacts.existsContact("bob");
-        assert contacts.getContact("bob").getStatus();
-        assert contacts.getContact("alice").getStatus();
-        assert contacts.existsContact("alice");
+        assert contacts.existsContact(bob.getIpAddress());
+        assert contacts.getContact(bob.getIpAddress()).getStatus();
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
+        assert contacts.existsContact(alice.getIpAddress());
 
         controller.handle(udpMessage2);
-        assert contacts.existsContact("bob");
-        assert contacts.existsContact("alice");
-        assert contacts.getContact("bob").getStatus();
-        assert contacts.getContact("alice").getStatus();
+        assert contacts.existsContact(bob.getIpAddress());
+        assert contacts.existsContact(alice.getIpAddress());
+        assert contacts.getContact(bob.getIpAddress()).getStatus();
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
 
     }
 
@@ -104,24 +105,24 @@ public class ControllerTests {
         UDPMessage udpMessage2 = new UDPMessage(message2, InetAddress.getByName("10.1.5.11"));
 
         assert contacts.isEmptyContactList();
-        assert !contacts.existsContact("alice");
+        assert !contacts.existsContact(alice.getIpAddress());
         controller.handle(udpMessage1);
-        assert contacts.existsContact("alice");
-        assert contacts.getContact("alice").getStatus();
-        assert !contacts.existsContact("bob");
+        assert contacts.existsContact(alice.getIpAddress());
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
+        assert !contacts.existsContact(bob.getIpAddress());
 
 
         controller.handle(udpMessage2);
-        assert contacts.existsContact("bob");
-        assert contacts.getContact("bob").getStatus();
-        assert contacts.getContact("alice").getStatus();
-        assert contacts.existsContact("alice");
+        assert contacts.existsContact(bob.getIpAddress());
+        assert contacts.getContact(bob.getIpAddress()).getStatus();
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
+        assert contacts.existsContact(alice.getIpAddress());
 
         controller.handle(udpMessage2);
-        assert contacts.existsContact("bob");
-        assert contacts.existsContact("alice");
-        assert contacts.getContact("bob").getStatus();
-        assert contacts.getContact("alice").getStatus();
+        assert contacts.existsContact(bob.getIpAddress());
+        assert contacts.existsContact(alice.getIpAddress());
+        assert contacts.getContact(bob.getIpAddress()).getStatus();
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
         assert !contacts.isEmptyContactList();
 
     }
@@ -136,29 +137,29 @@ public class ControllerTests {
         UDPMessage udpMessage2 = new UDPMessage(message2, InetAddress.getByName("10.1.5.11"));
 
         assert contacts.isEmptyContactList();
-        assert !contacts.existsContact("alice");
+        assert !contacts.existsContact(alice.getIpAddress());
 
         contacts.addContact(alice);
-        assert contacts.getContact("alice").getStatus();
-        assert contacts.existsContact("alice");
+        assert contacts.getContact(alice.getIpAddress()).getStatus();
+        assert contacts.existsContact(alice.getIpAddress());
 
         controller.handle(udpMessage1);
-        assert contacts.existsContact("alice");
-        assert !contacts.getContact("alice").getStatus();
-        assert !contacts.existsContact("bob");
+        assert contacts.existsContact(alice.getIpAddress());
+        assert !contacts.getContact(alice.getIpAddress()).getStatus();
+        assert !contacts.existsContact(bob.getIpAddress());
 
 
         controller.handle(udpMessage2);
-        assert contacts.existsContact("bob");
-        assert !contacts.getContact("bob").getStatus();
-        assert !contacts.getContact("alice").getStatus();
-        assert contacts.existsContact("alice");
+        assert contacts.existsContact(bob.getIpAddress());
+        assert !contacts.getContact(bob.getIpAddress()).getStatus();
+        assert !contacts.getContact(alice.getIpAddress()).getStatus();
+        assert contacts.existsContact(alice.getIpAddress());
 
         controller.handle(udpMessage2);
-        assert contacts.existsContact("bob");
-        assert contacts.existsContact("alice");
-        assert !contacts.getContact("bob").getStatus();
-        assert !contacts.getContact("alice").getStatus();
+        assert contacts.existsContact(bob.getIpAddress());
+        assert contacts.existsContact(alice.getIpAddress());
+        assert !contacts.getContact(bob.getIpAddress()).getStatus();
+        assert !contacts.getContact(alice.getIpAddress()).getStatus();
         assert !contacts.isEmptyContactList();
 
     }

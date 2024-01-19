@@ -13,7 +13,7 @@ public class UDPReceiver extends Thread {
 
 
     //LOGGER
-    private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
+    private static final Logger LOGGER = LogManager.getLogger(UDPReceiver.class);
 
 
     //OBSERVERS

@@ -30,7 +30,7 @@ public class Controller implements MyObserver {
 
 
     //LOGGER
-    private static Logger LOGGER = LogManager.getLogger(MainClass.class);
+    private static Logger LOGGER = LogManager.getLogger(Controller.class);
 
 
     //BROADCAST_ADDRESS
@@ -163,13 +163,13 @@ public class Controller implements MyObserver {
             if (!(nickname.equals("[]"))) {
                 instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
             }
-        } catch (ContactAlreadyExists | SQLException e) {
+        } catch (ContactAlreadyExists | SQLException | UnknownHostException e) {
             try {
                 //if we know him, we change his status
-                User user = instance.getContact(nickname);
+                User user = instance.getContact(ipAddress);
                 user.setStatus(status);
                 instance.updateContact(user);
-            } catch (ContactDoesntExist ex) {
+            } catch (ContactDoesntExist | UnknownHostException ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -222,16 +222,9 @@ public class Controller implements MyObserver {
      * ??? OTHER THINGS----------------------------------------
      * */
     @Override
-    public void handleTCPMessage(TCPMessage msg) throws SQLException {
+    public void handleTCPMessage(TCPMessage msg) throws SQLException, UnknownHostException {
         LOGGER.info("Received message: " + msg.getContent());
         DatabaseMethods.addMessage(msg);
-
-        //TEST
-        try {
-            TCPMessage.printTCPMessageList(DatabaseMethods.getMessagesList(ContactList.getInstance().getContactWithIpAddress(msg.getFromUserIP()).getNickname()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         String userKey = msg.getFromUserIP();
         ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);
@@ -249,7 +242,7 @@ public class Controller implements MyObserver {
 
     /** Adds a user to database*/
     @Override
-    public void newContactAdded(User user) throws SQLException {
+    public void newContactAdded(User user) throws SQLException, UnknownHostException {
         DatabaseMethods.addUser(user);
     }
 
@@ -380,7 +373,7 @@ public class Controller implements MyObserver {
             ContactList instance = ContactList.getInstance();
 
 
-            if (instance.existsContact(nicknameInfo)) { //if someone already has nickname
+            if (instance.existsContactWithNickname(nicknameInfo)) { //if someone already has nickname
                 new PopUpTab("Nickname already taken. Please choose another one");
             } else { //if unique i go to next tab and tell people i am connected
                 LOGGER.info("Successfully registered in.");

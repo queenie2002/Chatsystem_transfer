@@ -16,7 +16,7 @@ public interface MyObserver {
     // ---------------------------DATABASE-------------------------//
 
     /** Method that is called each time a contact is added/updated */
-    void newContactAdded(User user) throws SQLException;
+    void newContactAdded(User user) throws SQLException, UnknownHostException;
 
 
 
@@ -31,7 +31,7 @@ public interface MyObserver {
 
 
     // ---------------------------TCP SERVER-------------------------//
-    void handleTCPMessage(TCPMessage msg) throws SQLException;
+    void handleTCPMessage(TCPMessage msg) throws SQLException, UnknownHostException;
 
 
 

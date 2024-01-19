@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class DatabaseMethods {
 
     //LOGGER
-    private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
+    private static final Logger LOGGER = LogManager.getLogger(DatabaseMethods.class);
 
 
     //OUR CONNECTION
@@ -38,13 +38,10 @@ public class DatabaseMethods {
 
     /** We start the connection, create our database and create users' and me table */
     public static void startConnection(User me) throws SQLException {
-        String ipAddress = changeDotsIntoUnderscore(me.getIpAddress().getHostAddress());
+        String ipAddress = changeDotsIntoUnderscore(me.getIpAddress());
         String DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
         connection = DriverManager.getConnection(DATABASE_URL);
         LOGGER.info("Created database with my IP address " + ipAddress);
-
-        createUsersTable();
-        createMeTable();
     }
 
     /** We close the connection */
@@ -61,8 +58,15 @@ public class DatabaseMethods {
 
     }
 
+    /** We start the connection, create our database and create users' and me table */
+    public static void initializeDatabase() throws SQLException {
+
+        createUsersTable();
+        createMeTable();
+    }
+
     /** To delete database from class in tests or in packages contacts/controller/database/network/observers/ui returns true if deleted the file */
-    public static void deleteDatabase(String ipAddress) {
+    public static void deleteDatabase(InetAddress ipAddress) throws UnknownHostException {
 
         String filePath = "./my_database_"+changeDotsIntoUnderscore(extractFormattedIP(ipAddress))+".db";
         File fileToDelete = new File(filePath);
@@ -72,21 +76,42 @@ public class DatabaseMethods {
         }
     }
 
+    public static int numberTablesInDatabase() {
+        String sql = "SELECT count(*) FROM sqlite_master WHERE type='table'";
+        int tableCount = 0;
 
-    /** Replaces the . in an IP Address into _ to name tables in database */
-    private static String changeDotsIntoUnderscore(String ipAddress) {
-        return ipAddress.replace(".","_");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                tableCount = resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Couldn't get the count of tables in the database");
+        }
+        return tableCount;
     }
 
-    private static String extractFormattedIP(String input) {
+
+
+
+
+
+    /** Replaces the . in an IP Address into _ to name tables in database */
+    private static String changeDotsIntoUnderscore(InetAddress ipAddress) {
+        return ipAddress.getHostAddress().replace(".","_");
+    }
+
+    private static InetAddress extractFormattedIP(InetAddress input) throws UnknownHostException {
         String regex = ".*?(\\d+\\.\\d+\\.\\d+\\.\\d+)";
 
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
+        Matcher matcher = pattern.matcher(input.getHostAddress());
 
 
         while (matcher.find()) {
-            return matcher.group(1);
+            return InetAddress.getByName(matcher.group(1));
         }
         throw new RuntimeException("Coudln't extract IP address");
     }
@@ -111,19 +136,18 @@ public class DatabaseMethods {
         } catch (SQLException e) {
             LOGGER.error("Couldn't check if table exists in database" + tableName);
             return false;
-
         }
     }
 
     /** Checks if a user is already in the database */
-    public static boolean doesUserExist(User user) throws SQLException {
+    public static boolean doesUserExist(User user) throws SQLException, UnknownHostException {
 
-        String nickname= user.getNickname();
-        String sql = "SELECT COUNT(*) FROM users WHERE nickname = ?";
+        String ipAddress= extractFormattedIP(user.getIpAddress()).getHostAddress();
+        String sql = "SELECT COUNT(*) FROM users WHERE ipAddress = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, nickname);
+            preparedStatement.setString(1, ipAddress);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 // If the result set has at least one row, the user exists
@@ -132,7 +156,7 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
 
-            LOGGER.error("Couldn't check if user exists in database" + user);
+            LOGGER.error("Couldn't check if user exists in database");
             throw new SQLException();
         }
     }
@@ -165,8 +189,8 @@ public class DatabaseMethods {
     /** Creates the users table in database */
     private static void createUsersTable() throws SQLException {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
-                + "nickname TEXT PRIMARY KEY , " //can make unique
-                + "ipAddress TEXT NOT NULL, "
+                + "nickname TEXT, " //can make unique
+                + "ipAddress TEXT NOT NULL PRIMARY KEY, "
                 + "firstName TEXT, "
                 + "lastName TEXT, "
                 + "birthday TEXT, "
@@ -184,10 +208,10 @@ public class DatabaseMethods {
     }
 
     /** Creates a specific empty messages table for a user with their IP Address*/
-    private static void createSpecificMessagesTable(String ipAddress) throws SQLException {
-        ipAddress = changeDotsIntoUnderscore(extractFormattedIP(ipAddress));
+    private static void createSpecificMessagesTable(InetAddress ipAddress) throws SQLException, UnknownHostException {
+        String ipAddressString = changeDotsIntoUnderscore(extractFormattedIP(ipAddress));
 
-        String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + ipAddress + " ("
+        String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + ipAddressString + " ("
                 + "chatID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "content TEXT NOT NULL, "
                 + "date TEXT NOT NULL, "
@@ -234,16 +258,18 @@ public class DatabaseMethods {
     //ADDS SOMETHING TO TABLE
 
     /** Adds a user and creates an empty specific Messages table for that user. If user already added, it updates the user */
-    public static void addUser(User user) throws SQLException {
+    public static void addUser(User user) throws SQLException, UnknownHostException {
 
         String addUserSQL;
         boolean userAddedAlready = doesUserExist(user);
 
         if (userAddedAlready) {
             addUserSQL = "UPDATE users SET nickname = ?, ipAddress = ?, firstName = ?, lastName = ?, birthday = ?, status = ?, password = ? WHERE nickname = ?";
+            LOGGER.info("User updated to database " + user.getIpAddress());
         }
         else {
             addUserSQL = "INSERT INTO Users (nickname, ipAddress, firstName, lastName, birthday, status, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            LOGGER.info("User added to database " + user.getIpAddress());
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(addUserSQL)) {
@@ -260,34 +286,34 @@ public class DatabaseMethods {
             preparedStatement.setString(7, user.getPassword());
             preparedStatement.executeUpdate();
 
-            LOGGER.info("User added/updated to database " + user.getNickname());
+            LOGGER.info("User added/updated to database " + user.getIpAddress());
 
         } catch (SQLException e) {
-            LOGGER.error("User couldn't be added to database " + user.getNickname());
+            LOGGER.error("User couldn't be added to database " + user.getIpAddress());
             throw new SQLException();
         }
 
 
         //If it's another user, we create a specific message table
         if (!user.getIpAddress().equals(MainClass.me.getIpAddress())) {
-            createSpecificMessagesTable(String.valueOf(user.getIpAddress()));
+            createSpecificMessagesTable(user.getIpAddress());
         }
 
     }
 
     /** Adds a message to database */
-    public static void addMessage(TCPMessage tcpMessage) throws SQLException {
+    public static boolean addMessage(TCPMessage tcpMessage) throws SQLException, UnknownHostException {
 
-        boolean table1Exists = doesTableExist("Messages_" + changeDotsIntoUnderscore(tcpMessage.getFromUserIP()));
-        boolean table2Exists = doesTableExist("Messages_" + changeDotsIntoUnderscore(tcpMessage.getToUserIP()));
+        boolean table1Exists = doesTableExist("Messages_" + changeDotsIntoUnderscore(InetAddress.getByName(tcpMessage.getFromUserIP())));
+        boolean table2Exists = doesTableExist("Messages_" + changeDotsIntoUnderscore(InetAddress.getByName(tcpMessage.getToUserIP())));
 
         String tableName;
 
         if (table1Exists||table2Exists) {
             if (table1Exists) {
-                tableName = "Messages_" + changeDotsIntoUnderscore(tcpMessage.getFromUserIP());
+                tableName = "Messages_" + changeDotsIntoUnderscore(InetAddress.getByName(tcpMessage.getFromUserIP()));
             } else {
-                tableName = "Messages_" + changeDotsIntoUnderscore(tcpMessage.getToUserIP());
+                tableName = "Messages_" + changeDotsIntoUnderscore(InetAddress.getByName(tcpMessage.getToUserIP()));
             }
 
             String insertMessageSQL = "INSERT INTO " + tableName + " (content, date, fromUser, toUser) VALUES (?, ?, ?, ?)";
@@ -306,9 +332,11 @@ public class DatabaseMethods {
                 LOGGER.error("Couldn't add message to database");
                 throw new SQLException();
             }
+            return true;
         }
         else {
             LOGGER.error("Table messages doesn't exist in database");
+            return false;
         }
     }
 
@@ -344,19 +372,19 @@ public class DatabaseMethods {
     //GET SOMETHING FROM TABLE
 
     /** Get user from database */
-    public static User getUser(String nickname) throws SQLException, UnknownHostException {
+    public static User getUser(InetAddress ipAddress) throws SQLException, UnknownHostException {
 
         User user = new User();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Users WHERE nickname = ?")) {
-            preparedStatement.setString(1, nickname);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Users WHERE ipAddress = ?")) {
+            preparedStatement.setString(1, ipAddress.getHostAddress());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
 
                     // User found
                     user.setNickname(resultSet.getString("nickname"));
-                    user.setIpAddress(InetAddress.getByName(extractFormattedIP(resultSet.getString("ipAddress"))));
+                    user.setIpAddress(extractFormattedIP(InetAddress.getByName(resultSet.getString("ipAddress"))));
                     user.setFirstName(resultSet.getString("firstName"));
                     user.setLastName(resultSet.getString("lastName"));
                     user.setBirthday(resultSet.getString("birthday"));
@@ -370,14 +398,14 @@ public class DatabaseMethods {
                     user.setPassword(resultSet.getString("password"));
 
                 } else {
-                    LOGGER.error("User not found " + nickname);
+                    LOGGER.error("User not found " + ipAddress);
                 }
             }
         } catch (SQLException e) {
-            LOGGER.error("Couldn't get user due to SQLException" + nickname);
+            LOGGER.error("Couldn't get user due to SQLException" + ipAddress);
             throw new SQLException();
         } catch (UnknownHostException e) {
-            LOGGER.error("Couldn't get user due to UnknownHostException " + nickname);
+            LOGGER.error("Couldn't get user due to UnknownHostException " + ipAddress);
             throw new UnknownHostException();
         }
 
@@ -385,37 +413,31 @@ public class DatabaseMethods {
     }
 
     /** Get messages from user from database */
-    public static ArrayList<TCPMessage> getMessagesList(String nickname) throws SQLException, UnknownHostException {
+    public static ArrayList<TCPMessage> getMessagesList(InetAddress ipAddress) throws SQLException, UnknownHostException {
 
         ArrayList<TCPMessage> myMessagesList = new ArrayList<TCPMessage>();
 
-        User user = getUser(nickname);
-        String ipAddress = changeDotsIntoUnderscore(user.getIpAddress().getHostAddress());
+        String ipAddressString = changeDotsIntoUnderscore(extractFormattedIP(ipAddress));
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages_" + ipAddress)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Messages_" + ipAddressString)) {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    while (resultSet.next()) {
+                while (resultSet.next()) {
 
-                        TCPMessage message = new TCPMessage();
+                    TCPMessage message = new TCPMessage();
 
-                        // User found
-                        message.setChatId(resultSet.getInt("chatID"));
-                        message.setContent(resultSet.getString("content"));
-                        message.setDate(resultSet.getString("date"));
-                        message.setFromUserIP(resultSet.getString("fromUser"));
-                        message.setToUserIP(resultSet.getString("toUser"));
+                    // User found
+                    message.setChatId(resultSet.getInt("chatID"));
+                    message.setContent(resultSet.getString("content"));
+                    message.setDate(resultSet.getString("date"));
+                    message.setFromUserIP(resultSet.getString("fromUser"));
+                    message.setToUserIP(resultSet.getString("toUser"));
 
-                        myMessagesList.add(message);
-                        TCPMessage.printTCPMessageList(myMessagesList);
-                    }
-                } else {
-                    LOGGER.error("We don't have any message from  " + nickname);
+                    myMessagesList.add(message);
                 }
             }
         } catch (SQLException e) {
-            LOGGER.error("Couldn't get messages due to SQLException" + nickname);
+            LOGGER.error("Couldn't get messages due to SQLException" + ipAddress);
             throw new SQLException();
         }
 
@@ -471,7 +493,7 @@ public class DatabaseMethods {
                     String nickname = resultSet.getString("nickname");
                     String ipAddress = resultSet.getString("ipAddress");
                     boolean status = resultSet.getInt("status") == 1;
-                    User user = new User(nickname, "", "", "", "", status, InetAddress.getByName(extractFormattedIP(ipAddress)));
+                    User user = new User(nickname, "", "", "", "", status, extractFormattedIP(InetAddress.getByName(ipAddress)));
 
                     for (MyObserver obs : observers) {
                         obs.newContactAdded(user);

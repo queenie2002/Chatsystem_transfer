@@ -61,9 +61,9 @@ public class ChatWindow2 extends JPanel{
 
                 String fromUserIP = MainClass.me.getIpAddress().getHostAddress();
 
-                String toUserIP = "DestinationUserIPAddress";
+                String toUserIP = "192.168.1.1"; //in the meantime i put a random fake address
 
-                TCPMessage message = new TCPMessage(messageContent, currentDate, fromUserIP, toUserIP);
+                    TCPMessage message = new TCPMessage(messageContent, currentDate, fromUserIP, toUserIP);
                 String serializedMessage = tcpClient.serializeMessage(message);
                 tcpClient.sendMessage(message);
                 displayReceivedMessage(message);

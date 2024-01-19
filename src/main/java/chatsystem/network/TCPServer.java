@@ -21,7 +21,7 @@ public class TCPServer {
         for (MyObserver observer : observers) {
             try {
                 observer.handleTCPMessage(message);
-            } catch (SQLException e) {
+            } catch (SQLException | UnknownHostException e) {
                 e.printStackTrace();
             }
         }

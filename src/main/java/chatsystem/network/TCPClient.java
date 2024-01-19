@@ -10,7 +10,7 @@ import java.io.*;
 public class TCPClient {
 
     //LOGGER
-    private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
+    private static final Logger LOGGER = LogManager.getLogger(TCPClient.class);
 
 
     private Socket clientSocket;

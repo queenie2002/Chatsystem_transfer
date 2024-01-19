@@ -97,6 +97,7 @@ public class MainClass {
         DatabaseMethods database = new DatabaseMethods();
         database.addObserver(controller);
         DatabaseMethods.startConnection(me);
+        DatabaseMethods.initializeDatabase();
         ContactList.getInstance().addObserver(controller);
 
     }
