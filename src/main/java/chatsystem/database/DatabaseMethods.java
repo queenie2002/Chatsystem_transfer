@@ -61,18 +61,16 @@ public class DatabaseMethods {
 
     }
 
-    /** To delete database from class in tests or in packages contacts/controller/database/network/observers/ui */
+    /** To delete database from class in tests or in packages contacts/controller/database/network/observers/ui returns true if deleted the file */
     public static void deleteDatabase(String ipAddress) {
-        String filePath = "../../../../../my_database_"+ipAddress+".db";
 
+        String filePath = "./my_database_"+changeDotsIntoUnderscore(extractFormattedIP(ipAddress))+".db";
         File fileToDelete = new File(filePath);
 
         if (fileToDelete.exists()) {
             fileToDelete.delete();
         }
     }
-
-
 
 
     /** Replaces the . in an IP Address into _ to name tables in database */

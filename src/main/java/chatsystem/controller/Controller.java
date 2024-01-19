@@ -11,6 +11,7 @@ import chatsystem.ui.*;
 
 import org.apache.logging.log4j.*;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
@@ -224,6 +225,13 @@ public class Controller implements MyObserver {
     public void handleTCPMessage(TCPMessage msg) throws SQLException {
         LOGGER.info("Received message: " + msg.getContent());
         DatabaseMethods.addMessage(msg);
+
+        //TEST
+        try {
+            TCPMessage.printTCPMessageList(DatabaseMethods.getMessagesList(ContactList.getInstance().getContactWithIpAddress(msg.getFromUserIP()).getNickname()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         String userKey = msg.getFromUserIP();
         ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);

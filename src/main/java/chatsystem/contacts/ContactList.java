@@ -130,6 +130,19 @@ public class ContactList {
         throw new ContactDoesntExist(nickname);
     }
 
+    /** Returns Contact with IP Address */
+    public synchronized User getContactWithIpAddress(String ipAddress) throws ContactDoesntExist {
+        for (User aUser : myContactList) {
+            if (Objects.equals(aUser.getIpAddress().getHostAddress(), ipAddress)) {
+                return aUser;
+            }
+        }
+        LOGGER.error("Couldn't find the user with ipAddress: " + ipAddress);
+        throw new ContactDoesntExist(ipAddress);
+    }
+
+
+
 
 
 

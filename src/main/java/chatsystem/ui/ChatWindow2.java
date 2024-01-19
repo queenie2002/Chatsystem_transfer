@@ -59,14 +59,10 @@ public class ChatWindow2 extends JPanel{
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String currentDate = dateFormat.format(new Date());
 
-                // fromUserIP - assuming MainClass.me holds the current user details
                 String fromUserIP = MainClass.me.getIpAddress().getHostAddress();
 
-                // toUserIP - this should be the IP of the user you're messaging
-                // You need to determine how to get this value based on your application's logic
                 String toUserIP = "DestinationUserIPAddress";
 
-                // Create a new TCPMessage object
                 TCPMessage message = new TCPMessage(messageContent, currentDate, fromUserIP, toUserIP);
                 String serializedMessage = tcpClient.serializeMessage(message);
                 tcpClient.sendMessage(message);

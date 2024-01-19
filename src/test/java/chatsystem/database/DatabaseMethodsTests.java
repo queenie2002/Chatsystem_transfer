@@ -8,6 +8,7 @@ import chatsystem.network.TCPMessage;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.net.InetAddress;
 import java.sql.SQLException;
@@ -35,12 +36,11 @@ class DatabaseMethodsTests {
 
     @BeforeEach
     void setUp() throws SQLException, UnknownHostException {
+        DatabaseMethods.deleteDatabase(alice.getIpAddress().getHostAddress());
+        DatabaseMethods.deleteDatabase(bob.getIpAddress().getHostAddress());
         DatabaseMethods.startConnection(alice);
         contacts = ContactList.getInstance();
         contacts.clearContactList();
-
-        DatabaseMethods.deleteDatabase(alice.getIpAddress().getHostAddress());
-        DatabaseMethods.deleteDatabase(bob.getIpAddress().getHostAddress());
 
         alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true,InetAddress.getLoopbackAddress());
         bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true, InetAddress.getByName("192.168.1.2"));
@@ -69,18 +69,20 @@ class DatabaseMethodsTests {
 
     @Test
     void testAddMessage() throws SQLException, UnknownHostException {
+
         TCPMessage testMessage = new TCPMessage("Hello, test message!", "2022-01-01", "127.0.0.1","192.168.1.2");
 
+
+        assert !DatabaseMethods.doesTableExist("Messages_192_168_1_2");
         DatabaseMethods.addUser(bob);
+        assert DatabaseMethods.doesTableExist("Messages_192_168_1_2");
 
-        ArrayList<TCPMessage> messagesAlice;
-
-        messagesAlice = DatabaseMethods.getMessagesList("bob");
-        assert messagesAlice.isEmpty();
+        ArrayList<TCPMessage> messagesOfAlice = DatabaseMethods.getMessagesList("bob");
+        assert messagesOfAlice.isEmpty();
         DatabaseMethods.addMessage(testMessage);
-        messagesAlice = DatabaseMethods.getMessagesList("bob");
-        assert !messagesAlice.isEmpty();
-
+        messagesOfAlice = DatabaseMethods.getMessagesList("bob");
+        TCPMessage message = messagesOfAlice.get(1);
+        TCPMessage.printTCPMessage(message);
     }
 
     @Test
