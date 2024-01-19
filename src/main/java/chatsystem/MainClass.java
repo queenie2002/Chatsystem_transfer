@@ -65,7 +65,7 @@ public class MainClass {
 
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
-    private static ChatWindow chatWindow;
+    //private static ChatWindow chatWindow;
 
     public static User me;
     static {
@@ -124,40 +124,25 @@ public class MainClass {
         }
     }
 
-    /*private void initializeTCPServer() {
-        TCPServer myServer = new TCPServer();
-        myServer.addObserver(new TCPServer.MessageObserver() {
-            @Override
-            public void handleMessage(String msg) throws SQLException {
-                TCPMessage chat = new TCPMessage(msg,"date","ip1","ip2");
-                DatabaseMethods.addMessage(chat);
-                if (chatWindow != null) {
-                    SwingUtilities.invokeLater(() -> chatWindow.displayMessage(chat));
-                }
-            }
-        });
 
-        try {
-            myServer.start(TCP_SERVER_PORT);
-        } catch (IOException e) {
-            LOGGER.error("Failed to start TCP Server: " + e.getMessage());
-            System.exit(1);
-        }
-    }*/
 
     private void initializeTCPServer() {
         TCPServer myServer = new TCPServer();
         myServer.addObserver(new TCPServer.MessageObserver() {
             @Override
             public void handleMessage(TCPMessage msg) throws SQLException {
-                // Assuming msg is already a TCPMessage object
                 System.out.println("Received message: " + msg.getContent());
                 DatabaseMethods.addMessage(msg);
+
+                // Determine the chat window based on the message
+                String userKey = msg.getFromUserIP(); // Or any other identifier you use
+                ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);
                 if (chatWindow != null) {
-                    SwingUtilities.invokeLater(() -> chatWindow.displayMessage(msg));
+                    SwingUtilities.invokeLater(() -> chatWindow.displayReceivedMessage(msg));
                 }
             }
         });
+
 
         try {
             myServer.start(TCP_SERVER_PORT);
@@ -165,19 +150,6 @@ public class MainClass {
             LOGGER.error("Failed to start TCP Server: " + e.getMessage());
             System.exit(1);
         }
-    }
-
-    // Static method to initialize the chat window
-    public static void initializeChatWindow(String localUserIP, TCPClient tcpClient) {
-        if (chatWindow == null) {
-            chatWindow = new ChatWindow(localUserIP, tcpClient);
-            chatWindow.setVisible(true); // Assuming there is a method to make it visible
-        }
-    }
-
-    // Method to get the chat window
-    public static ChatWindow getChatWindow() {
-        return chatWindow;
     }
 
 

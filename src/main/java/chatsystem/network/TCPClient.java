@@ -71,7 +71,7 @@ public class TCPClient {
         return in.readLine();
     }
 
-    private String serializeMessage(TCPMessage message) {
+    public String serializeMessage(TCPMessage message) {
         return message.getContent() + "," + message.getDate() + "," + message.getFromUserIP() + "," + message.getToUserIP();
     }
 

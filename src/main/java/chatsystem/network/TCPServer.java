@@ -183,6 +183,14 @@ public class TCPServer {
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            } finally {
+                try{
+                    in.close();
+                    out.close();
+                    clientSocket.close();
+                } catch (IOException ex){
+                    ex.printStackTrace();
+                }
             }
         }
 

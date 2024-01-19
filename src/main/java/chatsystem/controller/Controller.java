@@ -312,7 +312,11 @@ public class Controller implements MyObserver {
                 throw new RuntimeException(ex);
             }
 
-            new HomeTab();
+            System.out.println("STARTING HOME TAB FROM LOGIN");
+            SwingUtilities.invokeLater(() -> {
+                HomeTab homeTab = new HomeTab();
+                homeTab.setVisible(true);
+            });
             frame.dispose();
         }
         else {
@@ -345,7 +349,10 @@ public class Controller implements MyObserver {
                 new PopUpTab("Nickname already taken. Please choose another one");
             } else { //if unique i go to next tab and tell people i am connected
                 LOGGER.info("Successfully registered in.");
-                new HomeTab();
+                SwingUtilities.invokeLater(() -> {
+                    HomeTab homeTab = new HomeTab();
+                    homeTab.setVisible(true);
+                });
                 try {
                     DatabaseMethods.addMe(MainClass.me);
                     Controller.sendIAmConnected(MainClass.me);

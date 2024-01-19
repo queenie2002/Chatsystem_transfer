@@ -50,6 +50,7 @@ public class HomeTab {
 
 }*/
 
+/*
 package chatsystem.ui;
 
 import chatsystem.contacts.*;
@@ -89,11 +90,11 @@ public class HomeTab {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                /*
+
                 for (MyObserver observer : observers) {
                     observer.showOnlineContacts();
                 }
-                */
+
 
 
                 showOnlineContacts();
@@ -198,5 +199,43 @@ public class HomeTab {
         } catch (IOException ex) {
             ex.printStackTrace(); // Handle connection errors here
         }
+    }
+}
+*/
+
+package chatsystem.ui;
+import chatsystem.contacts.*;
+import chatsystem.network.TCPClient;
+import chatsystem.MainClass;
+import chatsystem.observers.MyObserver;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class HomeTab extends JFrame {
+    //private ArrayList<MyObserver> observers2 = new ArrayList<>();
+
+    /*public void addObserver2(MyObserver observer2) {
+        observers2.add(observer2);
+    }*/
+
+    public HomeTab(){
+        setTitle("HomeTab");
+        setSize(500,300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        JButton button_startChat = new JButton("Start Chatting");
+        button_startChat.addActionListener(e->{
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.setVisible(true);
+            dispose();
+        });
+
+        add(button_startChat);
     }
 }
