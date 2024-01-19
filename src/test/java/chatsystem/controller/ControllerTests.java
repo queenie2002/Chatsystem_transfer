@@ -1,5 +1,6 @@
 package chatsystem.controller;
 
+import chatsystem.MainClass;
 import chatsystem.contacts.*;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.UDPMessage;
@@ -26,12 +27,7 @@ public class ControllerTests {
     }
 
 
-    interface FallibleCode {
-
-        void run() throws Exception;
-    }
-
-    private static void assertThrows(FallibleCode code) {
+    private static void assertThrows(ContactListTests.FallibleCode code) {
         try {
             code.run();
             throw new RuntimeException("code should have thrown an exception");
@@ -39,8 +35,6 @@ public class ControllerTests {
             //ok expected an exception
         }
     }
-
-
     @BeforeEach
     void setUp() throws SQLException {
         DatabaseMethods.startConnection(alice);
@@ -48,6 +42,11 @@ public class ControllerTests {
         contacts.clearContactList();
     }
 
+
+
+
+
+    // ---------------------------RECEIVE UDP MESSAGES-------------------------//
     @Test
     void toChooseNicknameMessageHandlingTest() throws UnknownHostException {
         String message1 = "TO_CHOOSE_NICKNAME:";
@@ -95,8 +94,6 @@ public class ControllerTests {
 
     }
 
-
-
     @Test
     void iAmConnectedAreYouMessageHandlingTest() throws UnknownHostException, ContactDoesntExist {
         String message1 = "IAMCONNECTEDAREYOU: nickname: " + alice.getNickname();
@@ -128,8 +125,6 @@ public class ControllerTests {
         assert !contacts.isEmptyContactList();
 
     }
-
-
 
     @Test
     void disconnectMessageHandlingTest() throws UnknownHostException, ContactDoesntExist, SQLException, ContactAlreadyExists {
@@ -169,6 +164,11 @@ public class ControllerTests {
     }
 
 
+
+
+
+    // ---------------------------VIEW-------------------------//
+
     @Test
     void toCloseAppTest() throws SocketException {
 
@@ -184,7 +184,7 @@ public class ControllerTests {
     }
 
     @Test
-    void toDisconnectTest() throws IOException, SQLException {
+    void toDisconnectTest() throws IOException {
 
         JFrame frame = new JFrame();
         assertThrows( () -> controller.toCloseApp(frame));
@@ -198,8 +198,6 @@ public class ControllerTests {
         assert !alice.getStatus();
 
     }
-
-
 
 
 

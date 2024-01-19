@@ -1,6 +1,7 @@
 package chatsystem.observers;
 
 import chatsystem.contacts.User;
+import chatsystem.network.TCPMessage;
 import chatsystem.network.UDPMessage;
 
 import javax.swing.*;
@@ -23,6 +24,16 @@ public interface MyObserver {
 
     /** Method that is called each time a message is received*/
     void handle(UDPMessage received) throws RuntimeException;
+
+
+
+
+
+
+    // ---------------------------TCP SERVER-------------------------//
+    void handleTCPMessage(TCPMessage msg) throws SQLException;
+
+
 
 
 

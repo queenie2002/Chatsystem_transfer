@@ -1,47 +1,3 @@
-
-//        UDPSender UDPSender = new UDPSender();
-//
-//        try {
-//            UDPReceiver udpReceiver = new UDPReceiver();
-//            udpReceiver.start();
-//
-//            udpReceiver.addObserver(new UDPReceiver.Observer() {
-//                @Override
-//                public void handle(UDPMessage received) {
-//                    //whatever you want to do
-//                }
-//            });
-//
-//            Beginning beginning = new Beginning(udpReceiver, UDPSender);
-//
-//
-//        } catch (SocketException e) {
-//            System.err.println("Could not start UDP server: " + e.getMessage());
-//            System.exit(1);
-//        } catch (IOException e) {
-//            System.err.println("idk where this comes from, maybe the view ??" );
-//            System.exit(1);
-//        }
-//
-//        DatabaseMethods.startConnection(me);
-//
-//
-//
-//
-//        /*TCPServer myServer = new TCPServer();
-//
-//        TCPMessage chat = new TCPMessage("content","date","fromUserIP","toUserIP");
-//        myServer.addObserver(new TCPServer.MessageObserver() {
-//            @Override
-//            public void handleMessage(String msg) throws SQLException {
-//                DatabaseMethods.addMessage(chat);
-//            }
-//        });*/
-//    }
-//
-//
-//}
-
 package chatsystem;
 
 import chatsystem.contacts.*;
@@ -50,10 +6,10 @@ import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
 import chatsystem.observers.MyObserver;
 import chatsystem.ui.*;
+
+
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.config.Configurator;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
@@ -61,12 +17,14 @@ import java.util.ArrayList;
 
 public class MainClass {
 
+    //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
+
+
 
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
-    //private static ChatWindow chatWindow;
-
+    public static MyObserver controller = new Controller();
     public static User me;
     static {
         try {
@@ -76,7 +34,6 @@ public class MainClass {
         }
     }
 
-    public static MyObserver controller = new Controller();
 
 
 
@@ -105,11 +62,7 @@ public class MainClass {
         UDPReceiver udpReceiver;
         try {
             udpReceiver = new UDPReceiver();
-
             udpReceiver.addObserver(controller);
-
-
-
             udpReceiver.start();
 
             Beginning beginning = new Beginning();
@@ -128,21 +81,7 @@ public class MainClass {
 
     private void initializeTCPServer() {
         TCPServer myServer = new TCPServer();
-        myServer.addObserver(new TCPServer.MessageObserver() {
-            @Override
-            public void handleMessage(TCPMessage msg) throws SQLException {
-                System.out.println("Received message: " + msg.getContent());
-                DatabaseMethods.addMessage(msg);
-
-                // Determine the chat window based on the message
-                String userKey = msg.getFromUserIP(); // Or any other identifier you use
-                ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);
-                if (chatWindow != null) {
-                    SwingUtilities.invokeLater(() -> chatWindow.displayReceivedMessage(msg));
-                }
-            }
-        });
-
+        myServer.addObserver(controller);
 
         try {
             myServer.start(TCP_SERVER_PORT);
@@ -155,9 +94,9 @@ public class MainClass {
 
     private void initializeDatabaseAndContactList() throws SQLException {
 
-        // Start connection with the database
+        DatabaseMethods database = new DatabaseMethods();
+        database.addObserver(controller);
         DatabaseMethods.startConnection(me);
-
         ContactList.getInstance().addObserver(controller);
 
     }

@@ -6,10 +6,13 @@ import chatsystem.MainClass;
 import chatsystem.observers.MyObserver;
 import org.apache.logging.log4j.*;
 
+import java.io.File;
 import java.net.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Methods to use database */
 public class DatabaseMethods {
@@ -35,7 +38,7 @@ public class DatabaseMethods {
 
     /** We start the connection, create our database and create users' and me table */
     public static void startConnection(User me) throws SQLException {
-        String ipAddress = convertIPAddressForDatabase(me.getIpAddress().getHostAddress());
+        String ipAddress = changeDotsIntoUnderscore(me.getIpAddress().getHostAddress());
         String DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
         connection = DriverManager.getConnection(DATABASE_URL);
         LOGGER.info("Created database with my IP address " + ipAddress);
@@ -58,14 +61,37 @@ public class DatabaseMethods {
 
     }
 
+    /** To delete database from class in tests or in packages contacts/controller/database/network/observers/ui */
+    public static void deleteDatabase(String ipAddress) {
+        String filePath = "../../../../../my_database_"+ipAddress+".db";
 
+        File fileToDelete = new File(filePath);
 
-    /** Replaces the . in an IP Address into _ to name tables in database */
-    private static String convertIPAddressForDatabase(String ipAddress) {
-        return ipAddress.replace(".","_");
+        if (fileToDelete.exists()) {
+            fileToDelete.delete();
+        }
     }
 
 
+
+
+    /** Replaces the . in an IP Address into _ to name tables in database */
+    private static String changeDotsIntoUnderscore(String ipAddress) {
+        return ipAddress.replace(".","_");
+    }
+
+    private static String extractFormattedIP(String input) {
+        String regex = ".*?(\\d+\\.\\d+\\.\\d+\\.\\d+)";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+
+        while (matcher.find()) {
+            return matcher.group(1);
+        }
+        throw new RuntimeException("Coudln't extract IP address");
+    }
 
 
 
@@ -92,7 +118,7 @@ public class DatabaseMethods {
     }
 
     /** Checks if a user is already in the database */
-    private static boolean doesUserExist(User user) throws SQLException {
+    public static boolean doesUserExist(User user) throws SQLException {
 
         String nickname= user.getNickname();
         String sql = "SELECT COUNT(*) FROM users WHERE nickname = ?";
@@ -107,6 +133,7 @@ public class DatabaseMethods {
             }
 
         } catch (SQLException e) {
+
             LOGGER.error("Couldn't check if user exists in database" + user);
             throw new SQLException();
         }
@@ -138,7 +165,7 @@ public class DatabaseMethods {
     //CREATE TABLES
 
     /** Creates the users table in database */
-    static void createUsersTable() throws SQLException {
+    private static void createUsersTable() throws SQLException {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
                 + "nickname TEXT PRIMARY KEY , " //can make unique
                 + "ipAddress TEXT NOT NULL, "
@@ -160,7 +187,7 @@ public class DatabaseMethods {
 
     /** Creates a specific empty messages table for a user with their IP Address*/
     private static void createSpecificMessagesTable(String ipAddress) throws SQLException {
-        ipAddress = convertIPAddressForDatabase(ipAddress).substring(1);
+        ipAddress = changeDotsIntoUnderscore(extractFormattedIP(ipAddress));
 
         String specificMessagesTableQuery = "CREATE TABLE IF NOT EXISTS Messages_" + ipAddress + " ("
                 + "chatID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -221,8 +248,6 @@ public class DatabaseMethods {
             addUserSQL = "INSERT INTO Users (nickname, ipAddress, firstName, lastName, birthday, status, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
         }
 
-        String lastInsertIdSQL = "SELECT last_insert_rowid()";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(addUserSQL)) {
             preparedStatement.setString(1, user.getNickname());
             preparedStatement.setString(2, String.valueOf(user.getIpAddress()));
@@ -255,16 +280,16 @@ public class DatabaseMethods {
     /** Adds a message to database */
     public static void addMessage(TCPMessage tcpMessage) throws SQLException {
 
-        boolean table1Exists = doesTableExist("Messages_" + convertIPAddressForDatabase(tcpMessage.getFromUserIP()));
-        boolean table2Exists = doesTableExist("Messages_" + convertIPAddressForDatabase(tcpMessage.getToUserIP()));
+        boolean table1Exists = doesTableExist("Messages_" + changeDotsIntoUnderscore(tcpMessage.getFromUserIP()));
+        boolean table2Exists = doesTableExist("Messages_" + changeDotsIntoUnderscore(tcpMessage.getToUserIP()));
 
         String tableName;
 
         if (table1Exists||table2Exists) {
             if (table1Exists) {
-                tableName = "Messages_" + convertIPAddressForDatabase(tcpMessage.getFromUserIP());
+                tableName = "Messages_" + changeDotsIntoUnderscore(tcpMessage.getFromUserIP());
             } else {
-                tableName = "Messages_" + convertIPAddressForDatabase(tcpMessage.getToUserIP());
+                tableName = "Messages_" + changeDotsIntoUnderscore(tcpMessage.getToUserIP());
             }
 
             String insertMessageSQL = "INSERT INTO " + tableName + " (content, date, fromUser, toUser) VALUES (?, ?, ?, ?)";
@@ -333,7 +358,7 @@ public class DatabaseMethods {
 
                     // User found
                     user.setNickname(resultSet.getString("nickname"));
-                    user.setIpAddress(InetAddress.getByName(resultSet.getString("ipAddress").substring(1)));
+                    user.setIpAddress(InetAddress.getByName(extractFormattedIP(resultSet.getString("ipAddress"))));
                     user.setFirstName(resultSet.getString("firstName"));
                     user.setLastName(resultSet.getString("lastName"));
                     user.setBirthday(resultSet.getString("birthday"));
@@ -367,7 +392,7 @@ public class DatabaseMethods {
         ArrayList<TCPMessage> myMessagesList = new ArrayList<TCPMessage>();
 
         User user = getUser(nickname);
-        String ipAddress = convertIPAddressForDatabase(user.getIpAddress().getHostAddress());
+        String ipAddress = changeDotsIntoUnderscore(user.getIpAddress().getHostAddress());
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM messages_" + ipAddress)) {
 
@@ -448,7 +473,7 @@ public class DatabaseMethods {
                     String nickname = resultSet.getString("nickname");
                     String ipAddress = resultSet.getString("ipAddress");
                     boolean status = resultSet.getInt("status") == 1;
-                    User user = new User(nickname, "", "", "", "", status, InetAddress.getByName(ipAddress.substring(1)));
+                    User user = new User(nickname, "", "", "", "", status, InetAddress.getByName(extractFormattedIP(ipAddress)));
 
                     for (MyObserver obs : observers) {
                         obs.newContactAdded(user);
@@ -460,6 +485,10 @@ public class DatabaseMethods {
             }
         }
     }
+
+
+
+
 
 
 

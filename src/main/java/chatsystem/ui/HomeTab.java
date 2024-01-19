@@ -204,19 +204,14 @@ public class HomeTab {
 */
 
 package chatsystem.ui;
-import chatsystem.contacts.*;
-import chatsystem.network.TCPClient;
-import chatsystem.MainClass;
 import chatsystem.observers.MyObserver;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class HomeTab extends JFrame {
+
+
     //private ArrayList<MyObserver> observers2 = new ArrayList<>();
 
     /*public void addObserver2(MyObserver observer2) {

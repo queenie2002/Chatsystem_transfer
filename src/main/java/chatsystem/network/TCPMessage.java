@@ -3,28 +3,37 @@ package chatsystem.network;
 import java.util.ArrayList;
 
 public class TCPMessage {
-    // Class attributes
+
     private int chatId;
     private String content;
     private String date;
     private String fromUserIP; // User who requested the chat session
     private String toUserIP; // User who accepted the request
-    /*private boolean isActive; // Status indicating whether the chat is active or not*/
 
-    // Constructor
-    public TCPMessage(String content, String date, String fromUserIP, String toUserIP/*, boolean isActive*/) {
+
+
+
+
+    // CONSTRUCTORS
+    public TCPMessage(String content, String date, String fromUserIP, String toUserIP) {
 
         this.content = content;
         this.date = date;
         this.fromUserIP = fromUserIP;
         this.toUserIP = toUserIP;
-        /*this.isActive = isActive;*/
     }
 
     public TCPMessage() {
     }
 
-    // Getter and setter methods
+
+
+
+
+
+
+
+    // GETTERS
     public int getChatId() {
         return chatId;
     }
@@ -44,6 +53,10 @@ public class TCPMessage {
     }
 
 
+
+
+    // SETTERS
+
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
@@ -60,16 +73,25 @@ public class TCPMessage {
         this.toUserIP = toUserIP;
     }
 
+
+
+
+
+
     public static TCPMessage deserialize(String serializedData) {
         String[] parts = serializedData.split(",");
 
         if (parts.length != 4) {
             throw new IllegalArgumentException("Serialized data is invalid: " + serializedData);
         }
-
         return new TCPMessage(parts[0], parts[1], parts[2], parts[3]);
     }
 
+
+
+
+
+    // PRINT
     public static void printTCPMessage(TCPMessage message) {
         System.out.println("ChatID: "+message.getChatId()+" content: "+message.getContent()+" date: "+message.getDate()+" fromUserIP: "+message.getFromUserIP()+" toUserIP: "+message.getToUserIP());
     }

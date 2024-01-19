@@ -3,11 +3,8 @@ package chatsystem.ui;
 import chatsystem.MainClass;
 import chatsystem.network.TCPClient;
 import chatsystem.network.TCPMessage;
-import chatsystem.network.TCPServer;
-import org.sqlite.util.StringUtils;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DateFormat;

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class ContactListTests {
 
-    interface FallibleCode {
+    public interface FallibleCode {
 
         void run() throws Exception;
     }

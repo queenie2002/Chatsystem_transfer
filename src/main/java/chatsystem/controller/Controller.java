@@ -155,6 +155,24 @@ public class Controller implements MyObserver {
         }
     }
 
+    /** Adds a Contact or updates Contact with given status*/
+    private static void changeStatus(String nickname, InetAddress ipAddress, Boolean status) throws SQLException {
+        ContactList instance = ContactList.getInstance();
+        try {
+            if (!(nickname.equals("[]"))) {
+                instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
+            }
+        } catch (ContactAlreadyExists | SQLException e) {
+            try {
+                //if we know him, we change his status
+                User user = instance.getContact(nickname);
+                user.setStatus(status);
+                instance.updateContact(user);
+            } catch (ContactDoesntExist ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 
 
     /** Handles a To Choose Nickname Message
@@ -192,22 +210,25 @@ public class Controller implements MyObserver {
         LOGGER.info("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
-    /** Adds a Contact or updates Contact with given status*/
-    private static void changeStatus(String nickname, InetAddress ipAddress, Boolean status) throws SQLException {
-        ContactList instance = ContactList.getInstance();
-        try {
-            if (!(nickname.equals("[]"))) {
-                instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
-            }
-        } catch (ContactAlreadyExists | SQLException e) {
-            try {
-                //if we know him, we change his status
-                User user = instance.getContact(nickname);
-                user.setStatus(status);
-                instance.updateContact(user);
-            } catch (ContactDoesntExist ex) {
-                throw new RuntimeException(ex);
-            }
+
+
+
+
+    // ---------------------------RECEIVE TCP MESSAGES-------------------------//
+
+    /** Handles TCP Messages
+     * Adds message to database
+     * ??? OTHER THINGS----------------------------------------
+     * */
+    @Override
+    public void handleTCPMessage(TCPMessage msg) throws SQLException {
+        LOGGER.info("Received message: " + msg.getContent());
+        DatabaseMethods.addMessage(msg);
+
+        String userKey = msg.getFromUserIP();
+        ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);
+        if (chatWindow != null) {
+            SwingUtilities.invokeLater(() -> chatWindow.displayReceivedMessage(msg));
         }
     }
 
@@ -229,7 +250,6 @@ public class Controller implements MyObserver {
 
 
     // ---------------------------VIEW-------------------------//
-
 
     //GENERAL
     /** Closes the app
@@ -292,6 +312,9 @@ public class Controller implements MyObserver {
     }
 
 
+
+
+
     //LOGIN TAB
     /** Login
      * Checks login information
@@ -317,7 +340,7 @@ public class Controller implements MyObserver {
                 throw new RuntimeException(ex);
             }
 
-            System.out.println("STARTING HOME TAB FROM LOGIN");
+            LOGGER.info("STARTING HOME TAB FROM LOGIN");
             SwingUtilities.invokeLater(() -> {
                 HomeTab homeTab = new HomeTab();
                 homeTab.setVisible(true);
@@ -328,7 +351,6 @@ public class Controller implements MyObserver {
             new PopUpTab("Wrong Login information. Please try again");
         }
     }
-
 
     //REGISTER TAB
     /** Register
