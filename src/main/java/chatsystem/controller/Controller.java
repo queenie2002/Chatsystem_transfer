@@ -11,7 +11,6 @@ import chatsystem.ui.*;
 
 import org.apache.logging.log4j.*;
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
@@ -27,6 +26,8 @@ import java.util.regex.*;
  * Handles login and register
  * */
 public class Controller implements MyObserver {
+
+
 
 
     //LOGGER
@@ -54,11 +55,12 @@ public class Controller implements MyObserver {
 
     /** Sends I Am Connected broadcast
      * Used so the people connected can update their Contact List and know I am connected
+     * Or when I changed my nickname, so they can update their Contact List
      * */
     private static void sendIAmConnected (User user) throws IOException {
         String message = "IAMCONNECTED: nickname: " + user.getNickname();
         UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
-        LOGGER.info("SENT: I am connected.");
+        LOGGER.info("SENT: I am connected." + user.getNickname());
     }
 
     /** Sends I Am Connected, Are You ? broadcast
@@ -87,7 +89,7 @@ public class Controller implements MyObserver {
     // ---------------------------RECEIVE UDP MESSAGES-------------------------//
 
     /** Extract information from a pattern */
-    private static String[] extractInfoFromPattern(String inputString) throws RuntimeException {
+    private static String[] extractInfoFromPattern(String inputString) {
         List<String> patternList = List.of(
                 "TO_CHOOSE_NICKNAME:",
                 "IAMCONNECTED: nickname: (\\S+)",
@@ -136,7 +138,7 @@ public class Controller implements MyObserver {
 
     /** Gets a UDP message, checks what kind of message it is and applies the correct method */
     @Override
-    public void handle(UDPMessage message) throws RuntimeException{
+    public void handle(UDPMessage message) {
 
         String[] res = extractInfoFromPattern(message.content());
 
@@ -163,11 +165,12 @@ public class Controller implements MyObserver {
             if (!(nickname.equals("[]"))) {
                 instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
             }
-        } catch (ContactAlreadyExists | SQLException | UnknownHostException e) {
+        } catch (ContactAlreadyExists e) {
             try {
                 //if we know him, we change his status
                 User user = instance.getContact(ipAddress);
                 user.setStatus(status);
+                user.setNickname(nickname);
                 instance.updateContact(user);
             } catch (ContactDoesntExist | UnknownHostException ex) {
                 throw new RuntimeException(ex);
@@ -186,7 +189,7 @@ public class Controller implements MyObserver {
     }
 
     /** Handles a I Am Connected Message
-     * Adds person to our Contact List with status connected or updates status of the person who sent message to connected
+     * Adds person to our Contact List with status connected or updates status and nickname of the person who sent message to connected
      * */
     private static void handleIAmConnected(String nickname, InetAddress ipAddress) throws SQLException {
         changeStatus(nickname, ipAddress, true);
@@ -222,7 +225,7 @@ public class Controller implements MyObserver {
      * ??? OTHER THINGS----------------------------------------
      * */
     @Override
-    public void handleTCPMessage(TCPMessage msg) throws SQLException, UnknownHostException {
+    public void handleTCPMessage(TCPMessage msg)  {
         LOGGER.info("Received message: " + msg.getContent());
         DatabaseMethods.addMessage(msg);
 
@@ -242,8 +245,16 @@ public class Controller implements MyObserver {
 
     /** Adds a user to database*/
     @Override
-    public void newContactAdded(User user) throws SQLException, UnknownHostException {
+    public void contactAddedOrUpdated(User user) {
         DatabaseMethods.addUser(user);
+    }
+
+    /** Updates MainClass.me, me in database and warns others to update me */
+    public void changingNickname(String nickname) throws IOException {
+        MainClass.me.setNickname(nickname);
+        sendIAmConnected(me);
+        DatabaseMethods.addMe(MainClass.me);
+        LOGGER.info("Changing my nickname to " + nickname);
     }
 
 
@@ -345,6 +356,9 @@ public class Controller implements MyObserver {
             SwingUtilities.invokeLater(() -> {
                 HomeTab homeTab = new HomeTab();
                 homeTab.setVisible(true);
+
+
+
             });
             frame.dispose();
         }
@@ -362,11 +376,13 @@ public class Controller implements MyObserver {
      * Send a I Am Connected message so the people connected can add us to their database
      * Go to HomeTab
      * */
-    public void registerFunction(String nicknameInfo, String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo, JFrame frame) throws SQLException {
+    public void registerFunction(String nicknameInfo, String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo, JFrame frame) {
         if (nicknameInfo.isEmpty()) {
             new PopUpTab("Nickname can't be empty. Please choose one.");
         } else if (passwordInfo.isEmpty()) {
             new PopUpTab("Password can't be empty. Please choose one.");
+        } else if (nicknameInfo.contains(" ")) {
+            new PopUpTab("Nicknames can't have blank spaces. Please choose another one.");
         } else {
 
             me = new User(nicknameInfo, firstNameInfo, lastNameInfo, birthdayInfo, passwordInfo, true, me.getIpAddress());

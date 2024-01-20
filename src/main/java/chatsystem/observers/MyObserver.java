@@ -16,7 +16,7 @@ public interface MyObserver {
     // ---------------------------DATABASE-------------------------//
 
     /** Method that is called each time a contact is added/updated */
-    void newContactAdded(User user) throws SQLException, UnknownHostException;
+    void contactAddedOrUpdated(User user) throws SQLException, UnknownHostException;
 
 
 
@@ -25,6 +25,7 @@ public interface MyObserver {
     /** Method that is called each time a message is received*/
     void handle(UDPMessage received) throws RuntimeException;
 
+    void changingNickname(String nickname) throws IOException, SQLException;
 
 
 
