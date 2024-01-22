@@ -2,6 +2,7 @@ package chatsystem.ui;
 
 import chatsystem.MainClass;
 import chatsystem.contacts.User;
+import chatsystem.database.DatabaseMethods;
 import chatsystem.network.TCPClient;
 import chatsystem.network.TCPMessage;
 
@@ -70,9 +71,11 @@ public class ChatWindow2 extends JPanel{
 
                 String toUserIP = user.getIpAddress().getHostAddress(); //"192.168.1.1"; //in the meantime i put a random fake address
 
-                    TCPMessage message = new TCPMessage(messageContent, now, fromUserIP, toUserIP);
+                TCPMessage message = new TCPMessage(messageContent, now, fromUserIP, toUserIP);
                 String serializedMessage = tcpClient.serializeMessage(message);
                 tcpClient.sendMessage(message);
+                // Add the sent message to the database
+                DatabaseMethods.addMessage(message);
                 displayReceivedMessage(message);
                 messageInputField.setText("");
             } catch (IOException e) {
