@@ -245,9 +245,7 @@ public class Controller implements MyObserver {
 
     /** Adds a user to database*/
     @Override
-    public void contactAddedOrUpdated(User user) {
-        DatabaseMethods.addUser(user);
-    }
+    public void contactAddedOrUpdated(User user) {DatabaseMethods.addUser(user);}
 
     /** Updates MainClass.me, me in database and warns others to update me */
     public void changingNickname(String nickname) throws IOException {
