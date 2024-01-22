@@ -204,6 +204,7 @@ public class HomeTab {
 */
 
 package chatsystem.ui;
+import chatsystem.contacts.ContactList;
 import chatsystem.observers.MyObserver;
 
 import java.awt.*;
@@ -225,8 +226,15 @@ public class HomeTab extends JFrame {
         setLayout(new FlowLayout());
 
         JButton button_startChat = new JButton("Start Chatting");
+        /*button_startChat.addActionListener(e->{
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.setVisible(true);
+            dispose();
+        });*/
         button_startChat.addActionListener(e->{
             MainWindow mainWindow = new MainWindow();
+            ContactList.getInstance().addObserver(mainWindow);
+            System.out.println("MainWindow added as observer"); // Debug print
             mainWindow.setVisible(true);
             dispose();
         });

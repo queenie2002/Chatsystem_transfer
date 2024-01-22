@@ -27,6 +27,8 @@ public class HomeTab2 extends JFrame {
         JButton button_startChat = new JButton("Start Chatting");
         button_startChat.addActionListener(e->{
             MainWindow mainWindow = new MainWindow();
+            ContactList.getInstance().addObserver(mainWindow);
+            System.out.println("MainWindow added as observer"); // Debug print
             mainWindow.setVisible(true);
             dispose();
         });
