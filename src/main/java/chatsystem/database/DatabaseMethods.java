@@ -9,6 +9,7 @@ import org.apache.logging.log4j.*;
 import java.io.File;
 import java.net.*;
 import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -345,7 +346,7 @@ public class DatabaseMethods {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(insertMessageSQL)) {
 
                     preparedStatement.setString(1, tcpMessage.getContent());
-                    preparedStatement.setString(2, tcpMessage.getDate());
+                    preparedStatement.setString(2, tcpMessage.getTimestamp().toString());
                     preparedStatement.setString(3, tcpMessage.getFromUserIP());
                     preparedStatement.setString(4, tcpMessage.getToUserIP());
                     preparedStatement.executeUpdate();
@@ -469,7 +470,7 @@ public class DatabaseMethods {
                     // User found
                     message.setChatId(resultSet.getInt("chatID"));
                     message.setContent(resultSet.getString("content"));
-                    message.setDate(resultSet.getString("date"));
+                    message.setDate(Instant.parse(resultSet.getString("date")));
                     message.setFromUserIP(resultSet.getString("fromUser"));
                     message.setToUserIP(resultSet.getString("toUser"));
 

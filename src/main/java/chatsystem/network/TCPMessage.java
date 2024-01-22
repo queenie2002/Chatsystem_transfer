@@ -1,12 +1,13 @@
 package chatsystem.network;
 
 import java.util.ArrayList;
+import java.time.Instant;
 
 public class TCPMessage {
 
     private int chatId;
     private String content;
-    private String date;
+    private Instant timestamp;
     private String fromUserIP; // User who requested the chat session
     private String toUserIP; // User who accepted the request
 
@@ -15,10 +16,10 @@ public class TCPMessage {
 
 
     // CONSTRUCTORS
-    public TCPMessage(String content, String date, String fromUserIP, String toUserIP) {
+    public TCPMessage(String content, Instant timestamp, String fromUserIP, String toUserIP) {
 
         this.content = content;
-        this.date = date;
+        this.timestamp = timestamp;
         this.fromUserIP = fromUserIP;
         this.toUserIP = toUserIP;
     }
@@ -37,8 +38,8 @@ public class TCPMessage {
     public int getChatId() {
         return chatId;
     }
-    public String getDate() {
-        return date;
+    public Instant getTimestamp() {
+        return timestamp;
     }
     public String getContent() {
         return content;
@@ -60,8 +61,8 @@ public class TCPMessage {
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate(Instant timestamp) {
+        this.timestamp = timestamp;
     }
     public void setContent (String content) {
         this.content = content;
@@ -84,16 +85,15 @@ public class TCPMessage {
         if (parts.length != 4) {
             throw new IllegalArgumentException("Serialized data is invalid: " + serializedData);
         }
-        return new TCPMessage(parts[0], parts[1], parts[2], parts[3]);
+
+        Instant timestamp = Instant.parse(parts[1]); // Convert the string back to Instant
+        return new TCPMessage(parts[0], timestamp, parts[2], parts[3]);
     }
 
-
-
-
-
-    // PRINT
     public static void printTCPMessage(TCPMessage message) {
-        System.out.println("ChatID: "+message.getChatId()+" content: "+message.getContent()+" date: "+message.getDate()+" fromUserIP: "+message.getFromUserIP()+" toUserIP: "+message.getToUserIP());
+        System.out.println("ChatID: " + message.getChatId() + " content: " + message.getContent()
+                + " date: " + message.getTimestamp().toString() + " fromUserIP: " + message.getFromUserIP()
+                + " toUserIP: " + message.getToUserIP());
     }
 
     public static void printTCPMessageList(ArrayList<TCPMessage> messagesList) {

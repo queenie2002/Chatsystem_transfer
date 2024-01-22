@@ -31,7 +31,7 @@ public class TCPClient {
     }
 
     public String serializeMessage(TCPMessage message) {
-        return message.getContent() + "," + message.getDate() + "," + message.getFromUserIP() + "," + message.getToUserIP();
+        return message.getContent() + "," + message.getTimestamp().toString() + "," + message.getFromUserIP() + "," + message.getToUserIP();
     }
 
     public void stopConnection() throws IOException {

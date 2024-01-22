@@ -10,6 +10,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 
@@ -62,15 +63,14 @@ public class ChatWindow2 extends JPanel{
         String messageContent = messageInputField.getText().trim();
         if (!messageContent.isEmpty()) {
             try {
-                // Current date and time
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String currentDate = dateFormat.format(new Date());
+
+                Instant now = Instant.now();
 
                 String fromUserIP = MainClass.me.getIpAddress().getHostAddress();
 
-                String toUserIP = "192.168.1.1"; //in the meantime i put a random fake address
+                String toUserIP = user.getIpAddress().getHostAddress(); //"192.168.1.1"; //in the meantime i put a random fake address
 
-                    TCPMessage message = new TCPMessage(messageContent, currentDate, fromUserIP, toUserIP);
+                    TCPMessage message = new TCPMessage(messageContent, now, fromUserIP, toUserIP);
                 String serializedMessage = tcpClient.serializeMessage(message);
                 tcpClient.sendMessage(message);
                 displayReceivedMessage(message);
