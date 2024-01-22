@@ -1,6 +1,7 @@
 package chatsystem.ui;
 
 import chatsystem.MainClass;
+import chatsystem.contacts.User;
 import chatsystem.network.TCPClient;
 import chatsystem.network.TCPMessage;
 
@@ -16,8 +17,10 @@ public class ChatWindow2 extends JPanel{
     private JTextArea messageArea;
     private JTextField messageInputField;
     private TCPClient tcpClient;
+    private User user;
 
-    public ChatWindow2(String userIP){
+    public ChatWindow2(User user){
+        this.user=user;
         setLayout(new BorderLayout());
 
         messageArea = new JTextArea(10,30);
@@ -34,7 +37,7 @@ public class ChatWindow2 extends JPanel{
 
         this.tcpClient = new TCPClient();
         try{
-            tcpClient.startConnection(userIP, MainClass.TCP_SERVER_PORT);
+            tcpClient.startConnection(user.getIpAddress().getHostAddress(), MainClass.TCP_SERVER_PORT);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,14 +46,18 @@ public class ChatWindow2 extends JPanel{
     public void displayReceivedMessage(TCPMessage message) {
         SwingUtilities.invokeLater(() -> {
             String senderIP = message.getFromUserIP();
-            String displayText = senderIP.equals(MainClass.me.getIpAddress().getHostAddress())
-                    ? "Me: "
-                    : senderIP + ": ";  // Use sender's IP address
+            String displayText;
+            if (senderIP.equals(MainClass.me.getIpAddress().getHostAddress())) {
+                displayText = "Me: ";
+            } else {
+                displayText = this.user.getNickname() + " (" + senderIP + "): "; // Use user's nickname
+            }
             displayText += message.getContent();
             messageArea.append(displayText + "\n");
             messageArea.setCaretPosition(messageArea.getDocument().getLength());
         });
     }
+
     private void sendMessage() {
         String messageContent = messageInputField.getText().trim();
         if (!messageContent.isEmpty()) {

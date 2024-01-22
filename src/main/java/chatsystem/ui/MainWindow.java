@@ -69,7 +69,7 @@ public class MainWindow extends JFrame implements MyObserver {
         String userKey = user.getIpAddress().getHostAddress();
         CardLayout cardLayout = (CardLayout) chatPanel.getLayout();
         if(!chatSessions.containsKey(userKey)){
-            ChatWindow2 chatWindow = new ChatWindow2(user.getIpAddress().getHostAddress());
+            ChatWindow2 chatWindow = new ChatWindow2(user);
             chatSessions.put(userKey, chatWindow);
             chatPanel.add(chatWindow, userKey);
         }
