@@ -9,9 +9,11 @@ import chatsystem.network.TCPMessage;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -23,6 +25,10 @@ public class ChatWindow2 extends JPanel{
 
     public ChatWindow2(User user){
         this.user=user;
+
+        displayMessageHistory();
+
+
         setLayout(new BorderLayout());
 
         messageArea = new JTextArea(10,30);
@@ -83,5 +89,20 @@ public class ChatWindow2 extends JPanel{
             }
         }
     }
+
+    private void displayMessageHistory() {
+        try {
+            InetAddress myIP = MainClass.me.getIpAddress();
+            InetAddress userIP = user.getIpAddress();
+
+            ArrayList<TCPMessage> messageHistory = DatabaseMethods.getMessagesList(userIP);
+            for (TCPMessage message : messageHistory) {
+                displayReceivedMessage(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
