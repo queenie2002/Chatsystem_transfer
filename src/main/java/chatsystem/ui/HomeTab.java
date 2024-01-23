@@ -66,9 +66,8 @@ public class HomeTab extends JFrame {
         button_startChat.addActionListener(e->{
             MainWindow mainWindow = new MainWindow();
             ContactList.getInstance().addObserver(mainWindow);
-            System.out.println("MainWindow added as observer"); // Debug print
             mainWindow.setVisible(true);
-            dispose();
+            frame.dispose();
         });
         startChatPanel.add(button_startChat, BorderLayout.CENTER);
         startChatPanel.setSize(new Dimension(100, 100));

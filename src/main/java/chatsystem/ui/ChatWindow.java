@@ -55,7 +55,7 @@ public class ChatWindow extends JPanel{
             if (senderIP.equals(MainClass.me.getIpAddress().getHostAddress())) {
                 displayText = "Me: ";
             } else {
-                displayText = this.user.getNickname() ;
+                displayText = this.user.getNickname() + ": " ;
             }
             displayText += message.getContent();
             messageArea.append(displayText + "\n");
