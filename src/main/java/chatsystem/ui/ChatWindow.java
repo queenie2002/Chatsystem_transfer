@@ -10,20 +10,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 
 
-public class ChatWindow2 extends JPanel{
+public class ChatWindow extends JPanel{
     private JTextArea messageArea;
     private JTextField messageInputField;
     private TCPClient tcpClient;
     private User user;
 
-    public ChatWindow2(User user){
+    public ChatWindow(User user){
         this.user=user;
 
         displayMessageHistory();
@@ -58,7 +55,7 @@ public class ChatWindow2 extends JPanel{
             if (senderIP.equals(MainClass.me.getIpAddress().getHostAddress())) {
                 displayText = "Me: ";
             } else {
-                displayText = this.user.getNickname() + " (" + senderIP + "): "; // Use user's nickname
+                displayText = this.user.getNickname() ;
             }
             displayText += message.getContent();
             messageArea.append(displayText + "\n");
@@ -75,7 +72,7 @@ public class ChatWindow2 extends JPanel{
 
                 String fromUserIP = MainClass.me.getIpAddress().getHostAddress();
 
-                String toUserIP = user.getIpAddress().getHostAddress(); //"192.168.1.1"; //in the meantime i put a random fake address
+                String toUserIP = user.getIpAddress().getHostAddress();
 
                 TCPMessage message = new TCPMessage(messageContent, now, fromUserIP, toUserIP);
                 String serializedMessage = tcpClient.serializeMessage(message);
