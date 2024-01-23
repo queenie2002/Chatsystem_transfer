@@ -28,13 +28,13 @@ public class Beginning extends JFrame {
         JFrame frame = new JFrame("Welcome To The ChatSystem");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 600);
-        frame.setLocationRelativeTo(null); //center the JFrame on the screen
+        frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
 
 
 
-        JPanel panel = new JPanel(new GridLayout(1, 2));
+        JPanel registerOrLoginPanel = new JPanel(new GridLayout(1, 2));
 
         JButton registerButton = new JButton("Register");
         JButton loginButton = new JButton("Login");
@@ -59,9 +59,9 @@ public class Beginning extends JFrame {
             }
         });
 
-        panel.add(registerButton);
-        panel.add(loginButton);
-        panel.setBorder(new EmptyBorder(200, 100, 200, 100));
+        registerOrLoginPanel.add(registerButton);
+        registerOrLoginPanel.add(loginButton);
+        registerOrLoginPanel.setBorder(new EmptyBorder(200, 100, 200, 100));
 
 
 
@@ -71,7 +71,7 @@ public class Beginning extends JFrame {
 
 
         //Redirection panel
-        JPanel panel1 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+        JPanel closePanel = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
@@ -83,17 +83,17 @@ public class Beginning extends JFrame {
             }
         });
 
-        panel1.add(new JLabel());
-        panel1.add(new JLabel());
-        panel1.add(closeButton);
-        panel1.setSize(600, 100);
+        closePanel.add(new JLabel());
+        closePanel.add(new JLabel());
+        closePanel.add(closeButton);
+        closePanel.setSize(600, 100);
 
 
 
 
 
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(panel1, BorderLayout.PAGE_END);
+        frame.add(registerOrLoginPanel, BorderLayout.CENTER);
+        frame.add(closePanel, BorderLayout.PAGE_END);
         frame.setVisible(true);
     }
 
