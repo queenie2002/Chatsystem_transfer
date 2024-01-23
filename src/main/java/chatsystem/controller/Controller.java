@@ -38,7 +38,8 @@ public class Controller implements MyObserver {
     //BROADCAST_ADDRESS
     private static final String BROADCAST_ADDRESS = "255.255.255.255";
 
-
+    private TCPClient tcpClient;
+    private TCPServer tcpServer;
 
 
 
@@ -292,10 +293,31 @@ public class Controller implements MyObserver {
     public void toDisconnect(JFrame frame, User me) throws IOException {
         sendDisconnect(me);
         me.setStatus(false);
-        //close tcp sessions
+
+        // Close TCP client session
+        if (this.tcpClient != null) {
+            try {
+                this.tcpClient.stopConnection();
+            } catch (IOException e) {
+                LOGGER.error("Error closing TCP client connection: " + e.getMessage(), e);
+            }
+            this.tcpClient = null; // Clear the reference
+        }
+
+        // Close TCP server and its client connections
+        if (this.tcpServer != null) {
+            try {
+                this.tcpServer.stopServer();
+            } catch (IOException e) {
+                LOGGER.error("Error stopping TCP server: " + e.getMessage(), e);
+            }
+            this.tcpServer = null; // Clear the reference
+        }
+
         LOGGER.trace("Disconnected successfully");
         toCloseApp(frame);
     }
+
 
 
     //BEGINNING TAB

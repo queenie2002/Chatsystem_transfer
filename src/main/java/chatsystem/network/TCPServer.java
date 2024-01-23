@@ -1,16 +1,14 @@
-
 package chatsystem.network;
 
 import chatsystem.observers.MyObserver;
 
 import java.net.*;
 import java.io.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TCPServer {
-
 
     //OBSERVER
     private List<MyObserver> observers = new ArrayList<>();
@@ -23,20 +21,28 @@ public class TCPServer {
         }
     }
 
-
-
     private static ServerSocket serverSocket;
+    private List<ClientHandler> clientHandlers = new CopyOnWriteArrayList<>();
+
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         while (true) {
-            new ClientHandler(serverSocket.accept(), this).start();
+            ClientHandler clientHandler = new ClientHandler(serverSocket.accept(), this);
+            clientHandlers.add(clientHandler);
+            clientHandler.start();
         }
     }
 
+    public void stopServer() throws IOException {
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.stopClientConnection();
+        }
+        clientHandlers.clear();
 
-
-
-
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            serverSocket.close();
+        }
+    }
 
     private static class ClientHandler extends Thread {
         private Socket clientSocket;
@@ -65,15 +71,20 @@ public class TCPServer {
                     }
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             } finally {
-                try{
-                    in.close();
-                    out.close();
-                    clientSocket.close();
-                } catch (IOException ex){
-                    ex.printStackTrace();
-                }
+                stopClientConnection();
+                server.clientHandlers.remove(this);
+            }
+        }
+
+        public void stopClientConnection() {
+            try {
+                if (out != null) out.close();
+                if (in != null) in.close();
+                if (clientSocket != null) clientSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

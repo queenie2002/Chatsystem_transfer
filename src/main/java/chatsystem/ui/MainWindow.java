@@ -45,6 +45,10 @@ public class MainWindow extends JFrame implements MyObserver {
         changeNicknameButton.addActionListener(e -> onChangeNickname());
         userPanel.add(changeNicknameButton);
 
+        JButton disconnectButton = new JButton("Disconnect");
+        disconnectButton.addActionListener(e -> onDisconnect());
+        userPanel.add(disconnectButton);
+
     }
 
     private void initializeOnlineUsersPanel(){
@@ -143,6 +147,14 @@ public class MainWindow extends JFrame implements MyObserver {
         // Revalidate and repaint the panel to reflect the changes
         onlineUsersPanel.revalidate();
         onlineUsersPanel.repaint();
+    }
+
+    private void onDisconnect() {
+        try {
+            MainClass.controller.toDisconnect(this, MainClass.me);
+        } catch (IOException ex) {
+            ex.printStackTrace(); 
+        }
     }
 
     @Override
