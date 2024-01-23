@@ -15,7 +15,7 @@ import java.util.List;
 public class Beginning extends JFrame {
 
 
-   //OBSERVERS
+    //OBSERVERS
     List<MyObserver> observers = new ArrayList<>();
     public void addObserver(MyObserver obs) {
         this.observers.add(obs);
