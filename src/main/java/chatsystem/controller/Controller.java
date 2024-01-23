@@ -393,8 +393,8 @@ public class Controller implements MyObserver {
             HomeTab hometab = new HomeTab();
             hometab.addObserver(MainClass.controller);
             hometab.setVisible(true);
-
             frame.dispose();
+
         }
         else {
             new PopUpTab("Wrong Login information. Please try again");
