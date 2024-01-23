@@ -3,8 +3,6 @@ package chatsystem.ui;
 import chatsystem.MainClass;
 import chatsystem.contacts.ContactList;
 import chatsystem.contacts.User;
-import chatsystem.controller.Controller;
-import chatsystem.database.DatabaseMethods;
 import chatsystem.network.TCPMessage;
 import chatsystem.network.UDPMessage;
 import chatsystem.observers.MyObserver;
@@ -22,7 +20,7 @@ public class MainWindow extends JFrame implements MyObserver {
     private JPanel userPanel;
     private JPanel onlineUsersPanel;
     private JPanel chatPanel;
-    private static HashMap<String,ChatWindow2> chatSessions = new HashMap<>();
+    private static HashMap<String, ChatWindow> chatSessions = new HashMap<>();
 
     public MainWindow(){
         setTitle("Chat System");
@@ -71,7 +69,7 @@ public class MainWindow extends JFrame implements MyObserver {
         String userKey = user.getIpAddress().getHostAddress();
         CardLayout cardLayout = (CardLayout) chatPanel.getLayout();
         if(!chatSessions.containsKey(userKey)){
-            ChatWindow2 chatWindow = new ChatWindow2(user);
+            ChatWindow chatWindow = new ChatWindow(user);
             chatSessions.put(userKey, chatWindow);
             chatPanel.add(chatWindow, userKey);
         }
@@ -82,7 +80,7 @@ public class MainWindow extends JFrame implements MyObserver {
         return ContactList.getInstance().getConnectedContactsList();
     }
 
-    public static ChatWindow2 getChatWindowForUser(String userKey) {
+    public static ChatWindow getChatWindowForUser(String userKey) {
         return chatSessions.get(userKey);
     }
 

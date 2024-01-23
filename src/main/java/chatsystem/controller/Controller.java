@@ -236,7 +236,7 @@ public class Controller implements MyObserver {
         DatabaseMethods.addMessage(msg);
 
         String userKey = msg.getFromUserIP();
-        ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);
+        ChatWindow chatWindow = MainWindow.getChatWindowForUser(userKey);
         if (chatWindow != null) {
             SwingUtilities.invokeLater(() -> chatWindow.displayReceivedMessage(msg));
         }

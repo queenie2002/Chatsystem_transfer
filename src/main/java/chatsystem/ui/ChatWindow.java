@@ -10,20 +10,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 
 
-public class ChatWindow2 extends JPanel{
+public class ChatWindow extends JPanel{
     private JTextArea messageArea;
     private JTextField messageInputField;
     private TCPClient tcpClient;
     private User user;
 
-    public ChatWindow2(User user){
+    public ChatWindow(User user){
         this.user=user;
 
         displayMessageHistory();
