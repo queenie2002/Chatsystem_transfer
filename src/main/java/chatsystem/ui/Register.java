@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,7 +54,7 @@ public class Register {
 
 
         //Register Panel
-        JPanel registerPanel = new JPanel(new GridLayout(2, 2));
+        JPanel registerPanel = new JPanel(new GridLayout(1, 4));
 
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(new ActionListener() {
@@ -79,6 +80,12 @@ public class Register {
         registerPanel.add(nickname);
         registerPanel.add(new JLabel("Password:"));
         registerPanel.add(password);
+
+
+        JPanel biggerPanel = new JPanel(new BorderLayout());
+        Border marginBorder = BorderFactory.createEmptyBorder(200, 70, 200, 100);
+        registerPanel.setBorder(marginBorder);
+        biggerPanel.add(registerPanel);
 
 
 
@@ -122,7 +129,7 @@ public class Register {
 
         //add all panels to frame
         frame.add(labelPanel, BorderLayout.PAGE_START);
-        frame.add(registerPanel, BorderLayout.CENTER);
+        frame.add(biggerPanel, BorderLayout.CENTER);
         frame.add(redirectionPanel, BorderLayout.PAGE_END);
         frame.setVisible(true);
 

@@ -16,10 +16,7 @@ import java.util.ArrayList;
 /** Login Tab */
 public class Login {
 
-    private JTextField jtField = new JTextField();
-    private JPasswordField jpasswordField = new JPasswordField();
-
-
+    
     //OBSERVERS
     ArrayList<MyObserver> observers = new ArrayList<>();
     public synchronized void addObserver(MyObserver obs) {
@@ -27,6 +24,13 @@ public class Login {
     }
 
 
+    
+
+    private JTextField jtField = new JTextField();
+    private JPasswordField jpasswordField = new JPasswordField();
+
+
+    
 
 
     public  Login() {
@@ -60,22 +64,26 @@ public class Login {
         });
 
 
-        JPanel panel = new JPanel(new FlowLayout());
+        JPanel labelPanel = new JPanel(new FlowLayout());
         JLabel loginLabel = new JLabel("Login", JLabel.CENTER);
         loginLabel.setPreferredSize(new Dimension(175, 100));
-        panel.add(loginLabel);
+        labelPanel.add(loginLabel);
 
-        JPanel panel1 = new JPanel(new GridLayout(1, 4));
-        panel1.add(new JLabel("Nickname"));
-        panel1.add(jtField);
-        panel1.add(new JLabel("Password"));
-        panel1.add(jpasswordField);
-        panel1.setSize(new Dimension(400, 400));
+        JPanel loginPanel = new JPanel(new GridLayout(1, 4));
+        loginPanel.add(new JLabel("Nickname"));
+        loginPanel.add(jtField);
+        loginPanel.add(new JLabel("Password"));
+        loginPanel.add(jpasswordField);
+        loginPanel.setSize(new Dimension(400, 400));
 
         JPanel biggerPanel = new JPanel(new BorderLayout());
         Border marginBorder = BorderFactory.createEmptyBorder(200, 70, 200, 100);
-        panel1.setBorder(marginBorder);
-        biggerPanel.add(panel1);
+        loginPanel.setBorder(marginBorder);
+        biggerPanel.add(loginPanel);
+
+
+
+
 
         //Redirection Panel
         JButton closeButton = new JButton("Close");
@@ -103,20 +111,16 @@ public class Login {
         });
 
 
-
-        // Create layout
-        JPanel panel2 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
-        panel2.add(closeButton);
-        panel2.add(previousButton);
-        panel2.add(button_login);
-        panel2.setSize(600, 100);
+        JPanel redirectionPanel = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+        redirectionPanel.add(closeButton);
+        redirectionPanel.add(previousButton);
+        redirectionPanel.add(button_login);
+        redirectionPanel.setSize(600, 100);
 
 
-        frame.add(panel, BorderLayout.PAGE_START);
+        frame.add(labelPanel, BorderLayout.PAGE_START);
         frame.add(biggerPanel, BorderLayout.CENTER);
-        frame.add(panel2, BorderLayout.PAGE_END);
-
-
+        frame.add(redirectionPanel, BorderLayout.PAGE_END);
         frame.setVisible(true);
     }
 

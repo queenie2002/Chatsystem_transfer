@@ -369,6 +369,7 @@ public class Controller implements MyObserver {
 
             //we open Home Tab
             HomeTab hometab = new HomeTab();
+            hometab.addObserver(MainClass.controller);
             hometab.setVisible(true);
 
             frame.dispose();
@@ -411,6 +412,8 @@ public class Controller implements MyObserver {
                 LOGGER.trace("Successfully registered in.");
                 HomeTab hometab = new HomeTab();
                 hometab.setVisible(true);
+                hometab.addObserver(MainClass.controller);
+
 
                 try {
                     //we memorize me in database and warn others that i'm connected
