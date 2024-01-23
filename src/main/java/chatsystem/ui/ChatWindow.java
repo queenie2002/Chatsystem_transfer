@@ -55,7 +55,7 @@ public class ChatWindow extends JPanel{
             if (senderIP.equals(MainClass.me.getIpAddress().getHostAddress())) {
                 displayText = "Me: ";
             } else {
-                displayText = this.user.getNickname() + " (" + senderIP + "): "; // Use user's nickname
+                displayText = this.user.getNickname() ;
             }
             displayText += message.getContent();
             messageArea.append(displayText + "\n");
@@ -72,7 +72,7 @@ public class ChatWindow extends JPanel{
 
                 String fromUserIP = MainClass.me.getIpAddress().getHostAddress();
 
-                String toUserIP = user.getIpAddress().getHostAddress(); //"192.168.1.1"; //in the meantime i put a random fake address
+                String toUserIP = user.getIpAddress().getHostAddress();
 
                 TCPMessage message = new TCPMessage(messageContent, now, fromUserIP, toUserIP);
                 String serializedMessage = tcpClient.serializeMessage(message);

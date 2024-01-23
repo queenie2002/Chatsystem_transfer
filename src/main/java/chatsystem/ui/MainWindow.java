@@ -10,7 +10,6 @@ import chatsystem.observers.MyObserver;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -105,7 +104,7 @@ public class MainWindow extends JFrame implements MyObserver {
                 try {
                     MainClass.controller.changingNickname(newNickname);
                     refreshUserLabel();
-                } catch (IOException | SQLException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

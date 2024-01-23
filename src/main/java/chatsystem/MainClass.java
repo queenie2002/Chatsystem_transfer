@@ -24,7 +24,10 @@ public class MainClass {
 
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
-    public static MyObserver controller = new Controller();
+
+    public static Controller controller = new Controller();
+
+    //my information, empty to bein with
     public static User me;
     static {
         try {
@@ -37,7 +40,7 @@ public class MainClass {
 
 
 
-    public static void main(String[] args) throws SQLException, UnknownHostException {
+    public static void main(String[] args) throws SQLException {
 
         Configurator.setRootLevel(Level.INFO);
         LOGGER.info("Starting ChatSystem application");
@@ -52,9 +55,6 @@ public class MainClass {
 
         // Initialize and start TCP server
         mainclass.initializeTCPServer();
-
-        // Check online contacts
-        mainclass.checkOnlineContacts();
 
     }
 
@@ -92,7 +92,7 @@ public class MainClass {
     }
 
 
-    private void initializeDatabaseAndContactList() throws SQLException {
+    private void initializeDatabaseAndContactList() {
 
         DatabaseMethods database = new DatabaseMethods();
         database.addObserver(controller);
@@ -100,19 +100,6 @@ public class MainClass {
         DatabaseMethods.initializeDatabase();
         ContactList.getInstance().addObserver(controller);
 
-    }
-
-    private void checkOnlineContacts() {
-        ArrayList<User> onlineUsers = ContactList.getInstance().getConnectedContactsList();
-
-        if (onlineUsers.isEmpty()) {
-            System.out.println("No contacts are online.");
-        } else {
-            System.out.println("Online Contacts:");
-            for (User user : onlineUsers) {
-                System.out.println("Nickname: " + user.getNickname() + ", IP Address: " + user.getIpAddress());
-            }
-        }
     }
 
 }

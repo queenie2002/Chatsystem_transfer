@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -47,7 +46,7 @@ public class Register {
 
 
 
-        JPanel panel1 = new JPanel(new GridLayout(2, 2)); //arranges the components in a grid
+        JPanel panel1 = new JPanel(new GridLayout(2, 2));
 
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(new ActionListener() {
@@ -77,7 +76,7 @@ public class Register {
 
 
         //Redirection Panel
-        JPanel panel2 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+        JPanel panel2 = new JPanel(new GridLayout(1, 3));
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
