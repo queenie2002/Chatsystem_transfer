@@ -90,12 +90,15 @@ public class TCPMessage {
         return new TCPMessage(parts[0], timestamp, parts[2], parts[3]);
     }
 
+
+    /** Prints a TCP Message*/
     public static void printTCPMessage(TCPMessage message) {
         System.out.println("ChatID: " + message.getChatId() + " content: " + message.getContent()
                 + " date: " + message.getTimestamp().toString() + " fromUserIP: " + message.getFromUserIP()
                 + " toUserIP: " + message.getToUserIP());
     }
 
+    /** Prints a TCPMessage List*/
     public static void printTCPMessageList(ArrayList<TCPMessage> messagesList) {
 
         System.out.println("Printing list of messages :\n");

@@ -28,7 +28,7 @@ public class MainClass {
     public static User me;
     static {
         try {
-            me = new User("[]", "[]", "[]", "[]", "[]", null, InetAddress.getByName("0.0.0.0"));
+            me = new User("[]", "[]", null, InetAddress.getByName("0.0.0.0"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

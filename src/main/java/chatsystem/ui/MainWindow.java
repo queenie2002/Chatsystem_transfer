@@ -3,6 +3,8 @@ package chatsystem.ui;
 import chatsystem.MainClass;
 import chatsystem.contacts.ContactList;
 import chatsystem.contacts.User;
+import chatsystem.controller.Controller;
+import chatsystem.database.DatabaseMethods;
 import chatsystem.network.TCPMessage;
 import chatsystem.network.UDPMessage;
 import chatsystem.observers.MyObserver;
@@ -10,10 +12,10 @@ import chatsystem.observers.MyObserver;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+
 
 public class MainWindow extends JFrame implements MyObserver {
 
@@ -84,14 +86,30 @@ public class MainWindow extends JFrame implements MyObserver {
         return chatSessions.get(userKey);
     }
 
+    /** when we click on the button to change nickname
+     * we check if the nickname is not empty, doesn't contain blank spaces and is not already taken
+     * if not, we change our nickname and update the view
+     * */
     private void onChangeNickname() {
+
         String newNickname = JOptionPane.showInputDialog(this, "Enter new nickname:");
-        if (newNickname != null && !newNickname.trim().isEmpty()) {
-            try {
-                MainClass.controller.changingNickname(newNickname);
-                refreshUserLabel();
-            } catch (IOException | SQLException e) {
-                e.printStackTrace();
+        if (newNickname.isEmpty()) {
+            new PopUpTab("Nickname can't be empty. Please choose one.");
+       } else if (newNickname.contains(" ")) {
+            new PopUpTab("Nicknames can't have blank spaces. Please choose another one.");
+       } else {
+            User auxUser = MainClass.me;
+            auxUser.setNickname(newNickname);
+
+            if (ContactList.getInstance().existsContactWithNickname(newNickname)) { //if someone already has nickname
+                new PopUpTab("Nickname already taken. Please choose another one");
+            } else {
+                try {
+                    MainClass.controller.changingNickname(newNickname);
+                    refreshUserLabel();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -131,58 +149,22 @@ public class MainWindow extends JFrame implements MyObserver {
     }
 
     @Override
-    public void handle(UDPMessage received) throws RuntimeException {
-
-    }
-
+    public void handle(UDPMessage received) {    }
     @Override
-    public void changingNickname(String nickname) throws IOException, SQLException {
-
-    }
-
+    public void changingNickname(String nickname)  {}
     @Override
-    public void handleTCPMessage(TCPMessage msg) throws SQLException, UnknownHostException {
-
-    }
-
+    public void handleTCPMessage(TCPMessage msg)  {}
     @Override
-    public void toCloseApp(JFrame frame) {
-
-    }
-
+    public void toCloseApp(JFrame frame) {}
     @Override
-    public void toDisconnect(JFrame frame, User me) throws IOException {
-
-    }
-
+    public void toDisconnect(JFrame frame, User me)  {}
     @Override
-    public void canRegister(JFrame frame) throws IOException {
-
-    }
-
+    public void canRegister(JFrame frame) {    }
     @Override
-    public void canLogin(JFrame frame) {
-
-    }
-
+    public void canLogin(JFrame frame) {    }
     @Override
-    public void registerFunction(String nicknameInfo, String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo, JFrame frame) throws SQLException {
-
-    }
-
+    public void registerFunction(String nicknameInfo, String passwordInfo, JFrame frame) {}
     @Override
-    public void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException {
-
-    }
-
-    @Override
-    public void showOnlineContacts() {
-
-    }
-
-    @Override
-    public void showAllContacts() {
-
-    }
+    public void loginFunction(String nicknameInput, String passwordInput, JFrame frame)  {}
 }
 

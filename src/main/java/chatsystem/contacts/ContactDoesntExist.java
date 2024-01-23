@@ -1,6 +1,6 @@
 package chatsystem.contacts;
 
-/** Error that is thrown when a contact isn't in the list */
+/** Error that is thrown when a contact is not found in the list */
 public class ContactDoesntExist extends Exception {
 
     private final String nickname;

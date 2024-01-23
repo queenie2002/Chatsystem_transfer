@@ -11,11 +11,10 @@ import java.net.*;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Methods to use database */
+/** Methods to use database, we have to start the connection and initialize the database first*/
 public class DatabaseMethods {
 
     //LOGGER
@@ -27,7 +26,7 @@ public class DatabaseMethods {
 
 
     //OBSERVERS
-    static List<MyObserver> observers = new ArrayList<>();
+    static ArrayList<MyObserver> observers = new ArrayList<>();
     public void addObserver(MyObserver obs) {
         observers.add(obs);
     }
@@ -37,10 +36,12 @@ public class DatabaseMethods {
 
     //HANDLES CONNECTION
 
-    /** We start the connection, create our database and create users' and me table */
+    /** We start the connection, create our database name my_database_+ our ip address */
     public static void startConnection(User me) {
+        //we change the dots into underscore to not cause a problem with sql
         String ipAddress = changeDotsIntoUnderscore(me.getIpAddress());
         String DATABASE_URL = "jdbc:sqlite:my_database_"+ipAddress+".db";
+
         try {
             //we try to get connection
             connection = DriverManager.getConnection(DATABASE_URL);
@@ -49,7 +50,7 @@ public class DatabaseMethods {
             LOGGER.error("Couldn't start the connection for database: SQLException");
             throw new RuntimeException(e);
         }
-        LOGGER.trace("Created database with my IP address " + ipAddress);
+        LOGGER.info("Created database with my IP address " + ipAddress);
     }
 
     /** We close the connection */
@@ -71,7 +72,7 @@ public class DatabaseMethods {
         createMeTable();
     }
 
-    /** To delete database of user with ipADdress from repo chatsystem-rees-nguyen */
+    /** To delete database of user with ipAddress from repo chatsystem-rees-nguyen */
     public static void deleteDatabase(InetAddress ipAddress) {
         //we get the path to database file
         String filePath = "./my_database_"+changeDotsIntoUnderscore(extractFormattedIP(ipAddress))+".db";
@@ -80,7 +81,12 @@ public class DatabaseMethods {
         //if the file exists
         if (fileToDelete.exists()) {
             //we delete it, returns a boolean but we ignore it
-            fileToDelete.delete();
+            boolean done = fileToDelete.delete();
+            if (done) {
+                LOGGER.info("Deleted my_database_"+changeDotsIntoUnderscore(extractFormattedIP(ipAddress)) + ".db" );
+            } else {
+                LOGGER.error("Failed to delete my_database_"+changeDotsIntoUnderscore(extractFormattedIP(ipAddress)) + ".db" );
+            }
         }
     }
 
@@ -98,7 +104,6 @@ public class DatabaseMethods {
 
         } catch (SQLException e) {
             LOGGER.error("Couldn't get the number of tables in the database: SQLException");
-            throw new RuntimeException(e);
         }
         return tableCount;
     }
@@ -127,12 +132,13 @@ public class DatabaseMethods {
                 return InetAddress.getByName(matcher.group(1));
             } catch (UnknownHostException e) {
                 LOGGER.error("Couldn't extract IP address: UnknownHostException");
-                throw new RuntimeException(e);
+                //we try to return input, hoping it might work
+                return input;
             }
         }
         //if we didn't find a match, we throw and error
         LOGGER.error("Couldn't extract IP address: no match found.");
-        throw new RuntimeException("Couldn't extract IP address");
+        return input;
     }
 
 
@@ -207,16 +213,13 @@ public class DatabaseMethods {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Users ("
                 + "nickname TEXT, " //can make unique
                 + "ipAddress TEXT NOT NULL PRIMARY KEY, "
-                + "firstName TEXT, "
-                + "lastName TEXT, "
-                + "birthday TEXT, "
                 + "status INT  NOT NULL,"
                 + "password TEXT"
                 + ")";
 
         try (Statement statement = connection.createStatement()) {
             statement.execute(usersTableQuery);
-            LOGGER.trace("Table users created");
+            LOGGER.info("Table users created");
         } catch (SQLException e) {
             LOGGER.error("Users Table couldn't be created in database: SQLException");
             throw new RuntimeException(e);
@@ -237,11 +240,10 @@ public class DatabaseMethods {
 
         try (Statement statement = connection.createStatement()) {
             statement.execute(specificMessagesTableQuery);
-            LOGGER.trace("Table messages created for " + ipAddress);
+            LOGGER.info("Table messages created for " + ipAddress);
         }
         catch (SQLException e) {
             LOGGER.error("Table messages couldn't be created in database: SQLException");
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -251,15 +253,12 @@ public class DatabaseMethods {
         String usersTableQuery = "CREATE TABLE IF NOT EXISTS Me ("
                 + "nickname TEXT , " //can make unique
                 + "ipAddress TEXT NOT NULL, "
-                + "firstName TEXT, "
-                + "lastName TEXT, "
-                + "birthday TEXT, "
                 + "password TEXT"
                 + ")";
 
         try (Statement statement = connection.createStatement()) {
             statement.execute(usersTableQuery);
-            LOGGER.trace("Table Me created");
+            LOGGER.info("Table Me created");
         } catch (SQLException e) {
             LOGGER.error("Users Me couldn't be created in database: SQLException");
             throw new RuntimeException(e);
@@ -277,40 +276,37 @@ public class DatabaseMethods {
     public static void addUser(User user) {
 
         String addUserSQL;
-        boolean userAddedAlready = false;
-        userAddedAlready = doesUserExist(user);
 
+        //we check if the user is already in the list
+        boolean userAddedAlready = doesUserExist(user);
 
+        //we do the appropriate sql
         if (userAddedAlready) {
-            addUserSQL = "UPDATE users SET nickname = ?, ipAddress = ?, firstName = ?, lastName = ?, birthday = ?, status = ?, password = ? WHERE ipAddress = ?";
+            addUserSQL = "UPDATE users SET nickname = ?, ipAddress = ?, status = ?, password = ? WHERE ipAddress = ?";
         }
         else {
-            addUserSQL = "INSERT INTO Users (nickname, ipAddress, firstName, lastName, birthday, status, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            addUserSQL = "INSERT INTO Users (nickname, ipAddress, status, password) VALUES ( ?, ?, ?, ?)";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(addUserSQL)) {
             preparedStatement.setString(1, user.getNickname());
             preparedStatement.setString(2, user.getIpAddress().getHostAddress());
-            preparedStatement.setString(3, user.getFirstName());
-            preparedStatement.setString(4, user.getLastName());
-            preparedStatement.setString(5, user.getBirthday());
             if (user.getStatus()) {
-                preparedStatement.setInt(6, 1); //true is 1
+                preparedStatement.setInt(3, 1); //true is 1
             } else {
-                preparedStatement.setInt(6, 0); //false is 0
+                preparedStatement.setInt(3, 0); //false is 0
             }
-            preparedStatement.setString(7, user.getPassword());
+            preparedStatement.setString(4, user.getPassword());
             if (userAddedAlready){
-                preparedStatement.setString(8, user.getIpAddress().getHostAddress());
+                preparedStatement.setString(5, user.getIpAddress().getHostAddress());
             }
-
             preparedStatement.executeUpdate();
 
             LOGGER.trace("User added/updated to database " + user.getIpAddress());
 
         } catch (SQLException e) {
-            LOGGER.error("User couldn't be added to database " + user.getIpAddress() + ": SQLException");
-            throw new RuntimeException(e);
+            LOGGER.error("User couldn't be added/updated to database " + user.getIpAddress() + ": SQLException");
+            //if they couldn't be added, we let it go
         }
 
 
@@ -322,8 +318,10 @@ public class DatabaseMethods {
     }
 
     /** Adds a message to database */
-    public static boolean addMessage(TCPMessage tcpMessage){
+    public static void addMessage(TCPMessage tcpMessage){
+        //we add TCPMessage I sent and received with one user to the messages table
 
+        //we don't know if I sent it or received it, so we check both possible tables
         try {
             String tableName1 = "Messages_" + changeDotsIntoUnderscore(InetAddress.getByName(tcpMessage.getFromUserIP()));
             String tableName2 = "Messages_" + changeDotsIntoUnderscore(InetAddress.getByName(tcpMessage.getToUserIP()));
@@ -334,6 +332,7 @@ public class DatabaseMethods {
 
             String finalTableName;
 
+            //we add the message to the right table
             if (table1Exists||table2Exists) {
                 if (table1Exists) {
                     finalTableName = tableName1;
@@ -355,9 +354,8 @@ public class DatabaseMethods {
                 }
                 catch (SQLException e){
                     LOGGER.error("Couldn't add message to database: SQLException");
-                    throw new RuntimeException();
+                    //if we couldn't add message, we let it go
                 }
-                return true;
             }
             else {
                 LOGGER.error("Table messages doesn't exist in database, couldn't add message.");
@@ -376,22 +374,18 @@ public class DatabaseMethods {
         boolean meAddedAlready = doesMeExist();
 
         if (meAddedAlready) {
-            addMeSQL = "UPDATE me SET nickname = ?, ipAddress = ?, firstName = ?, lastName = ?, birthday = ?, password = ? WHERE ipAddress = ?";
+            addMeSQL = "UPDATE me SET nickname = ?, ipAddress = ?, password = ? WHERE ipAddress = ?";
         }
         else {
-            addMeSQL = "INSERT INTO Me (nickname, ipAddress, firstName, lastName, birthday, password) VALUES (?, ?, ?, ?, ?, ?)";
+            addMeSQL = "INSERT INTO Me (nickname, ipAddress, password) VALUES ( ?, ?, ?)";
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(addMeSQL)) {
             preparedStatement.setString(1, user.getNickname());
-
             preparedStatement.setString(2, user.getIpAddress().getHostAddress());
-            preparedStatement.setString(3, user.getFirstName());
-            preparedStatement.setString(4, user.getLastName());
-            preparedStatement.setString(5, user.getBirthday());
-            preparedStatement.setString(6, user.getPassword());
+            preparedStatement.setString(3, user.getPassword());
             if (meAddedAlready) {
-                preparedStatement.setString(7, user.getIpAddress().getHostAddress());
+                preparedStatement.setString(4, user.getIpAddress().getHostAddress());
 
             }
 
@@ -400,8 +394,8 @@ public class DatabaseMethods {
             LOGGER.trace("Me added/updated to database " + user.getIpAddress());
 
         } catch (SQLException e) {
-            LOGGER.error("Me couldn't be added to database " + user.getIpAddress() + ": SQLException");
-            throw new RuntimeException();
+            LOGGER.error("Couldn't add me to database " + user.getIpAddress() + ": SQLException");
+            throw new RuntimeException(e);
         }
     }
 
@@ -423,12 +417,8 @@ public class DatabaseMethods {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
 
-                    // User found
                     user.setNickname(resultSet.getString("nickname"));
                     user.setIpAddress(extractFormattedIP(InetAddress.getByName(resultSet.getString("ipAddress"))));
-                    user.setFirstName(resultSet.getString("firstName"));
-                    user.setLastName(resultSet.getString("lastName"));
-                    user.setBirthday(resultSet.getString("birthday"));
                     if (resultSet.getInt("status")==0) {
                         user.setStatus(false);
                     } else if  (resultSet.getInt("status")==1){
@@ -449,7 +439,6 @@ public class DatabaseMethods {
             LOGGER.error("Couldn't get user " + ipAddress + ": UnknownHostException");
             throw new RuntimeException();
         }
-
         return user;
     }
 
@@ -467,7 +456,6 @@ public class DatabaseMethods {
 
                     TCPMessage message = new TCPMessage();
 
-                    // User found
                     message.setChatId(resultSet.getInt("chatID"));
                     message.setContent(resultSet.getString("content"));
                     message.setDate(Instant.parse(resultSet.getString("date")));
@@ -495,12 +483,8 @@ public class DatabaseMethods {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
 
-                    // User found
                     user.setNickname(resultSet.getString("nickname"));
                     user.setIpAddress(InetAddress.getByName( resultSet.getString("ipAddress")));
-                    user.setFirstName(resultSet.getString("firstName"));
-                    user.setLastName(resultSet.getString("lastName"));
-                    user.setBirthday(resultSet.getString("birthday"));
                     user.setPassword(resultSet.getString("password"));
 
                 } else {
@@ -513,7 +497,7 @@ public class DatabaseMethods {
         }
         catch (UnknownHostException e) {
             LOGGER.error("Couldn't get me: UnknownHostException");
-            e.printStackTrace();
+            throw new RuntimeException();
         }
 
         return user;
@@ -526,16 +510,19 @@ public class DatabaseMethods {
     /** Load users list from database into Contact List */
     public static void loadUserList() throws SQLException, UnknownHostException {
 
+        //we get all users
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Users")) {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
 
+                    //make a new user that takes this information
                     String nickname = resultSet.getString("nickname");
                     String ipAddress = resultSet.getString("ipAddress");
                     boolean status = resultSet.getInt("status") == 1;
-                    User user = new User(nickname, "", "", "", "", status, extractFormattedIP(InetAddress.getByName(ipAddress)));
+                    User user = new User(nickname, "", status, extractFormattedIP(InetAddress.getByName(ipAddress)));
 
+                    //and notify observers so they can update
                     for (MyObserver obs : observers) {
                         obs.contactAddedOrUpdated(user);
                     }

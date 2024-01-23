@@ -41,8 +41,8 @@ public class ContactListTests {
 
 
 
-    private User alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true, InetAddress.getLoopbackAddress());
-    private User bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true, InetAddress.getByName("192.127.2.1"));
+    private User alice = new User("alice","pwdAlice", true, InetAddress.getLoopbackAddress());
+    private User bob = new User("bob", "pwdBob", true, InetAddress.getByName("192.127.2.1"));
 
     @Test
     void contactAdditionTest() throws SQLException, ContactAlreadyExists, UnknownHostException {
@@ -112,7 +112,7 @@ public class ContactListTests {
         assert contacts.existsContact(alice.getIpAddress());
 
         User test = contacts.getContact(alice.getIpAddress());
-        assert test.getFirstName().equals("firstAlice");
+        assert test.getPassword().equals("pwdAlice");
     }
 
 

@@ -20,8 +20,8 @@ public class ControllerTests {
     Controller controller = new Controller();
 
     ContactList contacts;
-    private User alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true,InetAddress.getByName("10.1.5.10"));
-    private User bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true, InetAddress.getByName("10.1.5.11"));
+    private User alice = new User("alice", "pwdAlice", true,InetAddress.getByName("10.1.5.10"));
+    private User bob = new User("bob","pwdBob", true, InetAddress.getByName("10.1.5.11"));
 
     public ControllerTests() throws UnknownHostException {
     }

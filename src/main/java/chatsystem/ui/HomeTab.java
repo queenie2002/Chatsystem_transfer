@@ -226,11 +226,7 @@ public class HomeTab extends JFrame {
         setLayout(new FlowLayout());
 
         JButton button_startChat = new JButton("Start Chatting");
-        /*button_startChat.addActionListener(e->{
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.setVisible(true);
-            dispose();
-        });*/
+
         button_startChat.addActionListener(e->{
             MainWindow mainWindow = new MainWindow();
             ContactList.getInstance().addObserver(mainWindow);
