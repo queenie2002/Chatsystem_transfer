@@ -24,7 +24,7 @@ public class MainClass {
 
     public static final int BROADCAST_RECEIVER_PORT = 2000;
     public static final int TCP_SERVER_PORT = 6666;
-    public static MyObserver controller = new Controller();
+    public static Controller controller = new Controller();
     public static User me;
     static {
         try {

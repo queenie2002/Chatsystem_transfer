@@ -93,7 +93,7 @@ public class ContactList {
         }
     }
     /** Updates a Contact in the Contact List and the database, if Contact not already in the list throws exception ContactDoesntExist*/
-    public synchronized void updateContact(User user) throws SQLException, ContactDoesntExist, UnknownHostException {
+    public synchronized void updateContact(User user) throws SQLException, UnknownHostException {
         int index=-1;
         //we look for the user in our Contact List with his ipAddress
         for (User aUser : myContactList) {
@@ -107,7 +107,7 @@ public class ContactList {
             myContactList.set(index, user);
             LOGGER.trace("Updated user in ContactList " + user.getIpAddress());
         } else {
-            throw new ContactDoesntExist(user.getIpAddress().getHostAddress());
+            throw new RuntimeException(user.getIpAddress().getHostAddress());
         }
 
         //we notify all observers that a contact has been added/updated
@@ -116,7 +116,7 @@ public class ContactList {
         }
     }
     /** Deletes Contact with ipAddress but only from Contact List and not from database for tests*/
-    public synchronized void deleteContact(InetAddress ipAddress) throws ContactDoesntExist {
+    public synchronized void deleteContact(InetAddress ipAddress)  {
         //we check if we have that contact in our Contact List
         if (existsContact(ipAddress)) {
             User aUser = getContact(ipAddress);
@@ -125,7 +125,7 @@ public class ContactList {
             LOGGER.trace("Deleted user in ContactList " + ipAddress);
         }
         else {
-            throw new ContactDoesntExist(ipAddress.getHostAddress());
+            throw new RuntimeException(ipAddress.getHostAddress());
         }
     }
 
@@ -134,14 +134,14 @@ public class ContactList {
 
 
     /** Returns Contact with ipAddress */
-    public synchronized User getContact(InetAddress ipAddress) throws ContactDoesntExist {
+    public synchronized User getContact(InetAddress ipAddress) {
         for (User aUser : myContactList) {
             if (Objects.equals(aUser.getIpAddress(), ipAddress)) {
                 return aUser;
             }
         }
         LOGGER.error("Couldn't find the user with ipAddress: " + ipAddress);
-        throw new ContactDoesntExist(ipAddress.getHostAddress());
+        throw new RuntimeException(ipAddress.getHostAddress());
     }
 
 

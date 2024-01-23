@@ -11,10 +11,12 @@ import chatsystem.ui.*;
 
 import org.apache.logging.log4j.*;
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
 import java.util.regex.*;
 
 /** Implements MyObserver
@@ -172,7 +174,7 @@ public class Controller implements MyObserver {
                 user.setStatus(status);
                 user.setNickname(nickname);
                 instance.updateContact(user);
-            } catch (ContactDoesntExist | UnknownHostException ex) {
+            } catch (UnknownHostException ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -230,7 +232,7 @@ public class Controller implements MyObserver {
         DatabaseMethods.addMessage(msg);
 
         String userKey = msg.getFromUserIP();
-        ChatWindow2 chatWindow = MainWindow.getChatWindowForUser(userKey);
+        ChatWindow2 chatWindow = getChatWindowForUser(userKey);
         if (chatWindow != null) {
             SwingUtilities.invokeLater(() -> chatWindow.displayReceivedMessage(msg));
         }
@@ -287,6 +289,9 @@ public class Controller implements MyObserver {
         //close tcp sessions
         toCloseApp(frame);
     }
+
+
+
 
 
     //BEGINNING TAB
@@ -406,19 +411,6 @@ public class Controller implements MyObserver {
             }
         }
     }
-
-
-    //
-    @Override
-    public void showOnlineContacts() {
-
-    }
-
-    @Override
-    public void showAllContacts() {
-
-    }
-
 
 
 }
