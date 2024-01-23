@@ -11,18 +11,17 @@ import chatsystem.ui.*;
 
 import org.apache.logging.log4j.*;
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.List;
 import java.util.regex.*;
 
 /** Implements MyObserver
  * Sends different UDP messages
  * Handles UDP messages sent
  * Handles a contact being added or updated
+ * Handles a nickname being changed
  * Disconnects and closes app
  * Checks if we login and register
  * Handles login and register
@@ -47,12 +46,13 @@ public class Controller implements MyObserver {
 
 
     /** Sends To Choose Nickname broadcast
-     * Used when we want to choose our nickname, we get the list of connected users in return so we know what nicknames not to choose
+     * Used when we want to choose our nickname, we get the list of connected users in return
+     * That allows us to know what nicknames not to choose
      * */
     private static void sendToChooseNickname () throws IOException {
         String message = "TO_CHOOSE_NICKNAME:";
         UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
-        LOGGER.info("SENT: To choose nickname request.");
+        LOGGER.trace("SENT: To choose nickname request.");
     }
 
     /** Sends I Am Connected broadcast
@@ -62,17 +62,18 @@ public class Controller implements MyObserver {
     private static void sendIAmConnected (User user) throws IOException {
         String message = "IAMCONNECTED: nickname: " + user.getNickname();
         UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
-        LOGGER.info("SENT: I am connected." + user.getNickname());
+        LOGGER.trace("SENT: I am connected." + user.getNickname());
     }
 
     /** Sends I Am Connected, Are You ? broadcast
      * Used so the people connected can update their Contact List and know I am connected
-     * And they send me back an I Am Connected message so I know they are connected
+     * And they send me back an I Am Connected message
+     * That allows me to know they are connected
      * */
     private static void sendIAmConnectedAreYou (User user) throws IOException {
         String message = "IAMCONNECTEDAREYOU: nickname: " + user.getNickname();
         UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
-        LOGGER.info("SENT: I am connected, are you?.");
+        LOGGER.trace("SENT: I am connected, are you?.");
     }
 
     /** Sends Disconnected broadcast
@@ -81,7 +82,7 @@ public class Controller implements MyObserver {
     private static void sendDisconnect (User user) throws IOException {
         String message = "DISCONNECT: nickname: " + user.getNickname();
         UDPSender.send(message, InetAddress.getByName(BROADCAST_ADDRESS), MainClass.BROADCAST_RECEIVER_PORT);
-        LOGGER.info("SENT: Disconnect.");
+        LOGGER.trace("SENT: Disconnect.");
     }
 
 
@@ -92,6 +93,7 @@ public class Controller implements MyObserver {
 
     /** Extract information from a pattern */
     private static String[] extractInfoFromPattern(String inputString) {
+        //list of possible messages
         List<String> patternList = List.of(
                 "TO_CHOOSE_NICKNAME:",
                 "IAMCONNECTED: nickname: (\\S+)",
@@ -100,16 +102,19 @@ public class Controller implements MyObserver {
         );
 
 
+        //checks if my message follows a pattern in patternList
         boolean matchesAnyPattern = false;
         for (String patternString : patternList) {
             Pattern pattern = Pattern.compile(patternString);
             Matcher matcher1 = pattern.matcher(inputString);
             Matcher matcher2 = pattern.matcher(inputString);
 
+            //if there is a match
             if (matcher1.matches()) {
                 matchesAnyPattern = true;
                 String[] res;
 
+                //according to which pattern we have, we extract the nickname things
                 if (matcher2.find()) {
                     if (patternString.equals("TO_CHOOSE_NICKNAME:")) {
                         res = new String[]{patternString};
@@ -132,7 +137,7 @@ public class Controller implements MyObserver {
         }
 
         if (!matchesAnyPattern) {
-            throw new RuntimeException("String does not match any pattern in the list.");
+            LOGGER.error("UDPMessage received does not match any pattern in the list " + inputString);
         }
         return null;
     }
@@ -145,40 +150,39 @@ public class Controller implements MyObserver {
         String[] res = extractInfoFromPattern(message.content());
 
         try {
+            //if the message followed a pattern we know
             if (res != null) {
+                //we hand it off to the right method
                 switch (res[0]) {
                     case "TO_CHOOSE_NICKNAME:" -> handleToChooseNickname();
                     case "IAMCONNECTED: nickname: (\\S+)" -> handleIAmConnected(res[1], message.originAddress());
                     case "IAMCONNECTEDAREYOU: nickname: (\\S+)" ->
                             handleIAmConnectedAreYou(res[1], message.originAddress());
                     case "DISCONNECT: nickname: (\\S+)" -> handleDisconnect(res[1], message.originAddress());
-                    default -> System.out.println("error: unhandled message type");
+                    default -> LOGGER.error("Unhandled message type");
                 }
             }
-        } catch (IOException | SQLException e) {
-            LOGGER.error("Couldn't send back message back for contact discovery.");
+        } catch (IOException e) {
+            LOGGER.error("Couldn't react accordingly to message received and warn others that I am connected.");
         }
     }
 
-    /** Adds a Contact or updates Contact with given status*/
-    private static void changeStatus(String nickname, InetAddress ipAddress, Boolean status) throws SQLException {
+    /** Adds a Contact or updates Contact with given status and nickname*/
+    private static void changeStatus(String nickname, InetAddress ipAddress, Boolean status) {
         ContactList instance = ContactList.getInstance();
         try {
-            if (!(nickname.equals("[]"))) {
-                instance.addContact(new User(nickname, "", "", "", "", status, ipAddress));
-            }
+            //we add to Contact List
+            instance.addContact(new User(nickname, "", status, ipAddress));
         } catch (ContactAlreadyExists e) {
-            try {
-                //if we know him, we change his status
-                User user = instance.getContact(ipAddress);
-                user.setStatus(status);
-                user.setNickname(nickname);
-                instance.updateContact(user);
-            } catch (UnknownHostException ex) {
-                throw new RuntimeException(ex);
-            }
+            //if we know him already, we update his status and nickname
+            User user = instance.getContact(ipAddress);
+            user.setStatus(status);
+            user.setNickname(nickname);
+            instance.updateContact(user);
         }
     }
+
+
 
 
     /** Handles a To Choose Nickname Message
@@ -187,33 +191,33 @@ public class Controller implements MyObserver {
     private static void handleToChooseNickname() throws IOException {
         //when we receive the request, we respond by saying who we are
         sendIAmConnected(MainClass.me);
-        LOGGER.info("RECEIVED to choose nickname request");
+        LOGGER.trace("RECEIVED to choose nickname request");
     }
 
     /** Handles a I Am Connected Message
      * Adds person to our Contact List with status connected or updates status and nickname of the person who sent message to connected
      * */
-    private static void handleIAmConnected(String nickname, InetAddress ipAddress) throws SQLException {
+    private static void handleIAmConnected(String nickname, InetAddress ipAddress) {
         changeStatus(nickname, ipAddress, true);
-        LOGGER.info("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
+        LOGGER.trace("RECEIVED i am connected: " + nickname + " (" + ipAddress + ")");
     }
 
     /** Handles a I Am Connected Are You Message
      * Adds person to our Contact List with status connected or updates status of the person who sent message to connected
      * Sends back I Am Connected message
      * */
-    private static void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException, SQLException {
+    private static void handleIAmConnectedAreYou(String nickname, InetAddress ipAddress) throws IOException {
         changeStatus(nickname, ipAddress, true);
         sendIAmConnected(MainClass.me);
-        LOGGER.info("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
+        LOGGER.trace("RECEIVED i am connected, are you?: " + nickname + " (" + ipAddress + ")");
     }
 
     /** Handles a Disconnect Message
      * Adds person to our Contact List with status disconnected or updates status of the person who sent message to disconnected
      * */
-    private static void handleDisconnect(String nickname, InetAddress ipAddress) throws SQLException {
+    private static void handleDisconnect(String nickname, InetAddress ipAddress) {
         changeStatus(nickname, ipAddress, false);
-        LOGGER.info("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
+        LOGGER.trace("RECEIVED i am disconnected: " + nickname + " (" + ipAddress + ")");
     }
 
 
@@ -228,11 +232,11 @@ public class Controller implements MyObserver {
      * */
     @Override
     public void handleTCPMessage(TCPMessage msg)  {
-        LOGGER.info("Received message: " + msg.getContent());
+        LOGGER.trace("Received message: " + msg.getContent());
         DatabaseMethods.addMessage(msg);
 
         String userKey = msg.getFromUserIP();
-        ChatWindow2 chatWindow = getChatWindowForUser(userKey);
+        ChatWindow chatWindow = MainWindow.getChatWindowForUser(userKey);
         if (chatWindow != null) {
             SwingUtilities.invokeLater(() -> chatWindow.displayReceivedMessage(msg));
         }
@@ -243,7 +247,7 @@ public class Controller implements MyObserver {
 
 
 
-    // ---------------------------DATABASE-------------------------//
+    // ---------------------------CONTACT ADDED/UPDATED-------------------------//
 
     /** Adds a user to database*/
     @Override
@@ -254,7 +258,7 @@ public class Controller implements MyObserver {
         MainClass.me.setNickname(nickname);
         sendIAmConnected(me);
         DatabaseMethods.addMe(MainClass.me);
-        LOGGER.info("Changing my nickname to " + nickname);
+        LOGGER.trace("Changing my nickname to " + nickname);
     }
 
 
@@ -264,6 +268,8 @@ public class Controller implements MyObserver {
     // ---------------------------VIEW-------------------------//
 
     //GENERAL
+
+
     /** Closes the app
      * Closes the database connection
      * Closes UDP server
@@ -273,9 +279,9 @@ public class Controller implements MyObserver {
     public void toCloseApp(JFrame frame) {
         DatabaseMethods.closeConnection();
         UDPReceiver.stopServer();
-        LOGGER.info("Closed app");
+        LOGGER.trace("Closed app successfully");
         frame.dispose();
-        //System.exit(0);
+        System.exit(0);
     }
 
     /** Disconnects us and closes the app
@@ -287,11 +293,9 @@ public class Controller implements MyObserver {
         sendDisconnect(me);
         me.setStatus(false);
         //close tcp sessions
+        LOGGER.trace("Disconnected successfully");
         toCloseApp(frame);
     }
-
-
-
 
 
     //BEGINNING TAB
@@ -301,9 +305,11 @@ public class Controller implements MyObserver {
      * */
     @Override
     public void canRegister(JFrame frame) throws IOException {
+        //if a "me" already exists, it means i have registered and should login
         if (DatabaseMethods.doesMeExist()) {
             new PopUpTab("You already registered. Please Login.");
         } else {
+            //else we open register tab and send a message to get the list of connected people
             Register register = new Register();
             register.addObserver(MainClass.controller);
             Controller.sendToChooseNickname();
@@ -317,9 +323,11 @@ public class Controller implements MyObserver {
      * */
     @Override
     public void canLogin(JFrame frame) {
+        //if a "me" doesn't exist yet, i have to register first
         if (!DatabaseMethods.doesMeExist()) {
             new PopUpTab("You haven't registered yet. Please Register.");
         } else {
+            //else open tab login
             Login login = new Login();
             login.addObserver(MainClass.controller);
             frame.dispose();
@@ -341,28 +349,28 @@ public class Controller implements MyObserver {
      * */
     public void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException {
 
+        //we get "me" from database
         me = DatabaseMethods.getMe();
 
+        //we compare with the info input by the user
         if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
-            LOGGER.info("Successfully logged in.");
+            LOGGER.trace("Successfully logged in.");
 
             me.setStatus(true);
 
+            //we load the Contact List from database
             DatabaseMethods.loadUserList();
             try {
+                //warn others that we are connected
                 Controller.sendIAmConnectedAreYou(me);
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                LOGGER.error("Failed to tell others i am connected.");
             }
 
-            LOGGER.info("STARTING HOME TAB FROM LOGIN");
-            SwingUtilities.invokeLater(() -> {
-                HomeTab homeTab = new HomeTab();
-                homeTab.setVisible(true);
+            //we open Home Tab
+            HomeTab hometab = new HomeTab();
+            hometab.setVisible(true);
 
-
-
-            });
             frame.dispose();
         }
         else {
@@ -373,37 +381,41 @@ public class Controller implements MyObserver {
     //REGISTER TAB
     /** Register
      * If the user didn't input a nickname or password : tells them to choose one.
+     * If the user has a blank in the nickname or password : tells them to choose another one without a blank.
      * If the nickname has already been taken : tells the user to choose another one
      * Else:
      * We keep our information in the database in table Me
      * Send a I Am Connected message so the people connected can add us to their database
      * Go to HomeTab
      * */
-    public void registerFunction(String nicknameInfo, String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo, JFrame frame) {
+    public void registerFunction(String nicknameInfo, String passwordInfo, JFrame frame) {
         if (nicknameInfo.isEmpty()) {
             new PopUpTab("Nickname can't be empty. Please choose one.");
         } else if (passwordInfo.isEmpty()) {
             new PopUpTab("Password can't be empty. Please choose one.");
         } else if (nicknameInfo.contains(" ")) {
             new PopUpTab("Nicknames can't have blank spaces. Please choose another one.");
+        } else if (passwordInfo.contains(" ")) {
+            new PopUpTab("Passwords can't have blank spaces. Please choose another one.");
         } else {
 
-            me = new User(nicknameInfo, firstNameInfo, lastNameInfo, birthdayInfo, passwordInfo, true, me.getIpAddress());
-            ContactList instance = ContactList.getInstance();
+            me = new User(nicknameInfo, passwordInfo, true, me.getIpAddress());
 
-
-            if (instance.existsContactWithNickname(nicknameInfo)) { //if someone already has nickname
+            //if someone already has nickname
+            if (ContactList.getInstance().existsContactWithNickname(nicknameInfo)) {
+                //we tell them to choose another one
                 new PopUpTab("Nickname already taken. Please choose another one");
-            } else { //if unique i go to next tab and tell people i am connected
-                LOGGER.info("Successfully registered in.");
-                SwingUtilities.invokeLater(() -> {
-                    HomeTab homeTab = new HomeTab();
-                    homeTab.setVisible(true);
-                });
+            }
+            //if nickname is unique, i go to next tab and tell people i am connected
+            else {
+                LOGGER.trace("Successfully registered in.");
+                HomeTab hometab = new HomeTab();
+                hometab.setVisible(true);
+
                 try {
+                    //we memorize me in database and warn others that i'm connected
                     DatabaseMethods.addMe(MainClass.me);
                     Controller.sendIAmConnected(MainClass.me);
-
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -414,4 +426,3 @@ public class Controller implements MyObserver {
 
 
 }
-

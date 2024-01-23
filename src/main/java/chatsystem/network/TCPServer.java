@@ -19,11 +19,7 @@ public class TCPServer {
     }
     private void notifyObservers(TCPMessage message) {
         for (MyObserver observer : observers) {
-            try {
-                observer.handleTCPMessage(message);
-            } catch (SQLException | UnknownHostException e) {
-                e.printStackTrace();
-            }
+            observer.handleTCPMessage(message);
         }
     }
 
@@ -80,9 +76,5 @@ public class TCPServer {
                 }
             }
         }
-
-        /*public void stop() throws IOException {
-            serverSocket.close();
-        }*/
     }
 }

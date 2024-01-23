@@ -10,7 +10,7 @@ public class UDPSender {
 
     /**Sends a UDP message to given address and port**/
     public static void send (String message, InetAddress receiverAddress, int port) throws IOException {
-        sendingSocket = new DatagramSocket(); //sending port
+        sendingSocket = new DatagramSocket();
         sendingSocket.setBroadcast(true);
         byte[] buf = message.getBytes();
         DatagramPacket outPacket = new DatagramPacket(buf, buf.length, receiverAddress, port); //receiver port

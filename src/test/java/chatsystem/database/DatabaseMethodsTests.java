@@ -8,7 +8,7 @@ import chatsystem.network.TCPMessage;
 import org.junit.jupiter.api.*;
 
 import java.net.InetAddress;
-import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 
 
@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DatabaseMethodsTests {
 
 
-    private User alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true,InetAddress.getLoopbackAddress());
+    private User alice = new User("alice","pwdAlice", true,InetAddress.getLoopbackAddress());
     ;
-    private User bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true,  InetAddress.getByName("192.168.1.2"));
+    private User bob = new User("bob", "pwdBob", true,  InetAddress.getByName("192.168.1.2"));
 
 
     ContactList contacts;
@@ -35,7 +35,7 @@ class DatabaseMethodsTests {
     }
 
     @BeforeEach
-    void setUp() throws SQLException, UnknownHostException {
+    void setUp() throws UnknownHostException {
         DatabaseMethods.deleteDatabase(alice.getIpAddress());
         DatabaseMethods.deleteDatabase(bob.getIpAddress());
         DatabaseMethods.startConnection(alice);
@@ -46,8 +46,8 @@ class DatabaseMethodsTests {
         assertEquals(2, DatabaseMethods.numberTablesInDatabase());
 
 
-        alice = new User("alice", "firstAlice", "lastAlice", "birthdayAlice", "pwdAlice", true,InetAddress.getLoopbackAddress());
-        bob = new User("bob", "firstBob", "lastBob", "birthdayBob", "pwdBob", true, InetAddress.getByName("192.168.1.2"));
+        alice = new User("alice",  "pwdAlice", true,InetAddress.getLoopbackAddress());
+        bob = new User("bob", "pwdBob", true, InetAddress.getByName("192.168.1.2"));
 
     }
 
@@ -56,26 +56,26 @@ class DatabaseMethodsTests {
     /**start/stop connection, does table/user/i exist, addme */
 
     @Test
-    void testAddUser() throws SQLException, UnknownHostException {
+    void testAddUser()  {
 
         System.out.println("dans test add user");
         assert !DatabaseMethods.doesUserExist(alice);
         DatabaseMethods.addUser(alice);
         assertTrue(DatabaseMethods.doesUserExist(alice));
 
-        assert alice.getBirthday().equals(DatabaseMethods.getUser(alice.getIpAddress()).getBirthday());
-        alice.setBirthday("another birthday");
+        assert alice.getPassword().equals(DatabaseMethods.getUser(alice.getIpAddress()).getPassword());
+        alice.setPassword("another password");
 
         DatabaseMethods.addUser(alice);
         assert DatabaseMethods.doesUserExist(alice);
-        assert !alice.getBirthday().equals(DatabaseMethods.getUser(alice.getIpAddress()).getBirthday());
+        assert !alice.getPassword().equals(DatabaseMethods.getUser(alice.getIpAddress()).getPassword());
 
     }
 
     @Test
-    void testAddMessage() throws SQLException, UnknownHostException {
+    void testAddMessage() {
 
-        TCPMessage testMessage = new TCPMessage("Hello, test message!", "2022-01-01", "192.168.1.2", "127.0.0.1");
+        TCPMessage testMessage = new TCPMessage("Hello, test message!", Instant.now(), "192.168.1.2", "127.0.0.1");
 
         assert !DatabaseMethods.doesTableExist("Messages_192_168_1_2");
         DatabaseMethods.addUser(bob);
@@ -83,7 +83,7 @@ class DatabaseMethodsTests {
 
         ArrayList<TCPMessage> messagesOfAlice = DatabaseMethods.getMessagesList(bob.getIpAddress());
         assert messagesOfAlice.isEmpty();
-        assert DatabaseMethods.addMessage(testMessage);
+        DatabaseMethods.addMessage(testMessage);
         messagesOfAlice = DatabaseMethods.getMessagesList(bob.getIpAddress());
         assert !messagesOfAlice.isEmpty();
 

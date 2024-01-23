@@ -32,7 +32,7 @@ public interface MyObserver {
 
 
     // ---------------------------TCP SERVER-------------------------//
-    void handleTCPMessage(TCPMessage msg) throws SQLException, UnknownHostException;
+    void handleTCPMessage(TCPMessage msg);
 
 
 
@@ -52,15 +52,8 @@ public interface MyObserver {
     void canLogin(JFrame frame) ;
 
     /** Method that is called when we're trying to register */
-    void registerFunction(String nicknameInfo,String firstNameInfo, String lastNameInfo, String birthdayInfo, String passwordInfo,JFrame frame) throws SQLException;
+    void registerFunction(String nicknameInfo, String passwordInfo,JFrame frame);
     /** Method that is called when we're trying to login */
     void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException;
 
-
-
-    void showOnlineContacts();
-    void showAllContacts();
-
-
-
-    }
+}

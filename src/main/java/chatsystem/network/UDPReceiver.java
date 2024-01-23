@@ -42,7 +42,7 @@ public class UDPReceiver extends Thread {
 
 
 
-
+    //MY IP ADDRESSES
     private final ArrayList<String> myIPAddresses;
     public UDPReceiver() throws SocketException {
         myIPAddresses = new ArrayList<String>();
@@ -61,8 +61,6 @@ public class UDPReceiver extends Thread {
                 if (!i.getHostAddress().contains(":") && !i.getHostAddress().equals("127.0.0.1")) {
                     MainClass.me.setIpAddress(i);
                 }
-
-
             }
         }
     }
@@ -76,7 +74,6 @@ public class UDPReceiver extends Thread {
         isRunning = false;
         receivingSocket.close();
         LOGGER.info("Closed server.");
-
     }
 
 
@@ -88,8 +85,10 @@ public class UDPReceiver extends Thread {
                 byte[] buf = new byte[1024];
                 DatagramPacket inPacket = new DatagramPacket(buf, buf.length);
 
+                //waits for a packet to come
                 receivingSocket.receive(inPacket);
 
+                //extracts info and makes a UDPMessage
                 String received = new String(inPacket.getData(), 0, inPacket.getLength());
                 UDPMessage message = new UDPMessage(received, inPacket.getAddress());
 
@@ -98,7 +97,7 @@ public class UDPReceiver extends Thread {
 
 
 
-                //check if i sent this
+                //check if i sent this, if I did, i ignore the message
                 boolean didISendThis = false;
 
                 for (String myIPAddress : myIPAddresses) {
@@ -108,6 +107,7 @@ public class UDPReceiver extends Thread {
                     }
                 }
 
+                //if i didn't, i handle it
                 if (!didISendThis) {
                     synchronized (this.observers) {
                         for (MyObserver obs : this.observers) {

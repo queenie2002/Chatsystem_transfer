@@ -8,13 +8,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 
 public class Register {
 
-    private JTextField firstName, lastName, nickname, birthday;
+    private JTextField nickname;
     private JPasswordField password;
 
 
@@ -39,52 +38,35 @@ public class Register {
 
 
         JPanel panel = new JPanel(new FlowLayout());
-        JLabel loginLabel = new JLabel("Login", JLabel.CENTER);
-        loginLabel.setPreferredSize(new Dimension(175, 100));
-        panel.add(loginLabel);
+        JLabel registerLabel = new JLabel("Register", JLabel.CENTER);
+        registerLabel.setPreferredSize(new Dimension(175, 100));
+        panel.add(registerLabel);
 
 
 
 
 
-        JPanel panel1 = new JPanel(new GridLayout(5, 2)); //arranges the components in a grid
+        JPanel panel1 = new JPanel(new GridLayout(2, 2));
 
         JButton registerButton = new JButton("Register");
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String firstNameInfo = firstName.getText();
-                String lastNameInfo = lastName.getText();
                 String nicknameInfo = nickname.getText();
-                String birthdayInfo = birthday.getText();
                 char[] passwordInfo = password.getPassword();
 
 
                 for (MyObserver obs : observers) {
-                    try {
-                        obs.registerFunction(nicknameInfo, firstNameInfo,lastNameInfo,birthdayInfo, String.valueOf(passwordInfo),frame);
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    obs.registerFunction(nicknameInfo,String.valueOf(passwordInfo),frame);
                 }
             }
         });
 
-        firstName = new JTextField(20);
-        lastName = new JTextField(20);
         nickname = new JTextField(20);
-        birthday = new JTextField(20);
         password = new JPasswordField(20);
-
-        panel1.add(new JLabel("First Name:"));
-        panel1.add(firstName);
-        panel1.add(new JLabel("Last Name:"));
-        panel1.add(lastName);
         panel1.add(new JLabel("Nickname:"));
         panel1.add(nickname);
-        panel1.add(new JLabel("Birthday: (YYYY-MM-DD)"));
-        panel1.add(birthday);
         panel1.add(new JLabel("Password:"));
         panel1.add(password);
 
@@ -94,7 +76,7 @@ public class Register {
 
 
         //Redirection Panel
-        JPanel panel2 = new JPanel(new GridLayout(1, 3)); //arranges the components in a grid
+        JPanel panel2 = new JPanel(new GridLayout(1, 3));
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
