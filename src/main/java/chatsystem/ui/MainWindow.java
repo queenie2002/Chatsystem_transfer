@@ -77,6 +77,8 @@ public class MainWindow extends JFrame implements MyObserver {
             chatPanel.add(chatWindow, userKey);
         }
         cardLayout.show(chatPanel, userKey);
+        chatPanel.revalidate();
+        chatPanel.repaint();
     }
 
     private List<User> getOnlineUsers(){
