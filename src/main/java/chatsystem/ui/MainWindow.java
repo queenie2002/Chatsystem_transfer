@@ -43,10 +43,10 @@ public class MainWindow implements MyObserver {
     private static HashMap<String, ChatWindow> chatSessions = new HashMap<>();
 
     public MainWindow(){
-        JFrame frame = new JFrame("Our chats");
+        JFrame frame = new JFrame("My chats");
         frame.setSize(800,800);
         //we don't want to close right away
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //we add a window listener
         frame.addWindowListener(new WindowAdapter() {
