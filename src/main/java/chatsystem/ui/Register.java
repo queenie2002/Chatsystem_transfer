@@ -2,8 +2,6 @@ package chatsystem.ui;
 
 import chatsystem.MainClass;
 import chatsystem.observers.MyObserver;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -4,8 +4,8 @@ import chatsystem.network.TCPMessage;
 import chatsystem.contacts.User;
 import chatsystem.MainClass;
 import chatsystem.observers.MyObserver;
-import org.apache.logging.log4j.*;
 
+import org.apache.logging.log4j.*;
 import java.io.File;
 import java.net.*;
 import java.sql.*;

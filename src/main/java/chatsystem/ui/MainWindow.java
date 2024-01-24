@@ -7,14 +7,32 @@ import chatsystem.network.TCPMessage;
 import chatsystem.network.UDPMessage;
 import chatsystem.observers.MyObserver;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class MainWindow extends JFrame implements MyObserver {
+public class MainWindow implements MyObserver {
+
+
+    //LOGGER
+    private static final Logger LOGGER = LogManager.getLogger(HomeTab.class);
+
+
+    //OBSERVERS
+    ArrayList<MyObserver> observers = new ArrayList<>();
+    public synchronized void addObserver(MyObserver obs) {
+        this.observers.add(obs);
+    }
+
+
 
     private JPanel userPanel;
     private JPanel onlineUsersPanel;
@@ -22,21 +40,39 @@ public class MainWindow extends JFrame implements MyObserver {
     private static HashMap<String, ChatWindow> chatSessions = new HashMap<>();
 
     public MainWindow(){
-        setTitle("Chat System");
-        setSize(800,800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        JFrame frame = new JFrame("Our chats");
+        frame.setSize(800,800);
+        //we don't want to close right away
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-        initializeUserPanel();
+        //we add a window listener
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                for (MyObserver obs : observers) {
+                    //it notifies todisconnect
+                    try {
+                        obs.toDisconnect(frame, MainClass.me);
+                    } catch (IOException ex) {
+                        LOGGER.error("Couldn't warn others that I'm disconnected");
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        });
+        frame.setLayout(new BorderLayout());
+
+        initializeUserPanel(frame);
         initializeOnlineUsersPanel();
         initializeChatPanel();
 
-        add(userPanel,BorderLayout.NORTH);
-        add(onlineUsersPanel, BorderLayout.WEST);
-        add(chatPanel, BorderLayout.CENTER);
+        frame.add(userPanel,BorderLayout.NORTH);
+        frame.add(onlineUsersPanel, BorderLayout.WEST);
+        frame.add(chatPanel, BorderLayout.CENTER);
+        frame.setVisible(true);
     }
 
-    private void initializeUserPanel(){
+    private void initializeUserPanel(JFrame frame){
         userPanel = new JPanel();
         JLabel userLabel = new JLabel("My Nickname : " + MainClass.me.getNickname());
         userPanel.add(userLabel);
@@ -46,7 +82,7 @@ public class MainWindow extends JFrame implements MyObserver {
         userPanel.add(changeNicknameButton);
 
         JButton disconnectButton = new JButton("Disconnect");
-        disconnectButton.addActionListener(e -> onDisconnect());
+        disconnectButton.addActionListener(e -> onDisconnect(frame));
         userPanel.add(disconnectButton);
 
     }
@@ -151,9 +187,9 @@ public class MainWindow extends JFrame implements MyObserver {
         onlineUsersPanel.repaint();
     }
 
-    private void onDisconnect() {
+    private void onDisconnect(JFrame frame) {
         try {
-            MainClass.controller.toDisconnect(this, MainClass.me);
+            MainClass.controller.toDisconnect(frame, MainClass.me);
         } catch (IOException ex) {
             ex.printStackTrace(); 
         }
@@ -166,9 +202,12 @@ public class MainWindow extends JFrame implements MyObserver {
     @Override
     public void handleTCPMessage(TCPMessage msg)  {}
     @Override
-    public void toCloseApp(JFrame frame) {}
+    public void toCloseApp(JFrame frame) {
+        MainClass.controller.toCloseApp(frame);
+    }
     @Override
-    public void toDisconnect(JFrame frame, User me)  {}
+    public void toDisconnect(JFrame frame, User me) throws IOException {MainClass.controller.toDisconnect(frame, me);
+    }
     @Override
     public void canRegister(JFrame frame) {    }
     @Override

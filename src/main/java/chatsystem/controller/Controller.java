@@ -259,7 +259,7 @@ public class Controller implements MyObserver {
         MainClass.me.setNickname(nickname);
         sendIAmConnected(me);
         DatabaseMethods.addMe(MainClass.me);
-        LOGGER.trace("Changing my nickname to " + nickname);
+        LOGGER.info("Changing my nickname to " + nickname);
     }
 
 
@@ -280,7 +280,7 @@ public class Controller implements MyObserver {
     public void toCloseApp(JFrame frame) {
         DatabaseMethods.closeConnection();
         UDPReceiver.stopServer();
-        LOGGER.trace("Closed app successfully");
+        LOGGER.info("Closed app successfully");
         frame.dispose();
         System.exit(0);
     }
@@ -288,13 +288,14 @@ public class Controller implements MyObserver {
     /** Disconnects us and closes the app
      * Sets my status to false
      * Warns other that I am disconnected
+     * Closes TCP sessions
      * */
     @Override
     public void toDisconnect(JFrame frame, User me) throws IOException {
         sendDisconnect(me);
         me.setStatus(false);
 
-        // Close TCP client session
+        // we close TCP client
         if (this.tcpClient != null) {
             try {
                 this.tcpClient.stopConnection();
@@ -304,17 +305,17 @@ public class Controller implements MyObserver {
             this.tcpClient = null; // Clear the reference
         }
 
-        // Close TCP server and its client connections
+        // we close TCP server
         if (this.tcpServer != null) {
             try {
                 this.tcpServer.stopServer();
             } catch (IOException e) {
-                LOGGER.error("Error stopping TCP server: " + e.getMessage(), e);
+                LOGGER.error("Couldn't stop TCP server");
             }
-            this.tcpServer = null; // Clear the reference
+            this.tcpServer = null;
         }
 
-        LOGGER.trace("Disconnected successfully");
+        LOGGER.info("Disconnected successfully.");
         toCloseApp(frame);
     }
 
@@ -376,7 +377,7 @@ public class Controller implements MyObserver {
 
         //we compare with the info input by the user
         if ((Objects.equals(me.getNickname(), nicknameInput)) && Objects.equals(me.getPassword(), passwordInput)) {
-            LOGGER.trace("Successfully logged in.");
+            LOGGER.info("Successfully logged in.");
 
             me.setStatus(true);
 
@@ -388,12 +389,11 @@ public class Controller implements MyObserver {
             } catch (IOException ex) {
                 LOGGER.error("Failed to tell others i am connected.");
             }
+            frame.dispose();
 
             //we open Home Tab
             HomeTab hometab = new HomeTab();
             hometab.addObserver(MainClass.controller);
-            hometab.setVisible(true);
-            frame.dispose();
 
         }
         else {
@@ -431,9 +431,9 @@ public class Controller implements MyObserver {
             }
             //if nickname is unique, i go to next tab and tell people i am connected
             else {
-                LOGGER.trace("Successfully registered in.");
+                frame.dispose();
+                LOGGER.info("Successfully registered in.");
                 HomeTab hometab = new HomeTab();
-                hometab.setVisible(true);
                 hometab.addObserver(MainClass.controller);
 
 
@@ -444,7 +444,6 @@ public class Controller implements MyObserver {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                frame.dispose();
             }
         }
     }

@@ -5,10 +5,7 @@ import chatsystem.MainClass;
 import chatsystem.observers.MyObserver;
 
 import org.apache.logging.log4j.*;
-
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -83,12 +80,7 @@ public class ContactList {
             LOGGER.trace("Added user to myContactList " + ipAddress);
             //we notify the observers and call the method contactAddedOrUpdated
             for (MyObserver obs : observers) {
-                try {
-                    obs.contactAddedOrUpdated(user);
-                } catch (SQLException | UnknownHostException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);  //------------------------------SHOULD WE DO THIS
-                }
+                obs.contactAddedOrUpdated(user);
             }
         }
     }
@@ -114,12 +106,7 @@ public class ContactList {
 
         //we notify all observers that a contact has been added/updated
         for (MyObserver obs : observers) {
-            try {
-                obs.contactAddedOrUpdated(user);
-            } catch (SQLException | UnknownHostException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);  //------------------------------SHOULD WE DO THIS
-            }
+            obs.contactAddedOrUpdated(user);
         }
     }
     /** Deletes Contact with given ipAddress but only from Contact List and not from database (for tests)*/

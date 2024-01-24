@@ -73,7 +73,7 @@ public class UDPReceiver extends Thread {
     public static void stopServer() {
         isRunning = false;
         receivingSocket.close();
-        LOGGER.info("Closed server.");
+        LOGGER.trace("Closed UDP server.");
     }
 
 

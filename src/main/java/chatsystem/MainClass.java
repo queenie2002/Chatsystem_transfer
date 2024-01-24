@@ -4,7 +4,6 @@ import chatsystem.contacts.*;
 import chatsystem.controller.Controller;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.*;
-import chatsystem.observers.MyObserver;
 import chatsystem.ui.*;
 
 
@@ -13,7 +12,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class MainClass {
 
@@ -21,13 +19,7 @@ public class MainClass {
     private static final Logger LOGGER = LogManager.getLogger(MainClass.class);
 
 
-
-    public static final int BROADCAST_RECEIVER_PORT = 2000;
-    public static final int TCP_SERVER_PORT = 6666;
-
-    public static Controller controller = new Controller();
-
-    //my information, empty to bein with
+    //my informations, empty to begin with
     public static User me;
     static {
         try {
@@ -36,11 +28,15 @@ public class MainClass {
             throw new RuntimeException(e);
         }
     }
+    public static final int BROADCAST_RECEIVER_PORT = 2000;
+    public static final int TCP_SERVER_PORT = 6666;
+    public static Controller controller = new Controller();
 
 
 
 
-    public static void main(String[] args) throws SQLException {
+
+    public static void main(String[] args) {
 
         Configurator.setRootLevel(Level.INFO);
         LOGGER.info("Starting ChatSystem application");

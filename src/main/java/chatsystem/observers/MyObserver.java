@@ -16,7 +16,7 @@ public interface MyObserver {
     // ---------------------------DATABASE-------------------------//
 
     /** Method that is called each time a contact is added/updated */
-    void contactAddedOrUpdated(User user) throws SQLException, UnknownHostException;
+    void contactAddedOrUpdated(User user);
 
 
 

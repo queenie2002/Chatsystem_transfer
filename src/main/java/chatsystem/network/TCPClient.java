@@ -2,7 +2,6 @@ package chatsystem.network;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.net.*;
 import java.io.*;
 

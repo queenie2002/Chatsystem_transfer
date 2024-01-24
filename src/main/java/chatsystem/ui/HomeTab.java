@@ -4,9 +4,9 @@ package chatsystem.ui;
 import chatsystem.MainClass;
 import chatsystem.contacts.ContactList;
 import chatsystem.observers.MyObserver;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class HomeTab extends JFrame {
+public class HomeTab {
 
     //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(HomeTab.class);
@@ -66,11 +66,10 @@ public class HomeTab extends JFrame {
         button_startChat.addActionListener(e->{
             MainWindow mainWindow = new MainWindow();
             ContactList.getInstance().addObserver(mainWindow);
-            mainWindow.setVisible(true);
             frame.dispose();
         });
         startChatPanel.add(button_startChat, BorderLayout.CENTER);
-        startChatPanel.setSize(new Dimension(100, 100));
+        startChatPanel.setSize(100, 100);
 
 
 
@@ -82,7 +81,12 @@ public class HomeTab extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (MyObserver obs : observers) {
-                    obs.toCloseApp(frame);
+                    try {
+                        obs.toDisconnect(frame, MainClass.me);
+                    } catch (IOException ex) {
+                        LOGGER.error("Couldn't warn others that I'm disconnected");
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
