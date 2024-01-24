@@ -18,7 +18,8 @@ Criticism: Can appear outdated and lacks modern features compared to newer UI fr
 
 
 
-Testing policy
+Testing policy : 
+
 Initially, unit testing was used to ensure the reliability of individual components, focusing on the functionality of methods and classes. 
 Then, manual testing of the system was used to simulate real user scenarios, to check the proper working of the user interface and databases. 
 Additionally, automated testing was integrated into the GitHub workflow, enabling automatic test execution upon code commits or pull requests, thus ensuring code quality and stability with every update. 
