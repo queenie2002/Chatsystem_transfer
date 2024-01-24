@@ -254,5 +254,7 @@ public class MainWindow implements MyObserver {
     public void registerFunction(String nicknameInfo, String passwordInfo, JFrame frame) {}
     @Override
     public void loginFunction(String nicknameInput, String passwordInput, JFrame frame)  {}
+    @Override
+    public void mainWindowFunction(JFrame frame) {    }
 }
 

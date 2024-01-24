@@ -23,9 +23,9 @@ public interface MyObserver {
     // ---------------------------UDP SERVER-------------------------//
 
     /** Method that is called each time a message is received*/
-    void handle(UDPMessage received) throws RuntimeException;
+    void handle(UDPMessage received);
 
-    void changingNickname(String nickname) throws IOException, SQLException;
+    void changingNickname(String nickname) throws IOException;
 
 
 
@@ -55,5 +55,7 @@ public interface MyObserver {
     void registerFunction(String nicknameInfo, String passwordInfo,JFrame frame);
     /** Method that is called when we're trying to login */
     void loginFunction(String nicknameInput, String passwordInput, JFrame frame) throws UnknownHostException, SQLException;
+
+    void mainWindowFunction(JFrame frame);
 
 }

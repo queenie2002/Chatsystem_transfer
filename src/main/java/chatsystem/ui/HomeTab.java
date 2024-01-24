@@ -64,9 +64,11 @@ public class HomeTab {
         JButton button_startChat = new JButton("Start Chatting");
 
         button_startChat.addActionListener(e->{
-            MainWindow mainWindow = new MainWindow();
-            ContactList.getInstance().addObserver(mainWindow);
-            frame.dispose();
+            for (MyObserver obs : observers) {
+                //it notifies the main window function
+                obs.mainWindowFunction(frame);
+
+            }
         });
         startChatPanel.add(button_startChat, BorderLayout.CENTER);
         startChatPanel.setSize(100, 100);

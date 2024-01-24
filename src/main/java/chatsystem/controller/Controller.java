@@ -448,5 +448,17 @@ public class Controller implements MyObserver {
         }
     }
 
+    //CHAT WINDOW TAB
+    /** Chat Window
+     * Go to chat window
+     * */
+    @Override
+    public void mainWindowFunction(JFrame frame) {
+        MainWindow mainWindow = new MainWindow();
+        ContactList.getInstance().addObserver(mainWindow);
+        frame.dispose();
+    }
+
+
 
 }

@@ -3,16 +3,11 @@ package chatsystem.controller;
 import chatsystem.contacts.*;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.UDPMessage;
-import chatsystem.network.UDPReceiver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 
 public class ControllerTests {
 
