@@ -38,7 +38,7 @@ Each time a user is added to your Users table, a seperate table is created for s
 Once registered/logged in, you can start exchanging messages with other connected users. On the left side of the ui, is the list of connected contacts to choose from (updated in real time). 
 To chat with another user, select their nickname among the online contacts. This colors their nickname in gray and loads the chat history from the database (if any) and allows TCP message exchanging.
 If you want to change your nickname, there is a button to do so at the top of the ui, but remember your new nickname as it will be needed for future login. The updated nickname will be communicated and appear on other user's ui as well.
-One you have finished chatting, click the disconnect button. This will properly terminate all tcp sessions you are a part of and inform other users that you are offline (you will no longer appear in their online contacts)
+Once you have finished chatting, click the disconnect button. This will properly terminate all tcp sessions you are a part of and inform other users that you are offline (you will no longer appear in their online contacts)
 
 ### Technologies Used
 Java 17
