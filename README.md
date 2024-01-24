@@ -23,7 +23,6 @@ Building the program from source requires `maven` to be installed.
 ```sh
 ## From the root directory (where pom.xml lies)
 mvn compile  # compile 
-mvn test  # run tests
 
 # Run main program (which will simply wait for connection messages)
 mvn exec:java -Dexec.mainClass="chatsystem.MainClass" 
