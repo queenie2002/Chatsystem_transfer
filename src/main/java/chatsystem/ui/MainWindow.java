@@ -25,6 +25,9 @@ public class MainWindow implements MyObserver {
     //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(HomeTab.class);
 
+    private JButton activeUserButton = null;
+
+
 
     //OBSERVERS
     ArrayList<MyObserver> observers = new ArrayList<>();
@@ -115,6 +118,24 @@ public class MainWindow implements MyObserver {
         cardLayout.show(chatPanel, userKey);
         chatPanel.revalidate();
         chatPanel.repaint();
+
+        // Update the appearance of buttons
+        if (activeUserButton != null) {
+            // Reset the appearance of the previously active button
+            activeUserButton.setBackground(null);
+        }
+
+        // Find the button for the current user and update its appearance
+        for (Component comp : onlineUsersPanel.getComponents()) {
+            if (comp instanceof JButton) {
+                JButton button = (JButton) comp;
+                if (button.getText().equals(user.getNickname())) {
+                    button.setBackground(Color.LIGHT_GRAY); // Change the background color
+                    activeUserButton = button;
+                    break;
+                }
+            }
+        }
     }
 
     private List<User> getOnlineUsers(){
@@ -165,7 +186,10 @@ public class MainWindow implements MyObserver {
     public void contactAddedOrUpdated(User user) {
         // Update OnlineUsersPanel here
         SwingUtilities.invokeLater(this::updateOnlineUsersPanel);
-        System.out.println("MainWindow contact added or updated");
+        // Update the button text if this user is the active chat
+        if (activeUserButton != null && chatSessions.containsKey(user.getIpAddress().getHostAddress())) {
+            activeUserButton.setText(user.getNickname());
+        }
     }
 
     private void updateOnlineUsersPanel() {

@@ -20,6 +20,7 @@ public class ChatWindow extends JPanel{
     private TCPClient tcpClient;
     private User user;
 
+
     public ChatWindow(User user){
         this.user=user;
 
