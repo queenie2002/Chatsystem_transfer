@@ -169,23 +169,37 @@ public class MainWindow implements MyObserver {
     }
 
     private void updateOnlineUsersPanel() {
-        // Clear the existing user buttons
-        onlineUsersPanel.removeAll();
+        // Assuming the first component in the panel is the "Online Contacts" label
+        while (onlineUsersPanel.getComponentCount() > 1) {
+            onlineUsersPanel.remove(1);
+        }
 
         // Retrieve the updated list of online users
         List<User> onlineUsers = getOnlineUsers();
 
-        // Iterate through the list of online users and create a button for each
-        for (User user : onlineUsers) {
-            JButton userButton = new JButton(user.getNickname());
-            userButton.addActionListener(e -> switchChatWindow(user));
-            onlineUsersPanel.add(userButton);
+        // Check if there are no online users
+        if (onlineUsers.isEmpty() || onlineUsers.stream().noneMatch(User::getStatus)) {
+            // Hide or remove the ChatWindow
+            chatPanel.setVisible(false); // This hides the chat panel
+        } else {
+            // Iterate through the list of online users and create a button for each
+            for (User user : onlineUsers) {
+                if (user.getStatus()) { // Check if the user is online
+                    JButton userButton = new JButton(user.getNickname());
+                    userButton.addActionListener(e -> switchChatWindow(user));
+                    onlineUsersPanel.add(userButton);
+                }
+            }
+
+            // Make sure the chat panel is visible if there are online users
+            chatPanel.setVisible(true);
         }
 
         // Revalidate and repaint the panel to reflect the changes
         onlineUsersPanel.revalidate();
         onlineUsersPanel.repaint();
     }
+
 
     private void onDisconnect(JFrame frame) {
         try {
