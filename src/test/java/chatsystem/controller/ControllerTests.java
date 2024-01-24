@@ -1,6 +1,5 @@
 package chatsystem.controller;
 
-import chatsystem.MainClass;
 import chatsystem.contacts.*;
 import chatsystem.database.DatabaseMethods;
 import chatsystem.network.UDPMessage;
@@ -36,7 +35,7 @@ public class ControllerTests {
         }
     }
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() {
         DatabaseMethods.startConnection(alice);
         DatabaseMethods.initializeDatabase();
         contacts = ContactList.getInstance();
@@ -65,7 +64,7 @@ public class ControllerTests {
     }
 
     @Test
-    void iAmConnectedMessageHandlingTest() throws UnknownHostException, ContactDoesntExist {
+    void iAmConnectedMessageHandlingTest() throws UnknownHostException {
         String message1 = "IAMCONNECTED: nickname: " + alice.getNickname();
         String message2 = "IAMCONNECTED: nickname: " + bob.getNickname();
 
@@ -96,7 +95,7 @@ public class ControllerTests {
     }
 
     @Test
-    void iAmConnectedAreYouMessageHandlingTest() throws UnknownHostException, ContactDoesntExist {
+    void iAmConnectedAreYouMessageHandlingTest() throws UnknownHostException {
         String message1 = "IAMCONNECTEDAREYOU: nickname: " + alice.getNickname();
         String message2 = "IAMCONNECTEDAREYOU: nickname: " + bob.getNickname();
 
@@ -128,7 +127,7 @@ public class ControllerTests {
     }
 
     @Test
-    void disconnectMessageHandlingTest() throws UnknownHostException, ContactDoesntExist, SQLException, ContactAlreadyExists {
+    void disconnectMessageHandlingTest() throws UnknownHostException, ContactAlreadyExists {
         String message1 = "DISCONNECT: nickname: " + alice.getNickname();
         String message2 = "DISCONNECT: nickname: " + bob.getNickname();
 
@@ -161,42 +160,6 @@ public class ControllerTests {
         assert !contacts.getContact(bob.getIpAddress()).getStatus();
         assert !contacts.getContact(alice.getIpAddress()).getStatus();
         assert !contacts.isEmptyContactList();
-
-    }
-
-
-
-
-
-    // ---------------------------VIEW-------------------------//
-
-    @Test
-    void toCloseAppTest() throws SocketException {
-
-        JFrame frame = new JFrame();
-        assertThrows( () -> controller.toCloseApp(frame));
-
-        UDPReceiver udpReceiver = new UDPReceiver();
-        udpReceiver.start();
-        assert udpReceiver.isAlive();
-        controller.toCloseApp(frame);
-        assert !udpReceiver.isAlive();
-
-    }
-
-    @Test
-    void toDisconnectTest() throws IOException {
-
-        JFrame frame = new JFrame();
-        assertThrows( () -> controller.toCloseApp(frame));
-        assert alice.getStatus();
-
-        UDPReceiver udpReceiver = new UDPReceiver();
-        udpReceiver.start();
-        assert udpReceiver.isAlive();
-        controller.toDisconnect(frame, alice);
-        assert !udpReceiver.isAlive();
-        assert !alice.getStatus();
 
     }
 

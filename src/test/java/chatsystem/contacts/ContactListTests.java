@@ -4,10 +4,8 @@ import chatsystem.database.DatabaseMethods;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.crypto.Data;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 
 public class ContactListTests {
 
@@ -15,7 +13,6 @@ public class ContactListTests {
     }
 
     public interface FallibleCode {
-
         void run() throws Exception;
     }
 
@@ -30,7 +27,7 @@ public class ContactListTests {
 
     ContactList contacts;
     @BeforeEach
-    void setUp() throws SQLException, UnknownHostException {
+    void setUp() {
         DatabaseMethods.deleteDatabase(alice.getIpAddress());
         DatabaseMethods.deleteDatabase(bob.getIpAddress());
         DatabaseMethods.startConnection(alice);
@@ -45,7 +42,7 @@ public class ContactListTests {
     private User bob = new User("bob", "pwdBob", true, InetAddress.getByName("192.127.2.1"));
 
     @Test
-    void contactAdditionTest() throws SQLException, ContactAlreadyExists, UnknownHostException {
+    void contactAdditionTest() throws ContactAlreadyExists {
 
         assert !contacts.existsContact(alice.getIpAddress());
         contacts.addContact(alice);
@@ -59,7 +56,7 @@ public class ContactListTests {
     }
 
     @Test
-    void contactDuplicationTest() throws SQLException, ContactAlreadyExists, UnknownHostException {
+    void contactDuplicationTest() throws  ContactAlreadyExists {
 
         contacts.addContact(alice);
         assert contacts.existsContact(alice.getIpAddress());
@@ -70,7 +67,7 @@ public class ContactListTests {
     }
 
     @Test
-    void updateContactTest() throws SQLException, ContactAlreadyExists, ContactDoesntExist, UnknownHostException {
+    void updateContactTest() throws ContactAlreadyExists {
 
         assertThrows(() -> contacts.updateContact(alice));
 
@@ -86,7 +83,7 @@ public class ContactListTests {
 
 
     @Test
-    void deleteContactTest() throws SQLException, ContactAlreadyExists, ContactDoesntExist, UnknownHostException {
+    void deleteContactTest() throws ContactAlreadyExists, ContactDoesntExist {
 
         assert contacts.isEmptyContactList();
         assertThrows(() -> contacts.deleteContact(alice.getIpAddress()));
@@ -104,7 +101,7 @@ public class ContactListTests {
 
 
     @Test
-    void getContactTest() throws SQLException, ContactAlreadyExists, ContactDoesntExist, UnknownHostException {
+    void getContactTest() throws ContactAlreadyExists {
 
         assertThrows(() -> contacts.getContact(alice.getIpAddress()));
 
@@ -117,7 +114,7 @@ public class ContactListTests {
 
 
     @Test
-    void existsContactTest() throws SQLException, ContactAlreadyExists, UnknownHostException {
+    void existsContactTest() throws ContactAlreadyExists {
 
         assert !contacts.existsContact(alice.getIpAddress());
 
@@ -128,7 +125,7 @@ public class ContactListTests {
 
 
     @Test
-    void emptyContactListTest() throws SQLException, ContactAlreadyExists, UnknownHostException {
+    void emptyContactListTest() throws ContactAlreadyExists {
 
         assert contacts.isEmptyContactList();
         contacts.addContact(alice);

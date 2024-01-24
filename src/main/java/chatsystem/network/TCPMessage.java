@@ -61,7 +61,7 @@ public class TCPMessage {
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
-    public void setDate(Instant timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
     public void setContent (String content) {

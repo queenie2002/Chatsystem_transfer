@@ -469,7 +469,7 @@ public class DatabaseMethods {
 
                     message.setChatId(resultSet.getInt("chatID"));
                     message.setContent(resultSet.getString("content"));
-                    message.setDate(Instant.parse(resultSet.getString("date")));
+                    message.setTimestamp(Instant.parse(resultSet.getString("date")));
                     message.setFromUserIP(resultSet.getString("fromUser"));
                     message.setToUserIP(resultSet.getString("toUser"));
 

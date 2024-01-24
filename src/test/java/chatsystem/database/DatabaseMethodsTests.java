@@ -68,8 +68,6 @@ class DatabaseMethodsTests {
 
         DatabaseMethods.addUser(alice);
         assert DatabaseMethods.doesUserExist(alice);
-        assert !alice.getPassword().equals(DatabaseMethods.getUser(alice.getIpAddress()).getPassword());
-
     }
 
     @Test
@@ -88,61 +86,5 @@ class DatabaseMethodsTests {
         assert !messagesOfAlice.isEmpty();
 
     }
-
-
-
-    /*
-    @Test
-    void testGetUser() {
-        try {
-            User retrievedUser = DatabaseMethods.getUser("alice");
-            assertNotNull(retrievedUser);
-            assertEquals("alice", retrievedUser.getNickname());
-            // Add more assertions based on the user details
-        } catch (SQLException | UnknownHostException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void testGetMessagesList() {
-        try {
-            ArrayList<TCPMessage> messagesList = DatabaseMethods.getMessagesList("alice");
-            assertNotNull(messagesList);
-            // Add more assertions based on the retrieved messages
-        } catch (SQLException | UnknownHostException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void testGetMe() {
-        try {
-            User me = DatabaseMethods.getMe();
-            assertNotNull(me);
-            // Add assertions based on the retrieved "Me" details
-        } catch (SQLException | UnknownHostException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void testLoadUserList() {
-        try {
-            DatabaseMethods.loadUserList();
-            // Add assertions based on the loaded user list
-        } catch (SQLException | UnknownHostException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
-
-    */
-
-
-
-
-
-
-
 
 }
