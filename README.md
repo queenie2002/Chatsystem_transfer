@@ -30,13 +30,15 @@ mvn test  # run tests
 # Run main program (which will simply wait for connection messages)
 mvn exec:java -Dexec.mainClass="chatsystem.MainClass" 
 ```
-In another terminal (linux) you can simulate connection messages:
-```sh
-echo -n "alice" > /dev/udp/127.0.0.1/1789
-echo -n "bob" > /dev/udp/127.0.0.1/1789
-echo -n "chloe" > /dev/udp/127.0.0.1/1789
-echo -n "alice" > /dev/udp/127.0.0.1/1789
-```
+
+## What we implemented
+When connecting for the first time, you can register using a nickname and a password. These are to be remembered as they are needed for future login.
+Upon registration, a local database is created to store a table of Users. A user is added to this table if during the contact discovery, they were not yet in your table.
+Each time a user is added to your Users table, a seperate table is created for storing any potential messages exchanged with this user.
+Once registered/logged in, you can start exchanging messages with other connected users. On the left side of the ui, is the list of connected contacts to choose from (updated in real time). 
+To chat with another user, select their nickname among the online contacts. This colors their nickname in gray and loads the chat history from the database (if any) and allows TCP message exchanging.
+If you want to change your nickname, there is a button to do so at the top of the ui, but remember your new nickname as it will be needed for future login. The updated nickname will be communicated and appear on other user's ui as well.
+Once you have finished chatting, click the disconnect button. This will properly terminate all tcp sessions you are a part of and inform other users that you are offline (you will no longer appear in their online contacts)
 
 ### Technologies Used
 Java 17

@@ -25,6 +25,9 @@ public class MainWindow implements MyObserver {
     //LOGGER
     private static final Logger LOGGER = LogManager.getLogger(HomeTab.class);
 
+    private JButton activeUserButton = null;
+
+
 
     //OBSERVERS
     ArrayList<MyObserver> observers = new ArrayList<>();
@@ -115,6 +118,24 @@ public class MainWindow implements MyObserver {
         cardLayout.show(chatPanel, userKey);
         chatPanel.revalidate();
         chatPanel.repaint();
+
+        // Update the appearance of buttons
+        if (activeUserButton != null) {
+            // Reset the appearance of the previously active button
+            activeUserButton.setBackground(null);
+        }
+
+        // Find the button for the current user and update its appearance
+        for (Component comp : onlineUsersPanel.getComponents()) {
+            if (comp instanceof JButton) {
+                JButton button = (JButton) comp;
+                if (button.getText().equals(user.getNickname())) {
+                    button.setBackground(Color.LIGHT_GRAY); // Change the background color
+                    activeUserButton = button;
+                    break;
+                }
+            }
+        }
     }
 
     private List<User> getOnlineUsers(){
@@ -165,27 +186,44 @@ public class MainWindow implements MyObserver {
     public void contactAddedOrUpdated(User user) {
         // Update OnlineUsersPanel here
         SwingUtilities.invokeLater(this::updateOnlineUsersPanel);
-        System.out.println("MainWindow contact added or updated");
+        // Update the button text if this user is the active chat
+        if (activeUserButton != null && chatSessions.containsKey(user.getIpAddress().getHostAddress())) {
+            activeUserButton.setText(user.getNickname());
+        }
     }
 
     private void updateOnlineUsersPanel() {
-        // Clear the existing user buttons
-        onlineUsersPanel.removeAll();
+        // Assuming the first component in the panel is the "Online Contacts" label
+        while (onlineUsersPanel.getComponentCount() > 1) {
+            onlineUsersPanel.remove(1);
+        }
 
         // Retrieve the updated list of online users
         List<User> onlineUsers = getOnlineUsers();
 
-        // Iterate through the list of online users and create a button for each
-        for (User user : onlineUsers) {
-            JButton userButton = new JButton(user.getNickname());
-            userButton.addActionListener(e -> switchChatWindow(user));
-            onlineUsersPanel.add(userButton);
+        // Check if there are no online users
+        if (onlineUsers.isEmpty() || onlineUsers.stream().noneMatch(User::getStatus)) {
+            // Hide or remove the ChatWindow
+            chatPanel.setVisible(false); // This hides the chat panel
+        } else {
+            // Iterate through the list of online users and create a button for each
+            for (User user : onlineUsers) {
+                if (user.getStatus()) { // Check if the user is online
+                    JButton userButton = new JButton(user.getNickname());
+                    userButton.addActionListener(e -> switchChatWindow(user));
+                    onlineUsersPanel.add(userButton);
+                }
+            }
+
+            // Make sure the chat panel is visible if there are online users
+            chatPanel.setVisible(true);
         }
 
         // Revalidate and repaint the panel to reflect the changes
         onlineUsersPanel.revalidate();
         onlineUsersPanel.repaint();
     }
+
 
     private void onDisconnect(JFrame frame) {
         try {
