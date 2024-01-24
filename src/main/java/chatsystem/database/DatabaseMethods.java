@@ -175,17 +175,17 @@ public class DatabaseMethods {
     }
 
     /**
-     * Checks if a user is already in the database
+     * Checks if a user with given ip address is already in the database
      */
-    public static boolean doesUserExist(User user) {
+    public static boolean doesUserExist(InetAddress ipAddress) {
         //we get the ipAddress of user
-        String ipAddress = extractFormattedIP(user.getIpAddress()).getHostAddress();
+        String ipAddressString = extractFormattedIP(ipAddress).getHostAddress();
 
         //to look for a user with the same ipAddress to see if we already know them
         String sql = "SELECT COUNT(*) FROM users WHERE ipAddress = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, ipAddress);
+            preparedStatement.setString(1, ipAddressString);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 // if there is something in result set, the user exists
@@ -289,7 +289,7 @@ public class DatabaseMethods {
         String addUserSQL;
 
         //we check if the user is already in the list
-        boolean userAddedAlready = doesUserExist(user);
+        boolean userAddedAlready = doesUserExist(user.getIpAddress());
 
         //we do the appropriate sql
         if (userAddedAlready) {

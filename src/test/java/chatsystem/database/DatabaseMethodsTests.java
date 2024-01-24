@@ -59,15 +59,15 @@ class DatabaseMethodsTests {
     void testAddUser()  {
 
         System.out.println("dans test add user");
-        assert !DatabaseMethods.doesUserExist(alice);
+        assert !DatabaseMethods.doesUserExist(alice.getIpAddress());
         DatabaseMethods.addUser(alice);
-        assertTrue(DatabaseMethods.doesUserExist(alice));
+        assertTrue(DatabaseMethods.doesUserExist(alice.getIpAddress()));
 
         assert alice.getPassword().equals(DatabaseMethods.getUser(alice.getIpAddress()).getPassword());
         alice.setPassword("another password");
 
         DatabaseMethods.addUser(alice);
-        assert DatabaseMethods.doesUserExist(alice);
+        assert DatabaseMethods.doesUserExist(alice.getIpAddress());
     }
 
     @Test
