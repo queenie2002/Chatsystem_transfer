@@ -33,6 +33,14 @@ Manual testing of the system was used to simulate real user scenarios, to check 
 Additionally, automated testing on unit tests was integrated into the GitHub workflow, enabling automatic test execution upon code push, thus ensuring code quality and stability with every update. 
 
 
+## Highlights
 
+  <ul>
+    <li><b>Testing</b> &rarr; ControllerTests class</li>
+    <li><b>Code structure</b> &rarr; Controller class that implements MyObserver interface + DatabaseMethods class and its observer pattern</li>
+    <li><b>Correctness</b> &rarr; synchronized access of ContactList class</li>
+    <li><b>Error</b> handling &rarr; ContactList class + creation of exception ContactDoesntExist class</li>
+    <li><b>View</b> &rarr; HomeTab class and its observer pattern and window listener </li>
+  </ul>
 
 
